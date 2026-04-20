@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('../views/LobbyView.vue')
     },
     {
+      path: '/startmwc/',
+      name: 'StartMWC',
+      component: () => import('../views/StartMWC.vue')
+    },
+    {
       path: '/create/',
       name: 'CreateView',
       component: () => import('../views/CreateView.vue')

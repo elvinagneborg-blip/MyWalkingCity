@@ -30,6 +30,9 @@
   <router-link v-bind:to="'/lobby/' + newPollId">
     {{ uiLabels.participatePoll }}
   </router-link>
+  <router-link to="/startmwc/">
+    StartMWC
+  </router-link>
 </template>
 
 <script>
