@@ -4,11 +4,6 @@ function sockets(io, socket, data) {
     socket.emit('uiLabels', data.getUILabels(lang));
   });
 
-  socket.on('createPoll', function(d) {
-    data.createPoll(d.pollId, d.lang)
-    socket.emit('pollData', data.getPoll(d.pollId));
-  });
-
   socket.on('addQuestion', function(d) {
     data.addQuestion(d.pollId, {q: d.q, a: d.a});
     socket.emit('questionUpdate', data.activateQuestion(d.pollId));
