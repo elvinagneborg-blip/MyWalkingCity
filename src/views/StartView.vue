@@ -30,6 +30,10 @@
   <router-link v-bind:to="'/lobby/' + newPollId">
     {{ uiLabels.participatePoll }}
   </router-link>
+
+  <router-link :to="'/report/'">
+   Report view
+  </router-link>
 </template>
 
 <script>
