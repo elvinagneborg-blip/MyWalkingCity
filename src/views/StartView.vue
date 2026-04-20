@@ -33,6 +33,8 @@
 
   <router-link :to="'/report/'">
    Report view
+  <router-link to="/startmwc/">
+    StartMWC
   </router-link>
 </template>
 
