@@ -3,11 +3,7 @@
     <div v-bind:class="['hamburger', {'close': !hideNav}]" 
          v-on:click="toggleNav">
     </div>
-    <div class="logo">
-      <img src="/img/logo.png">
-      Polly polling tool 
-      <img src="../assets/logo.svg">
-    </div>
+   
   </header>
   <ResponsiveNav v-bind:hideNav="hideNav">
     <button v-on:click="switchLanguage">
@@ -33,6 +29,8 @@
 
   <router-link :to="'/report/'">
    Report view
+  </router-link>
+  
   <router-link to="/startmwc/">
     StartMWC
   </router-link>
