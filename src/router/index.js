@@ -44,6 +44,12 @@ const router = createRouter({
       path: '/highlight/',
       name: 'HighlightView',
       component: () => import('../views/HighlightView.vue')
+    }, 
+
+    {
+      path: '/option/',
+      name: 'OptionView',
+      component: () => import('../views/OptionView.vue')
     }
   ]
 })
