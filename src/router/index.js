@@ -50,7 +50,13 @@ const router = createRouter({
       path: '/option/',
       name: 'OptionView',
       component: () => import('../views/OptionView.vue')
-    }
+    }, 
+
+    {
+      path: '/profile/',
+      name: 'ProfileView',
+      component: () => import('../views/ProfileView.vue')
+    }, 
   ]
 })
 
