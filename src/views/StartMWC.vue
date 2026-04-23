@@ -6,7 +6,7 @@
     </div>
   </header>
 
-  <body>
+  <bodyTop>
     <h2>Shape Uppsala with a Photo</h2>
     
     <div>
@@ -30,7 +30,7 @@
         Solved
       </div>
     </div>
-  </body>
+  </bodyTop>
 
   <bodyLatestReports>
     <h3>Live feed</h3>
