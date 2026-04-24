@@ -63,6 +63,11 @@ const router = createRouter({
       name: 'AllReportsView',
       component: () => import('../views/AllReportsView.vue')
     }, 
+    {
+      path: '/report-login/',
+      name: 'ReportLogIn',
+      component: () => import('../views/ReportLogIn.vue')
+    }
   ]
 })
 
