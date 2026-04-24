@@ -1,10 +1,8 @@
 <template>
     <main class="report-page">
-       
+      
       <!--Allmän header för alla sidor  -->
-      <header class="site-header">
-        <h1 class="site-title">Turquoise My Walking City Bar</h1>
-      </header>
+      <WebbHeader />
   
       <!--Header specifik för sidan -->
       <section class="report-header">
@@ -99,7 +97,9 @@
   <script setup>
     import { ref } from 'vue' // ref skapar variabler som Vue håller koll på 
     import { useRouter } from 'vue-router'// För att kunna navigera mellan sidor 
-  
+    import WebbHeader from '@/components/WebbHeader.vue'
+
+
     const router = useRouter()
     const showPopup = ref(false) // säger att popupen inte ska synas - default 
   
@@ -138,18 +138,7 @@
     font-family: inherit;
     font-size: 16px;
   }
-  
-  /* ===== Header ===== */
-  .site-header {
-    background-color: #2bb3a3;
-    padding: 16px;
-    color: white;
-  }
-  .site-title {
-    margin: 0;
-    font-size: 20px;
-  }
-  
+    
   /* ===== Sidhuvud ===== */
   .report-header {
     padding: 16px;
