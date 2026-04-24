@@ -2,9 +2,7 @@
     <main class="option-page">
        
       <!--Allmän header för alla sidor  -->
-    <header class="site-header">
-        <h1 class="site-title">Turquoise My Walking City Bar</h1>
-    </header>
+      <WebbHeader />
   
       <!--Header specifik för sidan -->
     <section class="option-header">
@@ -27,7 +25,7 @@
 
     <!-- All reports / Back to home knappar -->
     <div class="secondary-buttons">
-        <button class="secondary-option">All reports</button>
+        <button class="secondary-option" @click="goAllReports">All reports</button>
         <button class="secondary-option" @click="goHome">Back to home</button>
       </div>
     </div>
@@ -37,6 +35,7 @@
 <!-- JS basic -->
 <script setup>
 import { useRouter } from 'vue-router'
+import WebbHeader from '@/components/WebbHeader.vue'
 
 const router = useRouter()
 const goToReport = () => {
@@ -50,22 +49,16 @@ const goToHighlight = () => {
 const goHome = () => {
     router.push({ name: 'StartMWC' })
 }
+
+const goAllReports = () => {
+    router.push({name: 'AllReportsView' })
+}
+
+
 </script>
 
 <!--CSS - basci-->
 <style scoped>
-
- /* ===== Header ===== */
- .site-header {
-    background-color: #2bb3a3;
-    padding: 16px;
-    color: white;
-  }
-  .site-title {
-    margin: 0;
-    font-size: 20px;
-  }
-
 /* ===== Option sidan - standard ===== */
 .option-page {
     min-height: 100vh;

@@ -1,10 +1,6 @@
 <template>
     <main class="allreports-page">
-       
-      <!--Allmän header för alla sidor  -->
-    <header class="site-header">
-        <h1 class="site-title">Turquoise My Walking City Bar</h1>
-    </header>
+        <WebbHeader />
   
       <!--Header specifik för sidan -->
     <section class="allreports-header">
@@ -63,6 +59,8 @@
 <!--Basic js -->
 <script setup>
 import { ref } from "vue"
+import WebbHeader from '@/components/WebbHeader.vue'
+
 const showRecentReports = ref(false)
 
 </script>
@@ -79,17 +77,6 @@ const showRecentReports = ref(false)
     font-family: Arial, sans-serif;
     color: #111;
     padding-bottom: 32px;
-}
-
-/* ===== Header ===== */
-.site-header {
-    background-color: #2bb3a3;
-    padding: 16px;
-    color: white;
-}
-.site-title {
-    margin: 0;
-    font-size: 20px;
 }
 
 /* ===== Sidans enga rubrik ===== */

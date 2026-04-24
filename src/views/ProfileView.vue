@@ -1,9 +1,7 @@
 <template>
 <main class="profile-page"> 
       <!--Allmän header för alla sidor  -->
-    <header class="site-header">
-        <h1 class="site-title">Turquoise My Walking City Bar</h1>
-    </header>
+      <WebbHeader />
   
     <!--Header specifik för sidan -->
     <section class="profile-header">
@@ -157,6 +155,11 @@
 </main>
 </template>
 
+<script setup>
+import WebbHeader from '@/components/WebbHeader.vue'
+
+</script>
+
 <!-- CSS basic -->
 
 <style scoped>
@@ -181,21 +184,6 @@
     margin-left: auto;
     margin-right: auto;
 }
-
- /* ===== Topp Header - gemensam ===== */
-.site-header {
-    background-color: #2bb3a3;
-    padding: 16px;
-    color: white;
-}
-
-.site-title {
-    margin: 0;
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    text-align: center;
-}
-
-
  /* ===== Profile header ===== */
 .profile-header {
     text-align: center;
