@@ -1,10 +1,5 @@
 <template>
-  <header>
-    <div>  
-      <h1>My Walking City</h1>
-      <img src="/img/cropped-SIC-2.png"> 
-    </div>
-  </header>
+  <WebbHeader />
 
   <section class="body-top">
     <h2 class="section-title">Shape Uppsala <br>with a Photo</h2>
@@ -31,14 +26,23 @@
     </div>
 
     <div class="report-list">
+      <!-- Visas om det är tomt i sessionStorage -->
+      <div v-if="reports.length === 0">
+        <p>No reports or highlights submitted yet.</p>
+      </div>
+
+      <!-- Loopar igenom den hämtade datan -->
       <div 
-        v-for="report in reports" 
-        :key="report.id" 
-        :class="['report-card', report.type === 'issue' ? 'red-bg' : 'green-bg']">
+        v-else
+        v-for="(report, index) in reports" 
+        :key="index" 
+        :class="['report-card', report.type === 'report' ? 'red-bg' : 'green-bg']">
         <h4>{{ report.title }}</h4>
-        <p>{{ report.address }}</p>
+        <p>{{ report.description }}</p>
+        <small style="font-size: 0.8em; opacity: 0.7;">{{ report.createdAt }}</small>
       </div>
     </div>
+      
     <h5>See all reports on map</h5>
     </section>
 
@@ -59,16 +63,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import WebbHeader from '@/components/WebbHeader.vue'
 
-//De två första är reports, de två sista är highlights.
-const reports = ref([
-  { id: 1, type: 'issue', title: 'Trasig gatulykta', address: 'Kungsgatan 5' },
-  { id: 2, type: 'issue', title: 'Stort hål i cykelbanan', address: 'Storgatan 12' },
-  { id: 3, type: 'highlight', title: 'Fin ny blommplantering', address: 'Stadsträdgården' },
-  { id: 4, type: 'highlight', title: 'Bra snöröjning idag!', address: 'Svartbäcksgatan 20' }
-]);
+// Skapa en reaktiv variabel som börjar som en tom lista
+const reports = ref([]);
 
+// onMounted körs automatiskt så fort sidan visas på skärmen
+onMounted(() => {
+  // Hämta datan som vi sparade via vårt formulär
+  const savedData = sessionStorage.getItem('mwc_submissions');
+  
+  if (savedData) {
+    // Gör om textsträngen till en array och spara den i vår reports-variabel
+    reports.value = JSON.parse(savedData);
+  }
+});
+
+// Behåll dina hårdkodade steg precis som de var!
 const steps = ref([
   { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
   { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
