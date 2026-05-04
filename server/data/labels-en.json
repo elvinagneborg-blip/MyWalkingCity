@@ -1,11 +1,28 @@
 {
-	"sales-pitch": "Simply. Great. Polling.",
-	"subHeading": "A simple polling tool",
-	"invite": "Invite participants with this link:",
-	"createPoll": "Create poll",
-	"participatePoll": "Participate in poll",
-	"question": "Question",
+	"activeUsers": "Active users",
+	"allReportsOnMap": "See all reports on map",
+
 	"changeLanguage": "Byt till svenska",
-	"about": "About",
-	"participateInPoll": "Participate in poll"
+
+	
+	"howDoesItWork": "How does it Work?",
+	"howItWorks": "How it works",
+
+	"latestReports": "Latest reports",
+	"latestReportsDescription": "See the latest reports of citizens in Uppsala, both improvement and positive observations",
+	"liveFeed": "Live feed",
+
+	"noReportsSubmitted": "No reports or highlights submitted yet.",
+
+	"report": "Report",
+	"reports": "Reports",
+
+	"shapeUppsala": "Shape Uppsala",
+	"solved": "Solved",
+	"startDescription": "Report problems and highlight good things in your city. Collect points, level up and make Uppsala greater together!",
+
+	"withAPhoto": "with a Photo",
+
+	"fourSteps": "4 steps"
+	
 }

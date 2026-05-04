@@ -1,11 +1,26 @@
 {
-	"sales-pitch": "Svar. Helt. Enkelt.",
-	"subHeading": "Ett enkelt enkätverktyg",
-	"invite": "Bjud in deltagare med den här länken:",
-	"createPoll": "Skapa röstning",
-	"participatePoll": "Delta i röstning",
-	"question": "Fråga",
+	
+	"activeUsers": "Aktiva användare",	
+
 	"changeLanguage": "Change to English",
-	"about": "Om oss",
-	"participateInPoll": "Delta i enkäten"
+
+	"howDoesItWork": "Hur fungerar det?",
+	"howItWorks": "How it works",
+	
+	"latestReports": "Senaste rapporter",
+	"latestReportsDescription": "See the latest reports of citizens in Uppsala, both improvement and positive observations",
+	"liveFeed": "Live flöde",
+
+	"noReportsSubmitted": "No reports or highlights submitted yet.",
+
+	"report": "Rapportera",
+	"reports": "Rapporter",
+
+	"shapeUppsala": "Forma Uppsala",
+	"solved": "Löst",
+	"startDescription": "Rapportera problem and highlight good things in your city. Collect points, level up and make Uppsala greater together!",
+	
+	"withAPhoto": "med en bild",
+
+	"fourSteps": "4 steps"
 }
