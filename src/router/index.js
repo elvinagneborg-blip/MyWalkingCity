@@ -1,23 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import StartView from '../views/StartView.vue'
+import StartMWC from '../views/StartMWC.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'Start',
-      component: StartView
-    },
-      {
-      path: '/poll/:id',
-      name: 'PollView',
-      component: () => import('../views/PollView.vue')
-    },
-    {
-      path: '/lobby/:id',
-      name: 'LobbyView',
-      component: () => import('../views/LobbyView.vue')
+      name: 'Home', 
+      component: StartMWC 
     },
     {
       path: '/startmwc/',
@@ -25,39 +15,25 @@ const router = createRouter({
       component: () => import('../views/StartMWC.vue')
     },
     {
-      path: '/create/',
-      name: 'CreateView',
-      component: () => import('../views/CreateView.vue')
-    },
-    {
-      path: '/result/:id',
-      name: 'ResultView',
-      component: () => import('../views/ResultView.vue')
-    },
-    {
       path: '/report/',
       name: 'ReportView',
       component: () => import('../views/ReportView.vue')
     },
-
     {
       path: '/highlight/',
       name: 'HighlightView',
       component: () => import('../views/HighlightView.vue')
     }, 
-
     {
       path: '/option/',
       name: 'OptionView',
       component: () => import('../views/OptionView.vue')
     }, 
-
     {
       path: '/profile/',
       name: 'ProfileView',
       component: () => import('../views/ProfileView.vue')
     }, 
-
     {
       path: '/allreports/',
       name: 'AllReportsView',
