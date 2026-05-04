@@ -10,8 +10,7 @@
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
         <div class="allreports-map-container">
-            <!-- Test bild för kartan för uppdattning -->
-            <img src="/img/test-map.png" class="allreports-map-image" />
+            <MapComponent />
 
             <!--Recent reports knapp -->            
             <button 
@@ -60,6 +59,7 @@
 <script setup>
 import { ref } from "vue"
 import WebbHeader from '@/components/WebbHeader.vue'
+import MapComponent from "@/components/MapComponent.vue";
 
 const showRecentReports = ref(false)
 
@@ -123,6 +123,7 @@ const showRecentReports = ref(false)
     font-size: 16px;
     font-weight: 600;
     cursor: pointer; /*när man hovrar blir de en hand */
+    z-index: 1000;
 }
 
 /* ===== Recent report panel =====*/
@@ -134,7 +135,7 @@ const showRecentReports = ref(false)
     background-color: #eeeeee;
     border-radius: 24px 24px 0 0;
     padding: 20px 20px 28px;
-    z-index: 10; /* för att den ska ligga ovanpå kartan, så länge de har största z - index värdet */
+    z-index: 1200; /* för att den ska ligga ovanpå kartan, så länge de har största z - index värdet */
 }
 
 .allreports-recent-report-header {

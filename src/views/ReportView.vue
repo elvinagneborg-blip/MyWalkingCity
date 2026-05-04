@@ -13,8 +13,7 @@
     <!-- Sektion för kart-området -->
      <section class="map-section">
         <div class="map-container">
-            <!-- Test bild för kartan för uppdattning -->
-            <img src="/img/test-map.png" alt="Map preview" class="map-image" />
+          <MapComponent />
 
             <!-- Recent reports i hörnet av kartan -->
             <aside class="recent-report">
@@ -97,6 +96,7 @@
   import { ref } from 'vue' 
   import { useRouter } from 'vue-router'
   import WebbHeader from '@/components/WebbHeader.vue'
+  import MapComponent from "@/components/MapComponent.vue";
   import { saveSubmission } from '../utils/storage.js'
 
   const router = useRouter()
@@ -203,6 +203,7 @@ button {
   max-height: 180px;
   overflow-y: auto;
   box-sizing: border-box;
+  z-index:1000;
 }
 
 .recent-reports-title {
