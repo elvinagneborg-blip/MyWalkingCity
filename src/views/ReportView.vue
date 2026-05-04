@@ -93,32 +93,42 @@
 
 <!--JS-->
 <script setup>
-  import { ref } from 'vue' // ref skapar variabler som Vue håller koll på 
-  import { useRouter } from 'vue-router'// För att kunna navigera mellan sidor 
+  import { ref } from 'vue' 
+  import { useRouter } from 'vue-router'
   import WebbHeader from '@/components/WebbHeader.vue'
   import MapComponent from "@/components/MapComponent.vue";
-
+  import { saveSubmission } from '../utils/storage.js'
 
   const router = useRouter()
-  const showPopup = ref(false) // säger att popupen inte ska synas - default 
+  const showPopup = ref(false) 
 
-  //För att kunna nollställa formuläret efter submit 
-  const category = ref('') //default kategori börjar som tom 
-  const description = ref('') //default beskrivning börjar som tom
-  const photo = ref(null) //default inget foto 
+  const category = ref('') 
+  const description = ref('') 
+  const photo = ref(null) 
 
-  function handleSubmit() { //körs när användaren klickar på submit knappen 
-  showPopup.value = true
+  function handleSubmit() { 
+    // Skapa ett objekt med all data som användaren fyllt i
+    const reportData = {
+      title: category.value,           // Vi använder kategorin som titel
+      description: description.value,  // Beskrivningen från textrutan
+      // Tydligen är det klurigt med bilder, skippar det just nu
+    };
+
+    // Anropa vår gemensamma funktion och berätta att detta är en 'report'
+    saveSubmission(reportData, 'report');
+
+    showPopup.value = true;
   }
 
-  function handleDone() { //körs när användaren klickar på "done" i submit pop-up --> nollställ
-  category.value = ''
-  description.value = ''
-  photo.value = null
-  showPopup.value = false
-  router.push({ name: 'StartMWC' })
+  function handleDone() { 
+    category.value = ''
+    description.value = ''
+    photo.value = null
+    showPopup.value = false
+    
+    // Omdirigerar tillbaka till startsidan där listan uppdateras
+    router.push({ name: 'StartMWC' })
   }
-
 </script>
 
 <!-- CSS-->

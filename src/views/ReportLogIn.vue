@@ -1,10 +1,5 @@
 <template>
-  <header>
-    <div>  
-      <h1>My Walking City</h1>
-      <img src="/img/cropped-SIC-2.png"> 
-    </div>
-  </header>
+  <WebbHeader />
 
   <main class="login-container">
     
@@ -32,6 +27,7 @@
 </template>
 
 <script setup>
+    import WebbHeader from '@/components/WebbHeader.vue'
 
 </script>
 

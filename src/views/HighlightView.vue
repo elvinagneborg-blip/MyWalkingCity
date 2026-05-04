@@ -94,33 +94,40 @@
   </template>
   
   <!--JS-->
-  <script setup>
-    import { ref } from 'vue' // ref skapar variabler som Vue håller koll på 
-    import { useRouter } from 'vue-router'// För att kunna navigera mellan sidor 
-    import WebbHeader from '@/components/WebbHeader.vue'
+<script setup>
+  import { ref } from 'vue' 
+  import { useRouter } from 'vue-router'
+  import WebbHeader from '@/components/WebbHeader.vue'
+  import { saveSubmission } from '../utils/storage.js'
 
+  const router = useRouter()
+  const showPopup = ref(false) 
+  const category = ref('') 
+  const description = ref('') 
+  const photo = ref(null) 
 
-    const router = useRouter()
-    const showPopup = ref(false) // säger att popupen inte ska synas - default 
-  
-    //För att kunna nollställa formuläret efter submit 
-    const category = ref('') //default kategori börjar som tom 
-    const description = ref('') //default beskrivning börjar som tom
-    const photo = ref(null) //default inget foto 
-  
-    function handleSubmit() { //körs när användaren klickar på submit knappen 
-    showPopup.value = true
-    }
-  
-    function handleDone() { //körs när användaren klickar på "done" i submit pop-up --> nollställ
+  function handleSubmit() { 
+    // Samla in datan från formuläret
+    const highlightData = {
+      title: category.value,
+      description: description.value,
+    };
+
+    // Spara datan och berätta att det är av typen 'highlight'
+    saveSubmission(highlightData, 'highlight');
+
+    showPopup.value = true;
+  }
+
+  // Nollställ formuläret och gå tillbaka till startsidan
+  function handleDone() { 
     category.value = ''
     description.value = ''
     photo.value = null
     showPopup.value = false
     router.push({ name: 'StartMWC' })
-    }
-  
-  </script>
+  }
+</script>
   
   <!-- CSS-->
   <style scoped>
