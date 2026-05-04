@@ -64,23 +64,28 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import WebbHeader from '@/components/WebbHeader.vue'
+import io from 'socket.io-client';
+import ResponsiveNav from '@/components/ResponsiveNav.vue';
+import WebbHeader from '@/components/WebbHeader.vue';
 
-// Skapa en reaktiv variabel som börjar som en tom lista
+const socket = io("localhost:3000");
+
+const toggleNav = () => {
+  hideNav.value = !hideNav.value;
+};
+
 const reports = ref([]);
 
-// onMounted körs automatiskt så fort sidan visas på skärmen
 onMounted(() => {
-  // Hämta datan som vi sparade via vårt formulär
+  // Hämta datan som vi sparade via formuläret
   const savedData = sessionStorage.getItem('mwc_submissions');
   
   if (savedData) {
-    // Gör om textsträngen till en array och spara den i vår reports-variabel
     reports.value = JSON.parse(savedData);
   }
 });
 
-// Behåll dina hårdkodade steg precis som de var!
+// Steg för "How it works"
 const steps = ref([
   { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
   { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
