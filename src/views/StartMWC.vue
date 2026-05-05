@@ -1,5 +1,4 @@
 <template>
-  <WebbHeader/>
   <section class="body-top">
     <h2 class="section-title"> {{ uiLabels.shapeUppsala }} <br> {{ uiLabels.withAPhoto }} </h2>
     <h6> {{ uiLabels.startDescription}}</h6>
@@ -60,14 +59,15 @@
 
 <script setup>
   //Imports
-  import { ref, onMounted } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
-  import WebbHeader from '@/components/WebbHeader.vue' //Headerkomponenten
+
+  //Setup and Props (Input)
+  const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
 
   //Data
-  const socket = io("localhost:3000")
   const uiLabels = ref({})
-  const lang = ref("en")
   const reports = ref([])
   const steps = ref([  // Steg för "How it works"
     { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
@@ -80,16 +80,14 @@
   socket.on("uiLabels", (labels) => {
     uiLabels.value = labels
   })
-  
-  //Methods
-  const switchLanguage = () => {
-    lang.value = lang.value === "en" ? "sv" : "en";
-    socket.emit("getUILabels", lang.value)
-  }
 
-  //Startup and Init (On Load)
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    socket.emit("getUILabels", newLang);
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
+
+  //Startup (only once when page loads)
   onMounted(() => { 
-    socket.emit("getUILabels", lang.value) //Socketfråga (uiLabels)
     const savedData = sessionStorage.getItem('mwc_submissions') // Hämta datan som vi sparade via formuläret
     if (savedData) {
       reports.value = JSON.parse(savedData)

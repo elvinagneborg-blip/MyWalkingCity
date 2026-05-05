@@ -1,5 +1,5 @@
 <template>
-    <WebbHeader />
+
     <main class="option-page">
       <!--Header specifik för sidan -->
     <section class="option-header">
@@ -29,30 +29,33 @@
     </main>
 </template>
 
-<!-- JS basic -->
+
 <script setup>
     //Imports
-    import { ref, onMounted } from 'vue'
+    import { ref, onMounted, watch } from 'vue'
     import { useRouter } from 'vue-router'
     import io from 'socket.io-client' //kontakt med server
-    import WebbHeader from '@/components/WebbHeader.vue'
+
+
+    //Setup and Props (Input)
+    const socket = io("localhost:3000")
+    const props = defineProps(['currentLang']) //ta emot språkval från app.vue    
 
     //Data
-    const socket = io("localhost:3000")
     const router = useRouter()
     const uiLabels = ref({})
-    const lang = ref("en")
 
     //Socket listeners
     socket.on("uiLabels", (labels) => {
         uiLabels.value = labels
     })
 
+    //Watchers
+    watch(() => props.currentLang, (newLang) => { //vakta språket
+        socket.emit("getUILabels", newLang);
+    }, { immediate: true }); //Språket laddas direkt när sidan laddas
+
     //Methods
-    const switchLanguage = () => {
-        lang.value = lang.value === "en" ? "sv" : "en";
-        socket.emit("getUILabels", lang.value)
-    }
     const goToReport = () => {
         router.push({ name: 'ReportView' })
     }
@@ -66,10 +69,6 @@
         router.push({name: 'AllReportsView' })
     }
 
-    //Startup and Init (On Load)
-    onMounted(() => { 
-        socket.emit("getUILabels", lang.value)
-    })
 </script>
 
 
