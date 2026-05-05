@@ -93,43 +93,57 @@
     </main>
   </template>
   
-  <!--JS-->
 <script setup>
-  import { ref } from 'vue' 
-  import { useRouter } from 'vue-router'
+  //Imports
+  import { ref, onMounted } from 'vue' 
+  import { useRouter } from 'vue-router' //Programmatisk navigering, när något ska hända innan användaren skickas vidare vid klick
+  import io from 'socket.io-client' //kontakt med server
   import WebbHeader from '@/components/WebbHeader.vue'
+  import MapComponent from "@/components/MapComponent.vue"
   import { saveSubmission } from '../utils/storage.js'
 
+  //Data
+  const socket = io("localhost:3000")
   const router = useRouter()
-  const showPopup = ref(false) 
+  const uiLabels = ref({})
+  const lang = ref("en")
   const category = ref('') 
   const description = ref('') 
   const photo = ref(null) 
+  const showPopup = ref(false) 
 
-  function handleSubmit() { 
-    // Samla in datan från formuläret
-    const highlightData = {
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+  uiLabels.value = labels
+  })
+
+  //Methods
+  const handleSubmit = () => { 
+    const highlightData = { // Samla in datan från formuläret
       title: category.value,
       description: description.value,
     };
-
-    // Spara datan och berätta att det är av typen 'highlight'
-    saveSubmission(highlightData, 'highlight');
-
+    saveSubmission(highlightData, 'highlight'); // Spara datan och berätta att det är av typen 'highlight'
     showPopup.value = true;
   }
-
-  // Nollställ formuläret och gå tillbaka till startsidan
-  function handleDone() { 
+  const handleDone = () => {  // Nollställ formuläret och gå tillbaka till startsidan
     category.value = ''
     description.value = ''
     photo.value = null
     showPopup.value = false
     router.push({ name: 'StartMWC' })
   }
+
+  //Startup and Init (On Load)
+  onMounted(() => { //onMounted inte nödvändigt just här men är en bra vana att ha med, kan även annars ske problem i undantagsfall
+    socket.emit("getUILabels", lang.value)
+  })
 </script>
   
-  <!-- CSS-->
+
+
+
+
   <style scoped>
   
   .report-page {

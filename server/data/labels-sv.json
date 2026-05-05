@@ -1,26 +1,53 @@
 {
-	
 	"activeUsers": "Aktiva användare",	
+	"allReports": "Alla rapporter",
+	"allReportsOnMap": "Se alla rapporter på kartan",
 
-	"changeLanguage": "Change to English",
+	"backToHome": "Tillbaka till hemsidan",
 
+	"category": "Kategori",
+	"changeLanguage": "Ändra till engelska",
+	"chooseCategory": "Välj kategori",
+	"currentLocation": "Nuvarande plats",
+
+	"describeYourProblem": "Beskriv ditt problem",
+	"done": "Klart",
+
+	"highlight": "Höjdpunkt",
 	"howDoesItWork": "Hur fungerar det?",
-	"howItWorks": "How it works",
+	"howItWorks": "Hur det fungerar",
 	
 	"latestReports": "Senaste rapporter",
-	"latestReportsDescription": "See the latest reports of citizens in Uppsala, both improvement and positive observations",
-	"liveFeed": "Live flöde",
+	"latestReportsDescription": "Se senaste rapporter från invånvare i Uppsala, både förbättringsförslag och positiva observationer",
+	"liveFeed": "Liveflöde",
+	"logIn": "Logga in",
 
-	"noReportsSubmitted": "No reports or highlights submitted yet.",
+	"noReportsSubmitted": "Inga rapporter eller highlights inskickade ännu.",
 
+	"or": "Eller",
+
+	"photo": "Bild",
+	"problem": "Problem",
+
+	"recentReports": "Senaste rapporter",
 	"report": "Rapportera",
+	"reportAProblem": "Rapportera ett problem",
 	"reports": "Rapporter",
 
+	"sendInReport": "Skicka in din rapport!",
+	"sentReportInfo": "Din rapport skickas till Uppsala kommun som ser till att det fixas!",
 	"shapeUppsala": "Forma Uppsala",
+	"signUp": "Skapa konto",
 	"solved": "Löst",
-	"startDescription": "Rapportera problem and highlight good things in your city. Collect points, level up and make Uppsala greater together!",
+	"startDescription": "Rapportera problem och highlight bra saker i din stad. Samla poäng, levla upp och gör Uppsala bättre tillsammans!",
 	
+	"thankYouText": "Tack för att du bryr dig om vår stad!",
+
+	"uploadPhoto": "Ladda upp eller ta en bild",
+
+	"whatHappensNow": "Vad händer nu?",
+	"whatYouWantReport": "Vad vill du rapportera?",
 	"withAPhoto": "med en bild",
 
-	"fourSteps": "4 steps"
+	"fourSteps": "4 steg"
 }

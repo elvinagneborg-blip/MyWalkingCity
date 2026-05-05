@@ -1,6 +1,5 @@
 <template>
   <WebbHeader/>
-
   <section class="body-top">
     <h2 class="section-title"> {{ uiLabels.shapeUppsala }} <br> {{ uiLabels.withAPhoto }} </h2>
     <h6> {{ uiLabels.startDescription}}</h6>
@@ -20,8 +19,7 @@
   <section class="body-latest-reports">
     <h6> {{ uiLabels.liveFeed }} </h6>
     <h2> {{ uiLabels.latestReports }} </h2>
-    <div> {{ uiLabels.latestReportsDescription }}
-    </div>
+    <h2> {{ uiLabels.latestReportsDescription }} </h2>
 
     <div class="report-list">
       <!-- Visas om det är tomt i sessionStorage -->
@@ -58,56 +56,50 @@
         </div>
       </div>
     </section>
-
 </template>
 
-
 <script setup>
-import { ref, onMounted } from 'vue'; //för att kunna ha reaktiva variabler och övervaka dem
-import io from 'socket.io-client'; //kontakt med server
-import WebbHeader from '@/components/WebbHeader.vue'; //Headerkomponenten
+  //Imports
+  import { ref, onMounted } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import io from 'socket.io-client' //kontakt med server
+  import WebbHeader from '@/components/WebbHeader.vue' //Headerkomponenten
 
-const socket = io("localhost:3000");
+  //Data
+  const socket = io("localhost:3000")
+  const uiLabels = ref({})
+  const lang = ref("en")
+  const reports = ref([])
+  const steps = ref([  // Steg för "How it works"
+    { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
+    { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
+    { id: 3, title: 'Wait for feedback', description: 'Your report will be handled by policy makers. You will get notification when the problem is solved' },
+    { id: 4, title: 'Level up and compete with your friends', description: 'Collect points by writing and boosting reports, leveling up and becoming a helping citizen.' }
+  ])
 
-
-const uiLabels = ref({});
-const reports = ref([]);
-const lang = ref("en");
-
-socket.emit("getUILabels", lang.value);
-
-socket.on("uiLabels", (labels) => {
-  uiLabels.value = labels;
-})
-
-
-const switchLanguage = () => {
-  lang.value = lang.value === "en" ? "sv" : "en";
-  socket.emit("getUILabels", lang.value);
-}
-
-onMounted(() => {
-  // Hämta datan som vi sparade via formuläret
-  const savedData = sessionStorage.getItem('mwc_submissions');
-  if (savedData) {
-    reports.value = JSON.parse(savedData);
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
+  
+  //Methods
+  const switchLanguage = () => {
+    lang.value = lang.value === "en" ? "sv" : "en";
+    socket.emit("getUILabels", lang.value)
   }
-});
 
-// Steg för "How it works"
-const steps = ref([
-  { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
-  { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
-  { id: 3, title: 'Wait for feedback', description: 'Your report will be handled by policy makers. You will get notification when the problem is solved' },
-  { id: 4, title: 'Level up and compete with your friends', description: 'Collect points by writing and boosting reports, leveling up and becoming a helping citizen.' }
-]);
-
+  //Startup and Init (On Load)
+  onMounted(() => { 
+    socket.emit("getUILabels", lang.value) //Socketfråga (uiLabels)
+    const savedData = sessionStorage.getItem('mwc_submissions') // Hämta datan som vi sparade via formuläret
+    if (savedData) {
+      reports.value = JSON.parse(savedData)
+    }
+  })
 </script>
 
 
 
 <style scoped>
-
 .body-top {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/img/Uppsala_domkyrka_flygbild-scaled.jpg');
   display: flex;

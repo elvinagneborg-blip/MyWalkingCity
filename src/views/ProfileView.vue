@@ -156,7 +156,33 @@
 </template>
 
 <script setup>
-import WebbHeader from '@/components/WebbHeader.vue'
+//Imports
+  import { ref, onMounted } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { useRouter } from 'vue-router'
+  import io from 'socket.io-client' //kontakt med server
+  import WebbHeader from '@/components/WebbHeader.vue' //Headerkomponenten
+
+  //Data
+  const socket = io("localhost:3000")
+  const router = useRouter()
+  const uiLabels = ref({})
+  const lang = ref("en")
+
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
+  
+  //Methods
+  const switchLanguage = () => {
+    lang.value = lang.value === "en" ? "sv" : "en";
+    socket.emit("getUILabels", lang.value)
+  }
+  
+  //Startup and Init (On Load)
+  onMounted(() => { 
+    socket.emit("getUILabels", lang.value)
+  })
 
 </script>
 

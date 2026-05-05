@@ -4,7 +4,7 @@
   
       <!--Header specifik för sidan -->
     <section class="allreports-header">
-        <h2 class="allreports-title"> All reports </h2>
+        <h2 class="allreports-title"> {{uiLabels.allReports}} </h2>
     </section>
 
     <!-- Sektion för kart-området -->
@@ -17,7 +17,7 @@
                 v-if="!showRecentReports"
                 class="allreports-recent-report-button"
                 @click="showRecentReports = true">
-                Recent reports
+                {{uiLabels.recentReports}}
             </button>
 
             <!-- Panel med recent reports -->
@@ -26,7 +26,7 @@
                 class="allreports-recent-report-panel">
 
                 <div class="allreports-recent-report-header">
-                    <h3 class="allreports-recent-report-title"> Recent report </h3>
+                    <h3 class="allreports-recent-report-title"> {{uiLabels.recentReports}} </h3>
                     <button
                         class="allreports-close-recent-report-panel"
                         @click="showRecentReports = false"
@@ -55,17 +55,37 @@
     </main>
 </template>
 
-<!--Basic js -->
+
 <script setup>
-import { ref } from "vue"
-import WebbHeader from '@/components/WebbHeader.vue'
-import MapComponent from "@/components/MapComponent.vue";
+    //Imports
+    import { ref, onMounted } from 'vue' 
+    import { useRouter } from 'vue-router' //Programmatisk navigering, när något ska hända innan användaren skickas vidare vid klick
+    import io from 'socket.io-client' //kontakt med server
+    import WebbHeader from '@/components/WebbHeader.vue'
+    import MapComponent from "@/components/MapComponent.vue"
 
-const showRecentReports = ref(false)
+    //Data
+    const socket = io("localhost:3000")
+    const router = useRouter()
+    const uiLabels = ref({})
+    const lang = ref("en")
+    const showRecentReports = ref(false)
 
+    //Socket listeners
+    socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+    })
+
+    //Methods
+
+    //Startup and Init (On Load)
+    onMounted(() => { //onMounted inte nödvändigt just här men är en bra vana att ha med, kan även annars ske problem i undantagsfall
+    socket.emit("getUILabels", lang.value)
+    })
 </script>
 
-<!--Basic CSS-->
+
+
 <style scoped>
     * { box-sizing: border-box;
     }
