@@ -1,13 +1,10 @@
 <template>
     <main class="report-page">
-      
-      <!--Allmän header för alla sidor  -->
-      <WebbHeader />
   
       <!--Header specifik för sidan -->
       <section class="report-header">
-        <h2 class="report-title">Add a highlight!</h2>
-        <p class="report-subtitle">Current location</p>
+        <h2 class="report-title"> {{ uiLabels.addHighlight }} </h2>
+        <p class="report-subtitle"> {{ uiLabels.currentLocation }} </p>
       </section>
   
       <!-- Sektion för kart-området -->
@@ -18,7 +15,7 @@
   
               <!-- Recent reports i hörnet av kartan -->
               <aside class="recent-report">
-                <h3 class="recent-reports-title">Recent reports</h3>
+                <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
                 <ul class="recent-reports-list">
                       <li> Culture festival </li>
                       <li> Parade </li>
@@ -33,9 +30,9 @@
         <div class="form-container">
   
           <div class="form-field">
-            <label for="category" class="form-label"> Category </label>
+            <label for="category" class="form-label"> {{uiLabels.category}} </label>
             <select id="category" class="form-control" v-model="category">
-              <option disabled value="">Choose category</option>
+              <option disabled value=""> {{ uiLabels.chooseCategory }} </option>
               <option> Culture </option>
               <option> Nature </option>
               <option> Events </option>
@@ -46,7 +43,7 @@
           </div>
   
         <div class="form-field">
-          <label for="description" class="form-label"> Describe your problem</label>
+          <label for="description" class="form-label"> {{ uiLabels.describeYourProblem }} </label>
             <textarea
               id="description"
               class="form-input"
@@ -57,9 +54,9 @@
         </div>
   
         <div class="form-field">
-          <label for="photo" class="form-label">Photo</label>
+          <label for="photo" class="form-label"> {{ uiLabels.photo }} </label>
           <label for="photo" class="form-control file-control">
-            <span class="file-control-text">Upload or take a photo</span>
+            <span class="file-control-text"> {{ uiLabels.uploadPhoto }} </span>
             <span class="file-control-icon">🖼️</span>
               <input
                 id="photo"
@@ -74,18 +71,18 @@
         
       <!--Submit knappen och popup fönstret -->
       <button class="submit-button" @click="handleSubmit">
-        Send in your highlight!
+        {{ uiLabels.sendInHighlight }}
       </button>
   
       <!-- Popup-fönstret -->
       <div v-if="showPopup" class="popup-overlay">
         <div class="popup-box">
-        <p class="popup-text">Thank you for caring about our city!</p>
-          <h3 class="popup-title">What happens now?</h3>
+        <p class="popup-text"> {{ uiLabels.thankYouText }} </p>
+          <h3 class="popup-title"> {{ uiLabels.whatHappensNow }} </h3>
             <p class="popup-description">
-              Your highlight is sent to Uppsala municipality who will make sure it gets posted (?)!
+              {{ uiLabels.sentReportInfo }}
             </p>
-        <button class="popup-button" @click="handleDone"> Done </button>
+        <button class="popup-button" @click="handleDone"> {{uiLabels.done}} </button>
         </div>
       </div>
       </div>
@@ -95,18 +92,19 @@
   
 <script setup>
   //Imports
-  import { ref, onMounted } from 'vue' 
+  import { ref, onMounted, watch } from 'vue' 
   import { useRouter } from 'vue-router' //Programmatisk navigering, när något ska hända innan användaren skickas vidare vid klick
   import io from 'socket.io-client' //kontakt med server
-  import WebbHeader from '@/components/WebbHeader.vue'
   import MapComponent from "@/components/MapComponent.vue"
   import { saveSubmission } from '../utils/storage.js'
 
-  //Data
+  //Setup and Props (Input)
   const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+
+  //Data
   const router = useRouter()
   const uiLabels = ref({})
-  const lang = ref("en")
   const category = ref('') 
   const description = ref('') 
   const photo = ref(null) 
@@ -116,6 +114,11 @@
   socket.on("uiLabels", (labels) => {
   uiLabels.value = labels
   })
+
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    socket.emit("getUILabels", newLang);
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
   //Methods
   const handleSubmit = () => { 
@@ -134,10 +137,6 @@
     router.push({ name: 'StartMWC' })
   }
 
-  //Startup and Init (On Load)
-  onMounted(() => { //onMounted inte nödvändigt just här men är en bra vana att ha med, kan även annars ske problem i undantagsfall
-    socket.emit("getUILabels", lang.value)
-  })
 </script>
   
 

@@ -1,5 +1,7 @@
 {
 	"activeUsers": "Aktiva användare",	
+	"addHighlight": "Lägg till en höjdpunkt!",
+	"all": "Alla",
 	"allReports": "Alla rapporter",
 	"allReportsOnMap": "Se alla rapporter på kartan",
 
@@ -8,19 +10,26 @@
 	"category": "Kategori",
 	"changeLanguage": "Ändra till engelska",
 	"chooseCategory": "Välj kategori",
+	"contactInfo": "Kontaktinformation",
 	"currentLocation": "Nuvarande plats",
 
 	"describeYourProblem": "Beskriv ditt problem",
+	"description": "Beskrivning",
 	"done": "Klart",
 
 	"highlight": "Höjdpunkt",
+	"highlights": "Höjdpunkter",
 	"howDoesItWork": "Hur fungerar det?",
 	"howItWorks": "Hur det fungerar",
 	
 	"latestReports": "Senaste rapporter",
 	"latestReportsDescription": "Se senaste rapporter från invånvare i Uppsala, både förbättringsförslag och positiva observationer",
+	"levelUp": "Levla upp",
 	"liveFeed": "Liveflöde",
 	"logIn": "Logga in",
+
+	"memberSince": "Medlem sedan:",
+	"myReports": "My reports",
 
 	"noReportsSubmitted": "Inga rapporter eller highlights inskickade ännu.",
 
@@ -28,12 +37,15 @@
 
 	"photo": "Bild",
 	"problem": "Problem",
+	"problems": "Problem",
+	"profileLevelDescription": "Rapoortera problem och höjdpunkter i din stad för att få poäng och levla upp!",
 
 	"recentReports": "Senaste rapporter",
 	"report": "Rapportera",
 	"reportAProblem": "Rapportera ett problem",
 	"reports": "Rapporter",
 
+	"sendInHighlight": "Skicka in din höjdpunkt!",
 	"sendInReport": "Skicka in din rapport!",
 	"sentReportInfo": "Din rapport skickas till Uppsala kommun som ser till att det fixas!",
 	"shapeUppsala": "Forma Uppsala",

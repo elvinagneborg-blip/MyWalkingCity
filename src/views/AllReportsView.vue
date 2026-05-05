@@ -1,7 +1,5 @@
 <template>
     <main class="allreports-page">
-        <WebbHeader />
-  
       <!--Header specifik för sidan -->
     <section class="allreports-header">
         <h2 class="allreports-title"> {{uiLabels.allReports}} </h2>
@@ -58,17 +56,18 @@
 
 <script setup>
     //Imports
-    import { ref, onMounted } from 'vue' 
+    import { ref, onMounted, watch } from 'vue' 
     import { useRouter } from 'vue-router' //Programmatisk navigering, när något ska hända innan användaren skickas vidare vid klick
     import io from 'socket.io-client' //kontakt med server
-    import WebbHeader from '@/components/WebbHeader.vue'
     import MapComponent from "@/components/MapComponent.vue"
 
-    //Data
+    //Setup and Props (Input)
     const socket = io("localhost:3000")
+    const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+
+    //Data
     const router = useRouter()
     const uiLabels = ref({})
-    const lang = ref("en")
     const showRecentReports = ref(false)
 
     //Socket listeners
@@ -76,12 +75,13 @@
     uiLabels.value = labels
     })
 
+    //Watchers
+    watch(() => props.currentLang, (newLang) => { //vakta språket
+        socket.emit("getUILabels", newLang);
+    }, { immediate: true }); //Språket laddas direkt när sidan laddas
+
     //Methods
 
-    //Startup and Init (On Load)
-    onMounted(() => { //onMounted inte nödvändigt just här men är en bra vana att ha med, kan även annars ske problem i undantagsfall
-    socket.emit("getUILabels", lang.value)
-    })
 </script>
 
 

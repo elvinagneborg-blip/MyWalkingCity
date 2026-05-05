@@ -13,8 +13,8 @@
             </div>
 
             <div class="web-header-right">
-                <button @click="switchLanguage" class="lang-switch">
-                    {{ lang=== 'en' ? 'SV' : 'EN' }}
+                <button @click="$emit('toggle-lang')"> <!--Säger till app.vue att knappen är tryckt-->
+                        {{ currentLang === 'sv' ? 'English' : 'Svenska' }} <!--Det som står på knappen, info fås från app.vue-->
                 </button>
                 
                 <div class="web-header-avatar" aria-label="User avatar"></div>
@@ -51,17 +51,26 @@
 </template>
 
 <script setup>
+//Imports
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import ResponsiveNav from './ResponsiveNav.vue'
 
+//Data
 const menuOpen = ref(false)
 
-function toggleMenu(){ /* Utgår från att den är stängd, men sedan växlar den värde */
+//Emits (Output)
+const emit = defineEmits(['toggle-lang']) //Så att knappen får skicka info till app.vue
+
+//Props (Input)
+defineProps(['currentLang']) //Så att knappen kan ta emot språket från app.vue
+
+
+//Methods
+const toggleMenu = () => { /* Utgår från att den är stängd, men sedan växlar den värde */
     menuOpen.value = !menuOpen.value
 }
-
-function closeMenu(){
+const closeMenu = () => {
     menuOpen.value = false
 }
 </script>
