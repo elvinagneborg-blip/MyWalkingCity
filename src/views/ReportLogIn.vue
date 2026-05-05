@@ -1,17 +1,14 @@
 <template>
   <WebbHeader />
-
   <main class="login-container">
-    
     <div class="login-form">
       <input type="text" placeholder="Username" class="login-input" />
       <input type="password" placeholder="Password" class="login-input" />
-      
-      <button class="button-report">Log In</button>
+      <button class="button-report" @click="handleLogin"> {{ uiLabels.logIn }} </button>
     </div>
 
     <div class="separator-text">
-      or
+      {{ uiLabels.or }}
     </div>
 
     <div class="social-login">
@@ -20,16 +17,44 @@
     </div>
 
     <div class="signup-section">
-      <button class="button-how-it-works signup-button">Sign up</button>
+      <button class="button-how-it-works signup-button"> {{ uiLabels.signUp }} </button>
     </div>
-
   </main>
 </template>
 
 <script setup>
-    import WebbHeader from '@/components/WebbHeader.vue'
+  //Imports
+  import { ref, onMounted } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { useRouter } from 'vue-router'
+  import io from 'socket.io-client' //kontakt med server
+  import WebbHeader from '@/components/WebbHeader.vue' //Headerkomponenten
 
+  //Data
+  const socket = io("localhost:3000")
+  const router = useRouter()
+  const uiLabels = ref({})
+  const lang = ref("en")
+
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
+  
+  //Methods
+  const switchLanguage = () => {
+    lang.value = lang.value === "en" ? "sv" : "en";
+    socket.emit("getUILabels", lang.value)
+  }
+  const handleLogin = () => {
+    // Skicka vidare användaren
+    router.push({ name: 'ReportView' }) 
+  }
+  //Startup and Init (On Load)
+  onMounted(() => { 
+    socket.emit("getUILabels", lang.value)
+  })
 </script>
+
 
 <style scoped>
 

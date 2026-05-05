@@ -1,12 +1,9 @@
 <template>
+    <WebbHeader />
     <main class="option-page">
-       
-      <!--Allmän header för alla sidor  -->
-      <WebbHeader />
-  
       <!--Header specifik för sidan -->
     <section class="option-header">
-        <h2 class="option-title"> What do you want to report? </h2>
+        <h2 class="option-title"> {{ uiLabels.whatYouWantReport }} </h2>
     </section>
 
     <!-- Report / highligt knappar -->
@@ -14,19 +11,19 @@
     <div class="option-buttons">
         <button class="main-option" @click="goToReport">
             <span class="icon">⚠</span>
-            <span>Problem</span>
+            <span> {{ uiLabels.problem }} </span>
         </button>
 
         <button class="main-option" @click="goToHighlight">
             <span class="icon">👍</span>
-            <span>Highlight</span>
+            <span> {{ uiLabels.highlight }} </span>
         </button>
     </div>
 
     <!-- All reports / Back to home knappar -->
     <div class="secondary-buttons">
-        <button class="secondary-option" @click="goAllReports">All reports</button>
-        <button class="secondary-option" @click="goHome">Back to home</button>
+        <button class="secondary-option" @click="goAllReports"> {{ uiLabels.allReports }} </button>
+        <button class="secondary-option" @click="goHome"> {{ uiLabels.backToHome }} </button>
       </div>
     </div>
     </main>
@@ -34,30 +31,48 @@
 
 <!-- JS basic -->
 <script setup>
-import { useRouter } from 'vue-router'
-import WebbHeader from '@/components/WebbHeader.vue'
+    //Imports
+    import { ref, onMounted } from 'vue'
+    import { useRouter } from 'vue-router'
+    import io from 'socket.io-client' //kontakt med server
+    import WebbHeader from '@/components/WebbHeader.vue'
 
-const router = useRouter()
-const goToReport = () => {
-  router.push({ name: 'ReportView' })
-}
+    //Data
+    const socket = io("localhost:3000")
+    const router = useRouter()
+    const uiLabels = ref({})
+    const lang = ref("en")
 
-const goToHighlight = () => {
-  router.push({ name: 'HighlightView' })
-}
+    //Socket listeners
+    socket.on("uiLabels", (labels) => {
+        uiLabels.value = labels
+    })
 
-const goHome = () => {
-    router.push({ name: 'StartMWC' })
-}
+    //Methods
+    const switchLanguage = () => {
+        lang.value = lang.value === "en" ? "sv" : "en";
+        socket.emit("getUILabels", lang.value)
+    }
+    const goToReport = () => {
+        router.push({ name: 'ReportView' })
+    }
+    const goToHighlight = () => {
+        router.push({ name: 'HighlightView' })
+    }
+    const goHome = () => {
+        router.push({ name: 'StartMWC' })
+    }
+    const goAllReports = () => {
+        router.push({name: 'AllReportsView' })
+    }
 
-const goAllReports = () => {
-    router.push({name: 'AllReportsView' })
-}
-
-
+    //Startup and Init (On Load)
+    onMounted(() => { 
+        socket.emit("getUILabels", lang.value)
+    })
 </script>
 
-<!--CSS - basci-->
+
 <style scoped>
 /* ===== Option sidan - standard ===== */
 .option-page {

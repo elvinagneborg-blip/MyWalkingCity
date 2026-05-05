@@ -1,26 +1,52 @@
 {
 	"activeUsers": "Active users",
+	"allReports": "All reports",
 	"allReportsOnMap": "See all reports on map",
 
-	"changeLanguage": "Byt till svenska",
+	"backToHome": "Back to home",
 
+	"category": "Category",
+	"changeLanguage": "Byt till svenska",
+	"chooseCategory": "Choose category",
+	"currentLocation": "Current Location",
+
+	"describeYourProblem": "Describe your problem",
+	"done": "Done",
 	
+	"highlight": "Highlight",
 	"howDoesItWork": "How does it Work?",
 	"howItWorks": "How it works",
 
 	"latestReports": "Latest reports",
 	"latestReportsDescription": "See the latest reports of citizens in Uppsala, both improvement and positive observations",
 	"liveFeed": "Live feed",
+	"logIn": "Log In",
 
 	"noReportsSubmitted": "No reports or highlights submitted yet.",
 
+	"or": "Or",
+
+	"photo": "Photo",
+	"problem": "Problem",
+
+	"recentReports": "Recent reports",
 	"report": "Report",
+	"reportAProblem": "Report a problem",
 	"reports": "Reports",
 
+	"sendInReport": "Send in your report!",
+	"sentReportInfo": "Your report is sent to Uppsala municipality who will make sure it gets fixed!",
 	"shapeUppsala": "Shape Uppsala",
+	"signUp": "Sign up",
 	"solved": "Solved",
 	"startDescription": "Report problems and highlight good things in your city. Collect points, level up and make Uppsala greater together!",
 
+	"thankYouText": "Thank you for caring about our city!",
+
+	"uploadPhoto": "Upload or take a photo",
+
+	"whatHappensNow": "What happens now?",
+	"whatYouWantReport": "What do you want to report?",
 	"withAPhoto": "with a Photo",
 
 	"fourSteps": "4 steps"
