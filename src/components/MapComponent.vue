@@ -22,18 +22,20 @@ import "leaflet/dist/leaflet.css";
 
   // Varje gång markören flyttas, berätta det för föräldern
   marker.on('dragend', (e) => {
-    const { lat, lng } = e.target.getLatLng()
-    emit('location-changed', { lat, lng })
+    const { lat, lng } = e.target.getLatLng();
+    
+  emit('location-changed', { lat, lng });
   })
 })
 
 const setLocation = (lat, lng) => {
-  const newPos = [lat, lng]
+  const newPos =  [lat, lng]
   map.setView(newPos, 16)
   marker.setLatLng(newPos)
   emit('location-changed', { lat, lng })
 }
 
+defineExpose({ setLocation })
 </script>
 
 <style scoped>
