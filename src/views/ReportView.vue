@@ -1,13 +1,9 @@
 <template>
   <main class="report-page">
-     
-    <!--Allmän header för alla sidor  -->
-    <WebbHeader />
-
     <!--Header specifik för sidan -->
     <section class="report-header">
-      <h2 class="report-title">Report a problem</h2>
-      <p class="report-subtitle">Current location</p>
+      <h2 class="report-title"> {{ uiLabels.reportAProblem }} </h2>
+      <p class="report-subtitle"> {{ uiLabels.currentLocation }} </p>
     </section>
 
     <!-- Sektion för kart-området -->
@@ -17,7 +13,7 @@
 
             <!-- Recent reports i hörnet av kartan -->
             <aside class="recent-report">
-              <h3 class="recent-reports-title">Recent reports</h3>
+              <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
               <ul class="recent-reports-list">
                     <li> Pothole </li>
                     <li> Broken Bench </li>
@@ -124,10 +120,10 @@
     <!-- Popup-fönstret -->
     <div v-if="showPopup" class="popup-overlay">
       <div class="popup-box">
-      <p class="popup-text">Thank you for caring about our city!</p>
-        <h3 class="popup-title">What happens now?</h3>
+      <p class="popup-text"> {{ uiLabels.thankYouText }} </p>
+        <h3 class="popup-title"> {{ uiLabels.whatHappensNow }} </h3>
           <p class="popup-description">
-            Your report is sent to Uppsala municipality who will make sure it gets fixed!
+            {{ uiLabels.sentReportInfo }}
           </p>
       <button class="popup-button" @click="handleDone"> Done </button>
       </div>
@@ -216,12 +212,11 @@ async function uploadImage() {
   return publicUrlData.publicUrl
 }
 
-  function handleDone() { 
+  const handleDone = () => { 
     category.value = ''
     description.value = ''
     photo.value = null
     showPopup.value = false
-    
     // Omdirigerar tillbaka till startsidan där listan uppdateras
     router.push({ name: 'StartMWC' })
   }
@@ -242,6 +237,9 @@ function removeImage() {
   document.getElementById('photo').value = ""
 }
 </script>
+
+
+
 
 <!-- CSS-->
 <style scoped>

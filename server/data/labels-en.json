@@ -1,11 +1,66 @@
 {
-	"sales-pitch": "Simply. Great. Polling.",
-	"subHeading": "A simple polling tool",
-	"invite": "Invite participants with this link:",
-	"createPoll": "Create poll",
-	"participatePoll": "Participate in poll",
-	"question": "Question",
+	"activeUsers": "Active users",
+	"addHighlight": "Add a highlight!",
+	"all": "all",
+	"allReports": "All reports",
+	"allReportsOnMap": "See all reports on map",
+
+	"backToHome": "Back to home",
+
+	"category": "Category",
 	"changeLanguage": "Byt till svenska",
-	"about": "About",
-	"participateInPoll": "Participate in poll"
+	"chooseCategory": "Choose category",
+	"contactInfo": "Contact information",
+	"currentLocation": "Current Location",
+
+	"describeYourProblem": "Describe your problem",
+	"description": "Description",
+	"done": "Done",
+	
+	"highlight": "Highlight",
+	"highlights": "Highlights",
+	"howDoesItWork": "How does it Work?",
+	"howItWorks": "How it works",
+
+	"latestReports": "Latest reports",
+	"latestReportsDescription": "See the latest reports of citizens in Uppsala, both improvement and positive observations",
+	"levelUp": "Level up your citizenship",
+	"liveFeed": "Live feed",
+	"logIn": "Log In",
+
+	"memberSince": "Member since:",
+	"myReports": "My reports",
+
+	"noReportsSubmitted": "No reports or highlights submitted yet.",
+
+	"or": "Or",
+
+	"photo": "Photo",
+	"problem": "Problem",
+	"problems": "Problems",
+	"profileLevelDescription": "Report problems and highlights in your city to gain points and level up!",
+
+	"recentReports": "Recent reports",
+	"report": "Report",
+	"reportAProblem": "Report a problem",
+	"reports": "Reports",
+
+	"sendInHighlight": "Send in your highlight!",
+	"sendInReport": "Send in your report!",
+	"sentReportInfo": "Your report is sent to Uppsala municipality who will make sure it gets fixed!",
+	"shapeUppsala": "Shape Uppsala",
+	"signUp": "Sign up",
+	"solved": "Solved",
+	"startDescription": "Report problems and highlight good things in your city. Collect points, level up and make Uppsala greater together!",
+
+	"thankYouText": "Thank you for caring about our city!",
+
+	"uploadPhoto": "Upload or take a photo",
+
+	"whatHappensNow": "What happens now?",
+	"whatYouWantReport": "What do you want to report?",
+	"withAPhoto": "with a Photo",
+
+	"fourSteps": "4 steps"
+	
 }

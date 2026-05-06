@@ -1,10 +1,8 @@
 <template>
     <main class="allreports-page">
-        <WebbHeader />
-  
       <!--Header specifik för sidan -->
     <section class="allreports-header">
-        <h2 class="allreports-title"> All reports </h2>
+        <h2 class="allreports-title"> {{uiLabels.allReports}} </h2>
     </section>
 
 <!-- testa koppling till databasen -->
@@ -22,7 +20,7 @@
                 v-if="!showRecentReports"
                 class="allreports-recent-report-button"
                 @click="showRecentReports = true">
-                Recent reports
+                {{uiLabels.recentReports}}
             </button>
 
             <!-- Panel med recent reports -->
@@ -31,7 +29,7 @@
                 class="allreports-recent-report-panel">
 
                 <div class="allreports-recent-report-header">
-                    <h3 class="allreports-recent-report-title"> Recent report </h3>
+                    <h3 class="allreports-recent-report-title"> {{uiLabels.recentReports}} </h3>
                     <button
                         class="allreports-close-recent-report-panel"
                         @click="showRecentReports = false"
@@ -60,7 +58,7 @@
     </main>
 </template>
 
-<!--Basic js -->
+
 <script setup>
 import WebbHeader from '@/components/WebbHeader.vue'
 import MapComponent from "@/components/MapComponent.vue";
@@ -82,7 +80,8 @@ onMounted(() => {
 
 </script>
 
-<!--Basic CSS-->
+
+
 <style scoped>
     * { box-sizing: border-box;
     }
