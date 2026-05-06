@@ -1,13 +1,14 @@
 <template>
-  <main class="report-page">
-     
-    <!--Allmän header för alla sidor  -->
-    <WebbHeader />
+  <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
+    <p>Laddar Uppsala City...</p>
+  </div>
 
+  <main v-else class="report-page">
+  <section class="report-page">
     <!--Header specifik för sidan -->
     <section class="report-header">
-      <h2 class="report-title">Report a problem</h2>
-      <p class="report-subtitle">Current location</p>
+      <h2 class="report-title"> {{ uiLabels.reportAProblem }} </h2>
+      <p class="report-subtitle"> {{ uiLabels.currentLocation }} </p>
     </section>
 
    
@@ -25,7 +26,7 @@
 
             <!-- Recent reports i hörnet av kartan -->
             <aside class="recent-report">
-              <h3 class="recent-reports-title">Recent reports</h3>
+              <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
               <ul class="recent-reports-list">
                     <li> Pothole </li>
                     <li> Broken Bench </li>
@@ -122,29 +123,37 @@
     <!-- Popup-fönstret -->
     <div v-if="showPopup" class="popup-overlay">
       <div class="popup-box">
-      <p class="popup-text">Thank you for caring about our city!</p>
-        <h3 class="popup-title">What happens now?</h3>
+      <p class="popup-text"> {{ uiLabels.thankYouText }} </p>
+        <h3 class="popup-title"> {{ uiLabels.whatHappensNow }} </h3>
           <p class="popup-description">
-            Your report is sent to Uppsala municipality who will make sure it gets fixed!
+            {{ uiLabels.sentReportInfo }}
           </p>
       <button class="popup-button" @click="handleDone"> Done </button>
       </div>
     </div>
+  </section>
   </main>
 </template>
 
 
 
-<!--JS-->
+
 <script setup>
-  import { ref, onMounted } from 'vue' 
+//Imports
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
   import WebbHeader from '@/components/WebbHeader.vue'
   import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
   import L from 'leaflet'
 
+  //Setup and Props (Input)
+  const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
 
+  //Data
+  const uiLabels = ref({})
   const formData = ref({
   type: 'problem', // Förvalt värde
   category: '',
@@ -156,8 +165,6 @@
   })
 
   const isSubmitting = ref(false)
-  const category = ref('') 
-  const description = ref('') 
   const photo = ref(null) 
   const selectedFile = ref(null)
   const router = useRouter()
@@ -172,21 +179,31 @@
   formData.value.longitude = lng
   console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
 }
+  
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
 
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    if (newLang) {
+      socket.emit("getUILabels", newLang);
+    } else {
+      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
+    }
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
+
+
+  //Methods
  async function handleSubmit() {
   isSubmitting.value = true
-  
-  // 1. Ladda upp bilden först (om användaren valt en)
-  const imageUrl = await uploadImage()
-  
-  // 2. Förbered datan som ska till databasen
-  const reportData = {
+  const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
+  const reportData = { // 2. Förbered datan som ska till databasen
     ...formData.value,
     image_url: imageUrl // Här lägger vi till länken vi just fick
   }
-
-  // 3. Skicka till reports-tabellen
-  const { error } = await supabase
+  const { error } = await supabase // 3. Skicka till reports-tabellen
     .from('reports')
     .insert([reportData])
 
@@ -230,12 +247,11 @@ async function uploadImage() {
   return publicUrlData.publicUrl
 }
 
-  function handleDone() { 
+  const handleDone = () => { 
     category.value = ''
     description.value = ''
     photo.value = null
     showPopup.value = false
-    
     // Omdirigerar tillbaka till startsidan där listan uppdateras
     router.push({ name: 'StartMWC' })
   }
@@ -255,7 +271,13 @@ function removeImage() {
   // Tips: nollställ även själva input-fältet om du vill vara extra noga
   document.getElementById('photo').value = ""
 }
+
+
+
 </script>
+
+
+
 
 <!-- CSS-->
 <style scoped>

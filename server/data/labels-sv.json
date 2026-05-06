@@ -1,11 +1,65 @@
 {
-	"sales-pitch": "Svar. Helt. Enkelt.",
-	"subHeading": "Ett enkelt enkätverktyg",
-	"invite": "Bjud in deltagare med den här länken:",
-	"createPoll": "Skapa röstning",
-	"participatePoll": "Delta i röstning",
-	"question": "Fråga",
-	"changeLanguage": "Change to English",
-	"about": "Om oss",
-	"participateInPoll": "Delta i enkäten"
+	"activeUsers": "Aktiva användare",	
+	"addHighlight": "Lägg till en höjdpunkt!",
+	"all": "Alla",
+	"allReports": "Alla rapporter",
+	"allReportsOnMap": "Se alla rapporter på kartan",
+
+	"backToHome": "Tillbaka till hemsidan",
+
+	"category": "Kategori",
+	"changeLanguage": "Ändra till engelska",
+	"chooseCategory": "Välj kategori",
+	"contactInfo": "Kontaktinformation",
+	"currentLocation": "Nuvarande plats",
+
+	"describeYourProblem": "Beskriv ditt problem",
+	"description": "Beskrivning",
+	"done": "Klart",
+
+	"highlight": "Höjdpunkt",
+	"highlights": "Höjdpunkter",
+	"howDoesItWork": "Hur fungerar det?",
+	"howItWorks": "Hur det fungerar",
+	
+	"latestReports": "Senaste rapporter",
+	"latestReportsDescription": "Se senaste rapporter från invånvare i Uppsala, både förbättringsförslag och positiva observationer",
+	"levelUp": "Levla upp",
+	"liveFeed": "Liveflöde",
+	"logIn": "Logga in",
+
+	"memberSince": "Medlem sedan:",
+	"myReports": "My reports",
+
+	"noReportsSubmitted": "Inga rapporter eller highlights inskickade ännu.",
+
+	"or": "Eller",
+
+	"photo": "Bild",
+	"problem": "Problem",
+	"problems": "Problem",
+	"profileLevelDescription": "Rapoortera problem och höjdpunkter i din stad för att få poäng och levla upp!",
+
+	"recentReports": "Senaste rapporter",
+	"report": "Rapportera",
+	"reportAProblem": "Rapportera ett problem",
+	"reports": "Rapporter",
+
+	"sendInHighlight": "Skicka in din höjdpunkt!",
+	"sendInReport": "Skicka in din rapport!",
+	"sentReportInfo": "Din rapport skickas till Uppsala kommun som ser till att det fixas!",
+	"shapeUppsala": "Forma Uppsala",
+	"signUp": "Skapa konto",
+	"solved": "Löst",
+	"startDescription": "Rapportera problem och highlight bra saker i din stad. Samla poäng, levla upp och gör Uppsala bättre tillsammans!",
+	
+	"thankYouText": "Tack för att du bryr dig om vår stad!",
+
+	"uploadPhoto": "Ladda upp eller ta en bild",
+
+	"whatHappensNow": "Vad händer nu?",
+	"whatYouWantReport": "Vad vill du rapportera?",
+	"withAPhoto": "med en bild",
+
+	"fourSteps": "4 steg"
 }

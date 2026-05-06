@@ -1,12 +1,10 @@
 <template>
-    <main class="option-page">
-       
-      <!--Allmän header för alla sidor  -->
-      <WebbHeader />
-  
+    <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+
+    <section class="option-page">
       <!--Header specifik för sidan -->
     <section class="option-header">
-        <h2 class="option-title"> What do you want to report? </h2>
+        <h2 class="option-title"> {{ uiLabels.whatYouWantReport }} </h2>
     </section>
 
     <!-- Report / highligt knappar -->
@@ -14,50 +12,68 @@
     <div class="option-buttons">
         <button class="main-option" @click="goToReport">
             <span class="icon">⚠</span>
-            <span>Problem</span>
+            <span> {{ uiLabels.problem }} </span>
         </button>
 
         <button class="main-option" @click="goToHighlight">
             <span class="icon">👍</span>
-            <span>Highlight</span>
+            <span> {{ uiLabels.highlight }} </span>
         </button>
     </div>
 
     <!-- All reports / Back to home knappar -->
     <div class="secondary-buttons">
-        <button class="secondary-option" @click="goAllReports">All reports</button>
-        <button class="secondary-option" @click="goHome">Back to home</button>
+        <button class="secondary-option" @click="goAllReports"> {{ uiLabels.allReports }} </button>
+        <button class="secondary-option" @click="goHome"> {{ uiLabels.backToHome }} </button>
       </div>
     </div>
+</section>
     </main>
 </template>
 
-<!-- JS basic -->
+
 <script setup>
-import { useRouter } from 'vue-router'
-import WebbHeader from '@/components/WebbHeader.vue'
+    //Imports
+    import { ref, onMounted, watch } from 'vue'
+    import { useRouter } from 'vue-router'
+    import io from 'socket.io-client' //kontakt med server
 
-const router = useRouter()
-const goToReport = () => {
-  router.push({ name: 'ReportView' })
-}
 
-const goToHighlight = () => {
-  router.push({ name: 'HighlightView' })
-}
+    //Setup and Props (Input)
+    const socket = io("localhost:3000")
+    const props = defineProps(['currentLang']) //ta emot språkval från app.vue    
 
-const goHome = () => {
-    router.push({ name: 'StartMWC' })
-}
+    //Data
+    const router = useRouter()
+    const uiLabels = ref({})
 
-const goAllReports = () => {
-    router.push({name: 'AllReportsView' })
-}
+    //Socket listeners
+    socket.on("uiLabels", (labels) => {
+        uiLabels.value = labels
+    })
 
+    //Watchers
+    watch(() => props.currentLang, (newLang) => { //vakta språket
+        socket.emit("getUILabels", newLang);
+    }, { immediate: true }); //Språket laddas direkt när sidan laddas
+
+    //Methods
+    const goToReport = () => {
+        router.push({ name: 'ReportView' })
+    }
+    const goToHighlight = () => {
+        router.push({ name: 'HighlightView' })
+    }
+    const goHome = () => {
+        router.push({ name: 'StartMWC' })
+    }
+    const goAllReports = () => {
+        router.push({name: 'AllReportsView' })
+    }
 
 </script>
 
-<!--CSS - basci-->
+
 <style scoped>
 /* ===== Option sidan - standard ===== */
 .option-page {

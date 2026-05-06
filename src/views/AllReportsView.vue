@@ -1,37 +1,31 @@
 <template>
-    <main class="allreports-page">
-        <WebbHeader />
-  
+  <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
+    <p>Laddar Uppsala City...</p>
+  </div>
+
+  <main v-else class="allreports-page">
       <!--Header specifik för sidan -->
     <section class="allreports-header">
-        <h2 class="allreports-title"> All reports </h2>
+        <h2 class="allreports-title"> {{uiLabels.allReports}} </h2>
     </section>
-
-<!-- testa koppling till databasen -->
-    <div v-for="report in reports" :key="report.id">
-  {{ report.category }}: {{ report.description }}
-</div> 
 
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
         <div class="allreports-map-container">
             <MapComponent />
 
+        
             <!--Recent reports knapp -->            
             <button 
                 v-if="!showRecentReports"
                 class="allreports-recent-report-button"
                 @click="showRecentReports = true">
-                Recent reports
+                {{uiLabels.recentReports}}
             </button>
-
             <!-- Panel med recent reports -->
-            <aside
-                v-if="showRecentReports"
-                class="allreports-recent-report-panel">
-
+            <aside v-if="showRecentReports" class="allreports-recent-report-panel">
                 <div class="allreports-recent-report-header">
-                    <h3 class="allreports-recent-report-title"> Recent report </h3>
+                    <h3 class="allreports-recent-report-title"> {{uiLabels.recentReports}} </h3>
                     <button
                         class="allreports-close-recent-report-panel"
                         @click="showRecentReports = false"
@@ -41,34 +35,56 @@
                 </div>
 
                 <div class="allreports-recent-report-list">
-                    <article class="allreports-recent-report-item">
+                    <article v-for="report in reports" :key="report.id" class="allreports-recent-report-item">
                         <dl class="allreports-recent-report-text">
-                            <dt>Location: </dt>
-                            <dd>Polacksbacken 7</dd>
+                            <dt>Kategori: </dt>
+                            <dd>{{ report.category }}</dd>
 
-                            <dt>Time of report: </dt>
-                            <dd>14 April 08:52</dd>
-
-                            <dt>Description: </dt>
-                            <dd>There's a pothole in the road</dd>
+                            <dt>Beskrivning: </dt>
+                            <dd>{{ report.description }}</dd>
                         </dl>
+                        <img v-if="report.image_url" :src="report.image_url" class="report-thumb" />
                     </article>
+
+                    <p v-if="reports.length === 0">Inga rapporter hittades.</p>
                  </div>
             </aside>
         </div>
     </section>
     </main>
+
 </template>
 
-<!--Basic js -->
-<script setup>
-import WebbHeader from '@/components/WebbHeader.vue'
-import MapComponent from "@/components/MapComponent.vue";
-import { ref, onMounted } from 'vue'
-import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
 
-const showRecentReports = ref(false)
-const reports = ref([])
+<script setup>
+//Imports
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import io from 'socket.io-client' //kontakt med server
+    import MapComponent from "@/components/MapComponent.vue";
+    import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
+
+//Setup and Props (Input)
+  const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+
+  //Data
+  const uiLabels = ref({})
+  const showRecentReports = ref(false)
+  const reports = ref([])
+
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
+
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    if (newLang) {
+      socket.emit("getUILabels", newLang);
+    } else {
+      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
+    }
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
 async function getReports() {
   const { data } = await supabase.from("reports").select()
@@ -76,13 +92,16 @@ async function getReports() {
   console.log('Rapporter från databasen:', data)
 }
 
-onMounted(() => {
-  getReports()
+
+
+onMounted(async () => {
+  await getReports()
 })
 
 </script>
 
-<!--Basic CSS-->
+
+
 <style scoped>
     * { box-sizing: border-box;
     }
@@ -112,11 +131,19 @@ onMounted(() => {
     width: 100%;
 }
 
+/* Denna box MÅSTE ha en höjd för att kartan ska synas */
 .allreports-map-container {
     position: relative;
     width: 100%;
-    height: 75vh; 
-    overflow: hidden; /*klippa allt utanför boxen*/
+    height: 75vh;  /* Ge boxen höjd här! */
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Denna tvingar själva Leaflet-biblioteket att fylla hela boxen */
+.allreports-map-container :deep(.leaflet-container) {
+    width: 100%;
+    height: 100%;
 }
 
 .allreports-map-image {
@@ -221,6 +248,14 @@ onMounted(() => {
 .allreports-recent-report-text dd::after { /*för att lägga in en osynlig radbrytning efter varje dd*/
     content: "";
     display: block; /*tvingar på en ny rad*/
+}
+
+.report-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-left: 15px;
 }
 
 </style>

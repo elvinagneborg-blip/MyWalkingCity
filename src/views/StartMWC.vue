@@ -1,34 +1,30 @@
 <template>
-  <WebbHeader />
-
+  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
   <section class="body-top">
-    <h2 class="section-title">Shape Uppsala <br>with a Photo</h2>
-    <h6>Report problems and highligt good things in <br>your city. Collect points, level up and make <br>Uppsala greater together!</h6>
+    <h2 class="section-title"> {{ uiLabels.shapeUppsala }} <br> {{ uiLabels.withAPhoto }} </h2>
+    <h6> {{ uiLabels.startDescription}}</h6>
     
     <div>
-      <p><button class="report"><RouterLink to="/report-login">Report</RouterLink></button></p>
-      <p><button class="how-it-works">How does it Work</button></p>
+      <p><button class="report"><RouterLink to="/option/"> {{ uiLabels.report }} </RouterLink></button></p>
+      <p><button class="how-it-works"> {{ uiLabels.howDoesItWork }} </button></p>
     </div>
 
     <div class="stats-container">
-      <div>4000<br>Reports</div>
-      <div>850<br>Active users</div>
-      <div>99%<br>Solved</div>
+      <div>4000<br> {{ uiLabels.reports }} </div>
+      <div>850<br> {{ uiLabels.activeUsers }} </div>
+      <div>99%<br> {{ uiLabels.solved }} </div>
     </div>
   </section>
 
   <section class="body-latest-reports">
-    <h6>Live feed</h6>
-    <h2>Latest reports</h2>
-    <div>
-      See the latest reports of citizens in Uppsala, <br>
-      both improvement and positive observations 
-    </div>
+    <h6> {{ uiLabels.liveFeed }} </h6>
+    <h2> {{ uiLabels.latestReports }} </h2>
+    <h2> {{ uiLabels.latestReportsDescription }} </h2>
 
     <div class="report-list">
       <!-- Visas om det är tomt i sessionStorage -->
       <div v-if="reports.length === 0">
-        <p>No reports or highlights submitted yet.</p>
+        <p> {{ uiLabels.noReportsSubmitted }}</p>
       </div>
 
       <!-- Loopar igenom den hämtade datan -->
@@ -43,12 +39,13 @@
       </div>
     </div>
       
-    <h5>See all reports on map</h5>
+    <h5> {{ uiLabels.allReportsOnMap }} </h5>
     </section>
 
     <section class="body-how-it-works">
-      <h6>How it works</h6>
-      <h2>4 steps</h2>
+      <h6> {{ uiLabels.howItWorks }} </h6>
+      <h2> {{ uiLabels.fourSteps }}
+      </h2>
       <div class="how-it-works-container">
         <div class="step-item" v-for="step in steps" :key="step.id">
           <div class="step-number">{{ step.id }}</div>
@@ -59,43 +56,50 @@
         </div>
       </div>
     </section>
-
+    </main>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import io from 'socket.io-client';
-import ResponsiveNav from '@/components/ResponsiveNav.vue';
-import WebbHeader from '@/components/WebbHeader.vue';
+  //Imports
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import io from 'socket.io-client' //kontakt med server
 
-const socket = io("localhost:3000");
+  //Setup and Props (Input)
+  const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
 
-const toggleNav = () => {
-  hideNav.value = !hideNav.value;
-};
+  //Data
+  const uiLabels = ref({})
+  const reports = ref([])
+  const steps = ref([  // Steg för "How it works"
+    { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
+    { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
+    { id: 3, title: 'Wait for feedback', description: 'Your report will be handled by policy makers. You will get notification when the problem is solved' },
+    { id: 4, title: 'Level up and compete with your friends', description: 'Collect points by writing and boosting reports, leveling up and becoming a helping citizen.' }
+  ])
 
-const reports = ref([]);
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
 
-onMounted(() => {
-  // Hämta datan som vi sparade via formuläret
-  const savedData = sessionStorage.getItem('mwc_submissions');
-  
-  if (savedData) {
-    reports.value = JSON.parse(savedData);
-  }
-});
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    socket.emit("getUILabels", newLang);
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
-// Steg för "How it works"
-const steps = ref([
-  { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
-  { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
-  { id: 3, title: 'Wait for feedback', description: 'Your report will be handled by policy makers. You will get notification when the problem is solved' },
-  { id: 4, title: 'Level up and compete with your friends', description: 'Collect points by writing and boosting reports, leveling up and becoming a helping citizen.' }
-]);
+  //Startup (only once when page loads)
+  onMounted(() => { 
+    const savedData = sessionStorage.getItem('mwc_submissions') // Hämta datan som vi sparade via formuläret
+    if (savedData) {
+      reports.value = JSON.parse(savedData)
+    }
+  })
 </script>
 
-<style scoped>
 
+
+<style scoped>
 .body-top {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/img/Uppsala_domkyrka_flygbild-scaled.jpg');
   display: flex;
@@ -216,6 +220,8 @@ const steps = ref([
   text-align: left;
   margin-left: 50px;
   margin-top: 10px;
+  line-height: 1.5;
+  max-width: 400px; /* Texten bryts automatiskt när den blir bredare än så här */
   line-height: 1.5;
 }
 

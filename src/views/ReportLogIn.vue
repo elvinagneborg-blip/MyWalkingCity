@@ -1,17 +1,14 @@
 <template>
-  <WebbHeader />
-
-  <main class="login-container">
-    
+  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+  <section class="login-container">
     <div class="login-form">
       <input type="text" placeholder="Username" class="login-input" />
       <input type="password" placeholder="Password" class="login-input" />
-      
-      <button class="button-report">Log In</button>
+      <button class="button-report" @click="handleLogin"> {{ uiLabels.logIn }} </button>
     </div>
 
     <div class="separator-text">
-      or
+      {{ uiLabels.or }}
     </div>
 
     <div class="social-login">
@@ -20,16 +17,44 @@
     </div>
 
     <div class="signup-section">
-      <button class="button-how-it-works signup-button">Sign up</button>
+      <button class="button-how-it-works signup-button"> {{ uiLabels.signUp }} </button>
     </div>
-
+  </section>
   </main>
 </template>
 
 <script setup>
-    import WebbHeader from '@/components/WebbHeader.vue'
+  //Imports
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { useRouter } from 'vue-router'
+  import io from 'socket.io-client' //kontakt med server
 
+  //Setup and Props (Input)
+  const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+
+  //Data
+  const router = useRouter()
+  const uiLabels = ref({})
+
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
+
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    socket.emit("getUILabels", newLang);
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
+  
+  //Methods
+  const handleLogin = () => {
+    // Skicka vidare användaren
+    router.push({ name: 'ReportView' }) 
+  }
+ 
 </script>
+
 
 <style scoped>
 

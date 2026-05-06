@@ -1,13 +1,12 @@
 <template>
-<main class="profile-page"> 
-      <!--Allmän header för alla sidor  -->
-      <WebbHeader />
+<main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+<section class="profile-page"> 
   
     <!--Header specifik för sidan -->
     <section class="profile-header">
-        <h2 class="profile-title">Level up your citizenship</h2>
+        <h2 class="profile-title"> {{ uiLabels.levelUp }} </h2>
             <p class="profile-subtitle">
-                Report problems and highlights in your city to gain points and level up!
+                {{ uiLabels.profileLevelDescription }}
             </p>
     </section>
 
@@ -18,17 +17,17 @@
 
             <dl class="personal-dev-info">
                 <div class="personal-dev-row"> 
-                    <dt class="personal-dev-label"> Member since: </dt>
+                    <dt class="personal-dev-label"> {{uiLabels.memberSince}} </dt>
                     <dd class="personal-dev-value"> 2025 </dd>
                 </div>
 
                 <div class="personal-dev-row">
-                    <dt class="personal-dev-label"> Reports </dt>
+                    <dt class="personal-dev-label"> {{uiLabels.reports}} </dt>
                     <dd class="personal-dev-value"> 7 </dd>
                 </div>
 
                 <div class="personal-dev-row">
-                    <dt class="personal-dev-label"> Highlights </dt>
+                    <dt class="personal-dev-label"> {{uiLabels.highlights}} </dt>
                     <dd class="personal-dev-value"> 8 </dd>
                 </div>
             </dl>
@@ -69,17 +68,17 @@
             <div class="stats-row">
                 <div class="mini-stat">
                     <span class="stat-number">18</span>
-                    <span class="stat-label">reports</span>
+                    <span class="stat-label">{{uiLabels.reports}}</span>
                 </div>
             
                 <div class="mini-stat">
                     <span class="stat-number">7</span>
-                    <span class="stat-label">fixed</span>
+                    <span class="stat-label">{{uiLabels.done}}</span>
                 </div>
 
                 <div class="mini-stat">
                     <span class="stat-number">5</span>
-                    <span class="stat-label">highlights</span>
+                    <span class="stat-label">{{uiLabels.highlights}}</span>
                 </div>
             </div>
         </div>
@@ -103,30 +102,30 @@
 
     <!--My reports-->
     <section class="my-reports-section">
-        <h2 class="reports-title">My reports</h2>
+        <h2 class="reports-title"> {{ uiLabels.myReports }} </h2>
 
         <div class="reports-filter-box">
-            <button class="filter-button active">All</button>
-            <button class="filter-button">Problems</button>
-            <button class="filter-button">Highlights</button>
+            <button class="filter-button active"> {{ uiLabels.all }} </button>
+            <button class="filter-button"> {{uiLabels.problems}} </button>
+            <button class="filter-button"> {{uiLabels.highlights}} </button>
         </div>
 
         <div class="reports-list">
             <article class="report-container">
-                <span class="report-tag">Category</span>
-                <h3 class="report-text"> Description </h3>
+                <span class="report-tag"> {{ uiLabels.category }} </span>
+                <h3 class="report-text"> {{uiLabels.description}} </h3>
             </article>
 
             <article class="report-container">
-                <span class="report-tag">Category</span>
-                <h3 class="report-text"> Description </h3> <!--Alternative <p> men beroende på hur vi gör med det -->
+                <span class="report-tag"> {{ uiLabels.category }} </span>
+                <h3 class="report-text"> {{uiLabels.description}} </h3> <!--Alternative <p> men beroende på hur vi gör med det -->
             </article>
         </div>
     </section>
 
 <!-- Contact information -->
     <section class="contact-section">
-        <h2 class="contact-title">Contact information</h2>
+        <h2 class="contact-title"> {{ uiLabels.contactInfo }} </h2>
 
         <div class="contact-container">
             <dl class="contact-list">
@@ -152,11 +151,36 @@
             </dl>
         </div>
     </section>
+</section>
 </main>
 </template>
 
 <script setup>
-import WebbHeader from '@/components/WebbHeader.vue'
+//Imports
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { useRouter } from 'vue-router'
+  import io from 'socket.io-client' //kontakt med server
+  
+
+//Setup and Props (Input)
+  const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+
+  //Data
+  const router = useRouter()
+  const uiLabels = ref({})
+
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
+
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    socket.emit("getUILabels", newLang);
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
+
+  //Methods
 
 </script>
 
