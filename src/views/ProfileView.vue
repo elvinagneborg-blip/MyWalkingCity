@@ -1,5 +1,6 @@
 <template>
-<main class="profile-page"> 
+<main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+<section class="profile-page"> 
   
     <!--Header specifik för sidan -->
     <section class="profile-header">
@@ -150,6 +151,7 @@
             </dl>
         </div>
     </section>
+</section>
 </main>
 </template>
 

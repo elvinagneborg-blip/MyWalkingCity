@@ -1,5 +1,6 @@
 <template>
-    <main class="report-page">
+  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+    <section class="report-page">
   
       <!--Header specifik för sidan -->
       <section class="report-header">
@@ -87,6 +88,7 @@
       </div>
       </div>
       </section>
+    </section>
     </main>
   </template>
   

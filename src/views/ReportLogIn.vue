@@ -1,5 +1,6 @@
 <template>
-  <main class="login-container">
+  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+  <section class="login-container">
     <div class="login-form">
       <input type="text" placeholder="Username" class="login-input" />
       <input type="password" placeholder="Password" class="login-input" />
@@ -18,6 +19,7 @@
     <div class="signup-section">
       <button class="button-how-it-works signup-button"> {{ uiLabels.signUp }} </button>
     </div>
+  </section>
   </main>
 </template>
 
