@@ -5,6 +5,11 @@
         <h2 class="allreports-title"> {{uiLabels.allReports}} </h2>
     </section>
 
+<!-- testa koppling till databasen -->
+    <div v-for="report in reports" :key="report.id">
+  {{ report.category }}: {{ report.description }}
+</div> 
+
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
         <div class="allreports-map-container">
@@ -55,32 +60,23 @@
 
 
 <script setup>
-    //Imports
-    import { ref, onMounted, watch } from 'vue' 
-    import { useRouter } from 'vue-router' //Programmatisk navigering, när något ska hända innan användaren skickas vidare vid klick
-    import io from 'socket.io-client' //kontakt med server
-    import MapComponent from "@/components/MapComponent.vue"
+import WebbHeader from '@/components/WebbHeader.vue'
+import MapComponent from "@/components/MapComponent.vue";
+import { ref, onMounted } from 'vue'
+import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
 
-    //Setup and Props (Input)
-    const socket = io("localhost:3000")
-    const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+const showRecentReports = ref(false)
+const reports = ref([])
 
-    //Data
-    const router = useRouter()
-    const uiLabels = ref({})
-    const showRecentReports = ref(false)
+async function getReports() {
+  const { data } = await supabase.from("reports").select()
+  reports.value = data
+  console.log('Rapporter från databasen:', data)
+}
 
-    //Socket listeners
-    socket.on("uiLabels", (labels) => {
-    uiLabels.value = labels
-    })
-
-    //Watchers
-    watch(() => props.currentLang, (newLang) => { //vakta språket
-        socket.emit("getUILabels", newLang);
-    }, { immediate: true }); //Språket laddas direkt när sidan laddas
-
-    //Methods
+onMounted(() => {
+  getReports()
+})
 
 </script>
 
