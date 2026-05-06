@@ -10,8 +10,13 @@
       <p class="report-subtitle">Current location</p>
     </section>
 
-    <!-- Sektion för kart-området -->
-     <section class="map-section">
+   
+
+  <section class="form-section">
+
+  <!-- 1. Wrappa allt i en form-tagg -->
+      <form @submit.prevent="handleSubmit" class="form-container">
+
         <div class="map-container">
           <MapComponent 
           ref="reportMap" 
@@ -30,96 +35,89 @@
           </div>
           <div class="form-field">
 
-  <label class="form-label">Where is the problem?</label>
-  <div class="search-group">
-    <input 
-      type="text" 
-      v-model="addressSearch" 
-      placeholder="Search for an address..." 
-      class="form-control"
-      @keyup.enter="searchAddress" 
-    />
-    <button type="button" @click="searchAddress" class="btn-secondary">Search</button>
-    
-  </div>
-</div>
-      </section>
-
-     <section class="form-section">
-
-  <!-- 1. Wrappa allt i en form-tagg -->
-  <form @submit.prevent="handleSubmit" class="form-container">
-
-    <div class="form-field">
-      <label for="category" class="form-label"> Category </label>
-      <!-- 2. Uppdatera v-model till formData.category -->
-      <select id="category" class="form-control" v-model="formData.category" required>
-        <option disabled value="">Choose category</option>
-        <option value="pothole">Pothole</option>
-        <option value="broken_bench">Broken bench</option>
-        <option value="ramp_missing">Ramp missing</option>
-        <option value="lighting_issue">Lighting issue</option>
-        <option value="other">Other</option>
-      </select>
-    </div>
-
-    <div class="form-field">
-      <label for="description" class="form-label"> Describe your problem</label>
-      <!-- 3. Uppdatera v-model till formData.description -->
-      <textarea
-        id="description"
-        class="form-input"
-        placeholder="What is wrong?"
-        rows="5"
-        v-model="formData.description"
-        required
-      ></textarea>
-    </div>
-
-    <div class="form-field">
-      <label for="photo" class="form-label">Photo</label>
-      <label for="photo" class="form-control file-control">
-        <span class="file-control-text">Upload or take a photo</span>
-        <span class="file-control-icon">🖼️</span>
-        <input
-          id="photo"
-          type="file"
-          accept="image/*"
-          capture="environment"
-          class="file-input"
-          @change="handlePhotoUpload"
+      <label class="form-label">Where is the problem?</label>
+      <div class="search-group">
+        <input 
+          type="text" 
+          v-model="addressSearch" 
+          placeholder="Search for an address..." 
+          class="form-control"
+          @keyup.enter="searchAddress" 
         />
-      </label>
-    </div>
-    
-    <div v-if="imagePreview" class="preview-container">
-  <p class="preview-text">Selected photo:</p>
-  <img :src="imagePreview" class="image-preview" />
-  
-  <!-- En knapp för att ångra sig och ta bort bilden -->
-  <button type="button" @click="removeImage" class="remove-image-btn">
-    Remove photo
-  </button>
-</div>
+        <button type="button" @click="searchAddress" class="btn-secondary">Search</button>
+      </div>
+      </div>
 
-    <div class="form-field">
-      <label for="email" class="form-label">Email</label>
-      <input
-        id="email"
-        type="email"
-        class="form-input"
-        placeholder="Your email"
-        v-model="formData.email"
-        required
-      />
+        <div class="form-field">
+          <label for="category" class="form-label"> Category </label>
+          <!-- 2. Uppdatera v-model till formData.category -->
+          <select id="category" class="form-control" v-model="formData.category" required>
+            <option disabled value="">Choose category</option>
+            <option value="pothole">Pothole</option>
+            <option value="broken_bench">Broken bench</option>
+            <option value="ramp_missing">Ramp missing</option>
+            <option value="lighting_issue">Lighting issue</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="description" class="form-label"> Describe your problem</label>
+          <!-- 3. Uppdatera v-model till formData.description -->
+          <textarea
+            id="description"
+            class="form-input"
+            placeholder="What is wrong?"
+            rows="5"
+            v-model="formData.description"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="photo" class="form-label">Photo</label>
+          <label for="photo" class="form-control file-control">
+            <span class="file-control-text">Upload or take a photo</span>
+            <span class="file-control-icon">🖼️</span>
+            <input
+              id="photo"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              class="file-input"
+              @change="handlePhotoUpload"
+            />
+          </label>
+        </div>
+        
+        <div v-if="imagePreview" class="preview-container">
+      <p class="preview-text">Selected photo:</p>
+      <img :src="imagePreview" class="image-preview" />
+      
+      <!-- En knapp för att ångra sig och ta bort bilden -->
+      <button type="button" @click="removeImage" class="remove-image-btn">
+        Remove photo
+      </button>
     </div>
 
-    <!-- 4. Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
-    <button type="submit" class="submit-button" :disabled="isSubmitting">
-      {{ isSubmitting ? 'Sending...' : 'Send in your report!' }}
-    </button>
-  </form>
-</section>
+        <div class="form-field">
+          <label for="email" class="form-label">Email</label>
+          <input
+            id="email"
+            type="email"
+            class="form-input"
+            placeholder="Your email"
+            v-model="formData.email"
+            required
+          />
+        </div>
+
+        <!-- 4. Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
+        <button type="submit" class="submit-button" :disabled="isSubmitting">
+          {{ isSubmitting ? 'Sending...' : 'Send in your report!' }}
+        </button>
+      </form>
+  </section>
 
     <!-- Popup-fönstret -->
     <div v-if="showPopup" class="popup-overlay">
@@ -153,8 +151,8 @@
   description: '',
   image_url: '',
   email: '',
-  latitude: 59.8586, // Dessa bör senare hämtas från kartan/GPS
-  longitude: 17.6389
+  latitude: 59.8586, // Förvalt till centrala Uppsala
+  longitude: 17.6389 // Förvalt till centrala Uppsala
   })
 
   const isSubmitting = ref(false)
@@ -167,10 +165,12 @@
   const imagePreview = ref(null)
   const addressSearch = ref('')
   const reportMap = ref(null)
+  
 
   function updateCoords({ lat, lng }) {
   formData.value.latitude = lat
   formData.value.longitude = lng
+  console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
 }
 
  async function handleSubmit() {
