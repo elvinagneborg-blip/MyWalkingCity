@@ -1,6 +1,7 @@
 <template>
+    <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
 
-    <main class="option-page">
+    <section class="option-page">
       <!--Header specifik för sidan -->
     <section class="option-header">
         <h2 class="option-title"> {{ uiLabels.whatYouWantReport }} </h2>
@@ -26,6 +27,7 @@
         <button class="secondary-option" @click="goHome"> {{ uiLabels.backToHome }} </button>
       </div>
     </div>
+</section>
     </main>
 </template>
 

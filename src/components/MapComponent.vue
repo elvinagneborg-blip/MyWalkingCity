@@ -3,16 +3,17 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"; /* onMounted kör kod när komponenten har laddats, ref används för referens */
+import { onMounted, ref, defineEmits } from "vue"; /* onMounted kör kod när komponenten har laddats, ref används för referens */
 import L from "leaflet"; /* importerar leaflet - biblioteket */
 import "leaflet/dist/leaflet.css";
 
     const mapContainer = ref(null); /* div elementet --> är null i början för att kunna kopplas till HTML elementet  */
+    const emit = defineEmits(['location-changed']);
     let map = null; /* variabel för själva kartan */
     let marker = null; /* variabel för markören */
 
     onMounted(() => {
-  map = L.map('map-container').setView([59.8586, 17.6389], 13)
+  map = L.map(mapContainer.value).setView([59.8586, 17.6389], 13)
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 

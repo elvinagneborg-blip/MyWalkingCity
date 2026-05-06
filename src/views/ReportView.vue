@@ -1,5 +1,10 @@
 <template>
-  <main class="report-page">
+  <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
+    <p>Laddar Uppsala City...</p>
+  </div>
+
+  <main v-else class="report-page">
+  <section class="report-page">
     <!--Header specifik för sidan -->
     <section class="report-header">
       <h2 class="report-title"> {{ uiLabels.reportAProblem }} </h2>
@@ -128,21 +133,29 @@
       <button class="popup-button" @click="handleDone"> Done </button>
       </div>
     </div>
+  </section>
   </main>
 </template>
 
 
 
-<!--JS-->
+
 <script setup>
-  import { ref, onMounted } from 'vue' 
+//Imports
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
   import WebbHeader from '@/components/WebbHeader.vue'
   import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
   import L from 'leaflet'
 
+  //Setup and Props (Input)
+  const socket = io("localhost:3000")
+  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
 
+  //Data
+  const uiLabels = ref({})
   const formData = ref({
   type: 'problem', // Förvalt värde
   category: '',
@@ -154,30 +167,37 @@
   })
 
   const isSubmitting = ref(false)
-  const category = ref('') 
-  const description = ref('') 
   const photo = ref(null) 
   const selectedFile = ref(null)
   const router = useRouter()
   const showPopup = ref(false) 
   const imagePreview = ref(null)
   const addressSearch = ref('')
+  
+  //Socket listeners
+  socket.on("uiLabels", (labels) => {
+    uiLabels.value = labels
+  })
+
+  //Watchers
+  watch(() => props.currentLang, (newLang) => { //vakta språket
+    if (newLang) {
+      socket.emit("getUILabels", newLang);
+    } else {
+      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
+    }
+  }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
 
+  //Methods
  async function handleSubmit() {
   isSubmitting.value = true
-  
-  // 1. Ladda upp bilden först (om användaren valt en)
-  const imageUrl = await uploadImage()
-  
-  // 2. Förbered datan som ska till databasen
-  const reportData = {
+  const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
+  const reportData = { // 2. Förbered datan som ska till databasen
     ...formData.value,
     image_url: imageUrl // Här lägger vi till länken vi just fick
   }
-
-  // 3. Skicka till reports-tabellen
-  const { error } = await supabase
+  const { error } = await supabase // 3. Skicka till reports-tabellen
     .from('reports')
     .insert([reportData])
 
@@ -236,6 +256,9 @@ function removeImage() {
   // Tips: nollställ även själva input-fältet om du vill vara extra noga
   document.getElementById('photo').value = ""
 }
+
+
+
 </script>
 
 

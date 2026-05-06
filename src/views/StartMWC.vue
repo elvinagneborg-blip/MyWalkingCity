@@ -1,10 +1,11 @@
 <template>
+  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
   <section class="body-top">
     <h2 class="section-title"> {{ uiLabels.shapeUppsala }} <br> {{ uiLabels.withAPhoto }} </h2>
     <h6> {{ uiLabels.startDescription}}</h6>
     
     <div>
-      <p><button class="report"><RouterLink to="/report-login"> {{ uiLabels.report }} </RouterLink></button></p>
+      <p><button class="report"><RouterLink to="/option/"> {{ uiLabels.report }} </RouterLink></button></p>
       <p><button class="how-it-works"> {{ uiLabels.howDoesItWork }} </button></p>
     </div>
 
@@ -55,6 +56,7 @@
         </div>
       </div>
     </section>
+    </main>
 </template>
 
 <script setup>
