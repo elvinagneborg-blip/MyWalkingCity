@@ -8,16 +8,31 @@ import L from "leaflet"; /* importerar leaflet - biblioteket */
 import "leaflet/dist/leaflet.css";
 
     const mapContainer = ref(null); /* div elementet --> är null i början för att kunna kopplas till HTML elementet  */
+    let map = null; /* variabel för själva kartan */
+    let marker = null; /* variabel för markören */
 
     onMounted(() => {
-        const map = L.map(mapContainer.value);
-        map.setView([59.863, 17.638], 13); /* Själva kartan med startposition i uppsala och zoom*/
+  map = L.map('map-container').setView([59.8586, 17.6389], 13)
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
-        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { /* Själva kartbilden */
-            maxZoom: 20, /* maximala zoom nivån när man zoomar in */
-            attribution: "&copy; OpenStreetMap contributors", /* krävs för källhänvisning till openStreetMap */
-        }).addTo(map);
-    });
+  // Skapa markören
+  marker = L.marker([59.8586, 17.6389], { draggable: true }).addTo(map)
+
+  // Varje gång markören flyttas, berätta det för föräldern
+  marker.on('dragend', (e) => {
+    const { lat, lng } = e.target.getLatLng()
+    emit('location-changed', { lat, lng })
+  })
+})
+
+const setLocation = (lat, lng) => {
+  const newPos = [lat, lng]
+  map.setView(newPos, 16)
+  marker.setLatLng(newPos)
+  emit('location-changed', { lat, lng })
+}
+
 </script>
 
 <style scoped>

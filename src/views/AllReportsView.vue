@@ -7,6 +7,11 @@
         <h2 class="allreports-title"> All reports </h2>
     </section>
 
+<!-- testa koppling till databasen -->
+    <div v-for="report in reports" :key="report.id">
+  {{ report.category }}: {{ report.description }}
+</div> 
+
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
         <div class="allreports-map-container">
@@ -57,11 +62,23 @@
 
 <!--Basic js -->
 <script setup>
-import { ref } from "vue"
 import WebbHeader from '@/components/WebbHeader.vue'
 import MapComponent from "@/components/MapComponent.vue";
+import { ref, onMounted } from 'vue'
+import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
 
 const showRecentReports = ref(false)
+const reports = ref([])
+
+async function getReports() {
+  const { data } = await supabase.from("reports").select()
+  reports.value = data
+  console.log('Rapporter från databasen:', data)
+}
+
+onMounted(() => {
+  getReports()
+})
 
 </script>
 

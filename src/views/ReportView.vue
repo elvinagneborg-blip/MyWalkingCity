@@ -25,55 +25,101 @@
                 </ul>
             </aside>
           </div>
+          <div class="form-field">
+
+  <label class="form-label">Where is the problem?</label>
+  <div class="search-group">
+    <input 
+      type="text" 
+      v-model="addressSearch" 
+      placeholder="Search for an address..." 
+      class="form-control"
+      @keyup.enter="searchAddress" 
+    />
+    <button type="button" @click="searchAddress" class="btn-secondary">Search</button>
+    
+    <div id="map-selector" style="height: 250px; width: 100%; border-radius: 8px; margin-bottom: 15px;"></div>
+<p class="coords-help">Selected: {{ formData.latitude.toFixed(4) }}, {{ formData.longitude.toFixed(4) }}</p>
+
+  </div>
+</div>
       </section>
 
-     <!-- Beskrivningsrutan -->
      <section class="form-section">
-      <div class="form-container">
 
-        <div class="form-field">
-          <label for="category" class="form-label"> Category </label>
-          <select id="category" class="form-control" v-model="category">
-            <option disabled value="">Choose category</option>
-            <option>Pothole</option>
-            <option>Broken bench</option>
-            <option>Ramp missing</option>
-            <option>Lighting issue</option>
-            <option>Other</option>
-            </select>
-        </div>
+  <!-- 1. Wrappa allt i en form-tagg -->
+  <form @submit.prevent="handleSubmit" class="form-container">
 
-      <div class="form-field">
-        <label for="description" class="form-label"> Describe your problem</label>
-          <textarea
-            id="description"
-            class="form-input"
-            placeholder="What is wrong?"
-            rows="5"
-            v-model="description"
-          ></textarea>
-      </div>
+    <div class="form-field">
+      <label for="category" class="form-label"> Category </label>
+      <!-- 2. Uppdatera v-model till formData.category -->
+      <select id="category" class="form-control" v-model="formData.category" required>
+        <option disabled value="">Choose category</option>
+        <option value="pothole">Pothole</option>
+        <option value="broken_bench">Broken bench</option>
+        <option value="ramp_missing">Ramp missing</option>
+        <option value="lighting_issue">Lighting issue</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
 
-      <div class="form-field">
-        <label for="photo" class="form-label">Photo</label>
-        <label for="photo" class="form-control file-control">
-          <span class="file-control-text">Upload or take a photo</span>
-          <span class="file-control-icon">🖼️</span>
-            <input
-              id="photo"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              class="file-input"
-              @change="photo = $event.target.files[0]"
-            />
-          </label>
-      </div>
-      
-    <!--Submit knappen och popup fönstret -->
-    <button class="submit-button" @click="handleSubmit">
-      Send in your report!
+    <div class="form-field">
+      <label for="description" class="form-label"> Describe your problem</label>
+      <!-- 3. Uppdatera v-model till formData.description -->
+      <textarea
+        id="description"
+        class="form-input"
+        placeholder="What is wrong?"
+        rows="5"
+        v-model="formData.description"
+        required
+      ></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="photo" class="form-label">Photo</label>
+      <label for="photo" class="form-control file-control">
+        <span class="file-control-text">Upload or take a photo</span>
+        <span class="file-control-icon">🖼️</span>
+        <input
+          id="photo"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          class="file-input"
+          @change="handlePhotoUpload"
+        />
+      </label>
+    </div>
+    
+    <div v-if="imagePreview" class="preview-container">
+  <p class="preview-text">Selected photo:</p>
+  <img :src="imagePreview" class="image-preview" />
+  
+  <!-- En knapp för att ångra sig och ta bort bilden -->
+  <button type="button" @click="removeImage" class="remove-image-btn">
+    Remove photo
+  </button>
+</div>
+
+    <div class="form-field">
+      <label for="email" class="form-label">Email</label>
+      <input
+        id="email"
+        type="email"
+        class="form-input"
+        placeholder="Your email"
+        v-model="formData.email"
+        required
+      />
+    </div>
+
+    <!-- 4. Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
+    <button type="submit" class="submit-button" :disabled="isSubmitting">
+      {{ isSubmitting ? 'Sending...' : 'Send in your report!' }}
     </button>
+  </form>
+</section>
 
     <!-- Popup-fönstret -->
     <div v-if="showPopup" class="popup-overlay">
@@ -86,39 +132,89 @@
       <button class="popup-button" @click="handleDone"> Done </button>
       </div>
     </div>
-    </div>
-    </section>
   </main>
 </template>
 
+
+
 <!--JS-->
 <script setup>
-  import { ref } from 'vue' 
+  import { ref, onMounted } from 'vue' 
   import { useRouter } from 'vue-router'
   import WebbHeader from '@/components/WebbHeader.vue'
   import MapComponent from "@/components/MapComponent.vue";
-  import { saveSubmission } from '../utils/storage.js'
+  import { supabase } from '@/utils/supabase'
+  import L from 'leaflet'
 
-  const router = useRouter()
-  const showPopup = ref(false) 
 
+  const formData = ref({
+  type: 'problem', // Förvalt värde
+  category: '',
+  description: '',
+  image_url: '',
+  email: '',
+  latitude: 59.8586, // Dessa bör senare hämtas från kartan/GPS
+  longitude: 17.6389
+  })
+
+  const isSubmitting = ref(false)
   const category = ref('') 
   const description = ref('') 
   const photo = ref(null) 
+  const selectedFile = ref(null)
+  const router = useRouter()
+  const showPopup = ref(false) 
+  const imagePreview = ref(null)
+  const addressSearch = ref('')
 
-  function handleSubmit() { 
-    // Skapa ett objekt med all data som användaren fyllt i
-    const reportData = {
-      title: category.value,           // Vi använder kategorin som titel
-      description: description.value,  // Beskrivningen från textrutan
-      // Tydligen är det klurigt med bilder, skippar det just nu
-    };
 
-    // Anropa vår gemensamma funktion och berätta att detta är en 'report'
-    saveSubmission(reportData, 'report');
-
-    showPopup.value = true;
+ async function handleSubmit() {
+  isSubmitting.value = true
+  
+  // 1. Ladda upp bilden först (om användaren valt en)
+  const imageUrl = await uploadImage()
+  
+  // 2. Förbered datan som ska till databasen
+  const reportData = {
+    ...formData.value,
+    image_url: imageUrl // Här lägger vi till länken vi just fick
   }
+
+  // 3. Skicka till reports-tabellen
+  const { error } = await supabase
+    .from('reports')
+    .insert([reportData])
+
+  if (error) {
+    alert("Kunde inte skicka: " + error.message)
+  } else {
+    alert("Allt klart! Bild och rapport sparad.")
+    router.push('/allreports')
+  }
+  
+  isSubmitting.value = false
+}
+
+async function uploadImage() {
+  if (!selectedFile.value) return null
+
+  // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
+  const fileName = `${Date.now()}-${selectedFile.value.name}`
+  
+  const { data, error } = await supabase.storage
+    .from('report-images') // Namnet på din bucket
+    .upload(fileName, selectedFile.value)
+
+  if (error) {
+    console.error("Storage error:", error)
+    return null
+  }
+  const { data: publicUrlData } = supabase.storage
+    .from('report-images')
+    .getPublicUrl(fileName)
+
+  return publicUrlData.publicUrl
+}
 
   function handleDone() { 
     category.value = ''
@@ -129,10 +225,55 @@
     // Omdirigerar tillbaka till startsidan där listan uppdateras
     router.push({ name: 'StartMWC' })
   }
+
+  function handlePhotoUpload(event) {
+  const file = event.target.files[0]
+  if (!file) return
+
+  selectedFile.value = file
+
+  // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
+  imagePreview.value = URL.createObjectURL(file)
+} 
+function removeImage() {
+  selectedFile.value = null
+  imagePreview.value = null
+  // Tips: nollställ även själva input-fältet om du vill vara extra noga
+  document.getElementById('photo').value = ""
+}
 </script>
 
 <!-- CSS-->
 <style scoped>
+
+.preview-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  display: block;
+  margin: 10px auto;
+}
+
+.preview-text {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.remove-image-btn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
 
 .report-page {
   margin: 0;
