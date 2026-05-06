@@ -12,7 +12,7 @@ import "leaflet/dist/leaflet.css";
     let marker = null; /* variabel för markören */
 
     onMounted(() => {
-  map = L.map('map-container').setView([59.8586, 17.6389], 13)
+  map = L.map(mapContainer.value).setView([59.8586, 17.6389], 13)
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
@@ -33,6 +33,7 @@ const setLocation = (lat, lng) => {
   emit('location-changed', { lat, lng })
 }
 
+defineExpose({ setLocation })
 </script>
 
 <style scoped>

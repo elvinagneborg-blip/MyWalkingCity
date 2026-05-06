@@ -13,7 +13,10 @@
     <!-- Sektion för kart-området -->
      <section class="map-section">
         <div class="map-container">
-          <MapComponent />
+          <MapComponent 
+          ref="reportMap" 
+    @location-changed="updateCoords"
+    />
 
             <!-- Recent reports i hörnet av kartan -->
             <aside class="recent-report">
@@ -38,9 +41,6 @@
     />
     <button type="button" @click="searchAddress" class="btn-secondary">Search</button>
     
-    <div id="map-selector" style="height: 250px; width: 100%; border-radius: 8px; margin-bottom: 15px;"></div>
-<p class="coords-help">Selected: {{ formData.latitude.toFixed(4) }}, {{ formData.longitude.toFixed(4) }}</p>
-
   </div>
 </div>
       </section>
@@ -166,7 +166,12 @@
   const showPopup = ref(false) 
   const imagePreview = ref(null)
   const addressSearch = ref('')
+  const reportMap = ref(null)
 
+  function updateCoords({ lat, lng }) {
+  formData.value.latitude = lat
+  formData.value.longitude = lng
+}
 
  async function handleSubmit() {
   isSubmitting.value = true
@@ -193,6 +198,15 @@
   }
   
   isSubmitting.value = false
+}
+
+async function searchAddress() {
+  // ... din fetch-kod från tidigare ...
+  if (data.length > 0) {
+    const { lat, lon } = data[0]
+    // Anropa kartans funktion för att flytta markören dit
+    reportMap.value.setLocation(parseFloat(lat), parseFloat(lon))
+  }
 }
 
 async function uploadImage() {
