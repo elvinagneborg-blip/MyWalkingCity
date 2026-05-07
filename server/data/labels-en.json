@@ -12,10 +12,15 @@
 	"chooseCategory": "Choose category",
 	"contactInfo": "Contact information",
 	"currentLocation": "Current Location",
+	"createAccount": "Create account",
 
 	"describeYourProblem": "Describe your problem",
 	"description": "Description",
 	"done": "Done",
+
+	"feedbackProblem": "Your report is sent to Uppsala municipality who will make sure it gets fixed! You can check the status of your report in your profile.",
+	"feedbackHighlight": "Your highlight is sent to Uppsala municipality who will make sure it gets noticed! You can check the status of your highlight in your profile.",
+
 	
 	"highlight": "Highlight",
 	"highlights": "Highlights",

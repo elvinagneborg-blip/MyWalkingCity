@@ -136,8 +136,6 @@
 </template>
 
 
-
-
 <script setup>
 //Imports
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
