@@ -12,10 +12,14 @@
 	"chooseCategory": "Välj kategori",
 	"contactInfo": "Kontaktinformation",
 	"currentLocation": "Nuvarande plats",
+	"createAccount": "Skapa konto",
 
 	"describeYourProblem": "Beskriv ditt problem",
 	"description": "Beskrivning",
 	"done": "Klart",
+
+	"feedbackProblem": "Din rapport skickas till Uppsala kommun som ser till att det fixas! Du kan kolla statusen på din rapport i din profil.",
+	"feedbackHighlight": "Din höjdpunkt skickas till Uppsala kommun som ser till att det uppmärksammas! Du kan kolla statusen på din höjdpunkt i din profil.",
 
 	"highlight": "Höjdpunkt",
 	"highlights": "Höjdpunkter",

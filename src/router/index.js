@@ -40,10 +40,15 @@ const router = createRouter({
       component: () => import('../views/AllReportsView.vue')
     }, 
     {
-      path: '/report-login/',
-      name: 'ReportLogIn',
-      component: () => import('../views/ReportLogIn.vue')
-    }
+      path: '/login/',
+      name: 'LogIn',
+      component: () => import('../views/LogIn.vue')
+    },
+      { 
+        path: '/feedback/',
+        name: 'FeedbackView',
+        component: () => import('../views/FeedbackView.vue')
+      }
   ]
 })
 
