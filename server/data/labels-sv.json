@@ -5,7 +5,7 @@
 	"allReports": "Alla rapporter",
 	"allReportsOnMap": "Se alla rapporter på kartan",
 
-	"backToHome": "Tillbaka till hemsidan",
+	"backToHome": "Nej tack, gå tillbaka till startsidan",
 
 	"category": "Kategori",
 	"changeLanguage": "Ändra till engelska",
@@ -39,6 +39,10 @@
 
 	"or": "Eller",
 
+	"perkTitle": "Vill du få uppdateringar om din rapport?",
+	"perk1": "✅ Se tidigare rapporter och höjdpunkter du har skickat in",
+	"perk2": "✅ Få uppdateringar om statusen på dina rapporter",
+	"perk3": "✅ Samla poäng, levla upp och bli en superinvånare!",
 	"photo": "Bild",
 	"problem": "Problem",
 	"problems": "Problem",

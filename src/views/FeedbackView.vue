@@ -11,10 +11,27 @@
     <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
     <p class="feedback-text"> {{ uiLabels.feedbackProblem }} </p>
 
-    <div class="createAccount-button-container">
+   
+
+    <div class="accountperks-container" >
+      <h4 class="accountperks-title"> {{uiLabels.perkTitle}} </h4>
+
+       <div class="createAccount-button-container">
       <router-link to="/login/" class="btn createAccount" > {{uiLabels.createAccount}} </router-link> 
-      <router-link to="/login/" class="btn LogIn" > {{uiLabels.logIn}} </router-link> 
+      <router-link to="/login/" class="btn logIn" > {{uiLabels.logIn}} </router-link> 
     </div>
+
+      <ul class="accountperks-list">
+        <li class="accountperks-item"> {{uiLabels.perk1}} </li>
+        <li class="accountperks-item"> {{uiLabels.perk2}} </li>
+        <li class="accountperks-item"> {{uiLabels.perk3}} </li>
+      </ul>
+      <div class="options-button-container">
+      <router-link to="/" class="btn backToHome" > {{uiLabels.backToHome}} </router-link>
+      <router-link to="/allreports/" class="btn allReports" > {{uiLabels.allReports}} </router-link>
+      </div>
+    </div>
+
 
   </section>
 
@@ -160,61 +177,146 @@ function removeImage() {
 
 </script>
 
-
-
-
 <!-- CSS-->
 <style scoped>
-.btn 
-{
-  display: inline-block;
-  padding: 12px 24px;
-  margin: 10px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
+.feedback-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  background-color: #f8fafc; /* Ljusgrå bakgrund som får den vita boxen att poppa */
+  padding: 20px;
+  font-family: 'Inter', sans-serif; /* Eller din valda font */
 }
-.preview-container {
-  margin-top: 15px;
+
+/* Den vita "kort"-containern */
+.feedback-container {
+  background: white;
+  padding: 40px;
+  border-radius: 32px; /* Kraftigt rundade hörn enligt prototyp */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  max-width: 440px;
+  width: 100%;
   text-align: center;
 }
 
-.image-preview {
-  max-width: 100%;
-  max-height: 200px;
-  border-radius: 8px;
-  border: 2px solid #ddd;
+/* Rubriker */
+.feedback-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #23a88c;
+  margin-bottom: 12px;
+  padding-bottom: 20px;
+}
+
+.feedback-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 12px;
+}
+
+.feedback-text {
+  color: #718096;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+
+
+/* Knapp-containern */
+.createAccount-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.btn {
   display: block;
-  margin: 10px auto;
-}
-
-.preview-text {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.remove-image-btn {
-  background: #ff4444;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-.report-page {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-/* Alla formulärelement ska använda samma font */
-input,
-textarea,
-select,
-button {
-  font-family: inherit;
+  padding: 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
   font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.98); /* Liten tryck-effekt */
+}
+
+/* Specifik stil för "Create Account" (Mörk) */
+.createAccount {
+  background-color: #2d3748;
+  color: white;
+}
+
+.createAccount:hover {
+  background-color: #1a202c;
+}
+
+/* Specifik stil för "Log In" (Ljus) */
+.logIn {
+  background-color: #edf2f7;
+  color: #2d3748;
+}
+
+.logIn:hover {
+  background-color: #e2e8f0;
+}
+
+.options-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.backToHome, .allReports {
+  background-color: #cbd5e0;
+  color: #2d3748;
+  margin-top: 20px;
+  font-size: 12px;
+  padding: 12px 16px;
+  width: fit-content;
+  margin: 0 auto; /* Centrera knappen */
+}
+
+.backToHome:hover, .allReports:hover {
+  background-color: #a0aec0;
+  color: white;
+}
+/* Perks-sektionen längst ner */
+.accountperks-container {
+  text-align: left;
+  background-color: #f7fafc;
+  padding: 24px;
+  border-radius: 20px;
+}
+
+.accountperks-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #23a88c;
+  margin-bottom: 25px;
+  text-align: center;   
+}
+
+.accountperks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.accountperks-item {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #4a5568;
+  line-height: 1.4;
 }
 
 
@@ -231,16 +333,6 @@ button {
   margin: 0;
 }
 
-
-.submit-button {
-  width: 100%;
-  padding: 16px;
-  border: none;
-  border-radius: 16px;
-  background-color: #2f2f2f;
-  color: white;
-  cursor: pointer;
-}
 
 /* ===== Anpassad till telefon ===== */
 

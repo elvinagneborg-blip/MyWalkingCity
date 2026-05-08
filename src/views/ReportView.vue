@@ -208,8 +208,7 @@
   if (error) {
     alert("Kunde inte skicka: " + error.message)
   } else {
-    alert("Allt klart! Bild och rapport sparad.")
-    router.push('/allreports')
+    router.push('/feedback/')
   }
   
   isSubmitting.value = false
