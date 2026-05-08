@@ -5,7 +5,7 @@
 	"allReports": "All reports",
 	"allReportsOnMap": "See all reports on map",
 
-	"backToHome": "Back to home",
+	"backToHome": "No thanks, back to home",
 
 	"category": "Category",
 	"changeLanguage": "Byt till svenska",
@@ -40,6 +40,10 @@
 
 	"or": "Or",
 
+	"perkTitle": "Do you want to be updated on your report?",
+	"perk1": "✅ View previous reports and highlights you have submitted",
+	"perk2": "✅ Get updated about the status of your reports",
+	"perk3": "✅ Collect points, level up and become a super resident!",
 	"photo": "Photo",
 	"problem": "Problem",
 	"problems": "Problems",
