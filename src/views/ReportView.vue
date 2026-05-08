@@ -272,10 +272,6 @@ function removeImage() {
 
 
 </script>
-
-
-
-
 <!-- CSS-->
 <style scoped>
 

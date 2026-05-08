@@ -9,7 +9,7 @@
     <section v-if="session" class="loggedin-feedback-container">
         <h2 class="feedback-title"> {{uiLabels.thankYouText}} </h2>
         <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
-        <p class="feedback-text"> {{ uiLabels.feedbackProblem }} </p>
+        <p class="feedback-text"> {{ reportType === 'highlight' ? uiLabels.feedbackHighlight : uiLabels.feedbackProblem }} </p>
 
         <div class="visit-profile-container" >
         <h4 class="view-report-title"> {{uiLabels.viewReport}} </h4>
@@ -30,7 +30,7 @@
     <section v-else class="feedback-container">
         <h2 class="feedback-title"> {{uiLabels.thankYouText}} </h2>
         <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
-        <p class="feedback-text"> {{ uiLabels.feedbackProblem }} </p>
+        <p class="feedback-text"> {{ reportType === 'highlight' ? uiLabels.feedbackHighlight : uiLabels.feedbackProblem }} </p>
 
         <div class="accountperks-container" >
         <h4 class="accountperks-title"> {{uiLabels.perkTitle}} </h4>
@@ -61,15 +61,18 @@
 //Imports
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
-  import { useRouter } from 'vue-router'
+  import { useRoute } from 'vue-router'
   import { supabase } from '@/utils/supabase'
+  import { computed } from 'vue'
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
   const props = defineProps(['currentLang', 'session']) //ta emot språkval och session§ från app.vue
+  const route = useRoute()
+  const reportType = computed(() => route.query.type || 'problem')
 
-  //Data
   const uiLabels = ref({})
+
 
   
   //Socket listeners
