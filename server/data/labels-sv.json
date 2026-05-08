@@ -5,12 +5,13 @@
 	"allReports": "Alla rapporter",
 	"allReportsOnMap": "Se alla rapporter på kartan",
 
-	"backToHome": "Nej tack, gå tillbaka till startsidan",
+	"backToHome": "Gå tillbaka till startsidan",
 
 	"category": "Kategori",
 	"changeLanguage": "Ändra till engelska",
 	"chooseCategory": "Välj kategori",
 	"contactInfo": "Kontaktinformation",
+	"culture": "Kultur",
 	"currentLocation": "Nuvarande plats",
 	"createAccount": "Skapa konto",
 
@@ -18,8 +19,14 @@
 	"description": "Beskrivning",
 	"done": "Klart",
 
+	"event": "Evenemang",
+
 	"feedbackProblem": "Din rapport skickas till Uppsala kommun som ser till att det fixas! Du kan kolla statusen på din rapport i din profil.",
 	"feedbackHighlight": "Din höjdpunkt skickas till Uppsala kommun som ser till att det uppmärksammas! Du kan kolla statusen på din höjdpunkt i din profil.",
+	"foodanddrink": "Mat och dryck",
+	"fourSteps": "4 steg",
+
+
 
 	"highlight": "Höjdpunkt",
 	"highlights": "Höjdpunkter",
@@ -34,9 +41,13 @@
 
 	"memberSince": "Medlem sedan:",
 	"myReports": "My reports",
+	"mustsee": "Sevärdhet",
 
+	"nature": "Natur",
+	"noBackToHome": "Nej tack, tillbaka till startsidan",
 	"noReportsSubmitted": "Inga rapporter eller highlights inskickade ännu.",
 
+	"other": "Annat",
 	"or": "Eller",
 
 	"perkTitle": "Vill du få uppdateringar om din rapport?",
@@ -50,6 +61,7 @@
 
 	"recentReports": "Senaste rapporter",
 	"report": "Rapportera",
+	"reportAHighlight": "Rapportera en höjdpunkt",
 	"reportAProblem": "Rapportera ett problem",
 	"reports": "Rapporter",
 
@@ -65,9 +77,11 @@
 
 	"uploadPhoto": "Ladda upp eller ta en bild",
 
+	"viewReport": "Se dina rapporter på din profilsida!",
+	"visitProfile": "Besök din profil",
+
 	"whatHappensNow": "Vad händer nu?",
 	"whatYouWantReport": "Vad vill du rapportera?",
-	"withAPhoto": "med en bild",
+	"withAPhoto": "med en bild"
 
-	"fourSteps": "4 steg"
 }

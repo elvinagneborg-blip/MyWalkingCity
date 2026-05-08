@@ -1,428 +1,605 @@
 <template>
-  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
-    <section class="report-page">
+  <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
+    <p>Laddar Uppsala City...</p>
+  </div>
+
+  <main v-else class="report-page">
   
-      <!--Header specifik för sidan -->
-      <section class="report-header">
-        <h2 class="report-title"> {{ uiLabels.addHighlight }} </h2>
-        <p class="report-subtitle"> {{ uiLabels.currentLocation }} </p>
-      </section>
-  
-      <!-- Sektion för kart-området -->
-       <section class="map-section">
-          <div class="map-container">
-              <!-- Test bild för kartan för uppdattning -->
-              <img src="/img/test-map.png" alt="Map preview" class="map-image" />
-  
-              <!-- Recent reports i hörnet av kartan -->
-              <aside class="recent-report">
-                <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
-                <ul class="recent-reports-list">
-                      <li> Culture festival </li>
-                      <li> Parade </li>
-                      <li> Lovely park </li>
-                  </ul>
-              </aside>
-            </div>
-        </section>
-  
-       <!-- Beskrivningsrutan -->
-       <section class="form-section">
-        <div class="form-container">
-  
-          <div class="form-field">
-            <label for="category" class="form-label"> {{uiLabels.category}} </label>
-            <select id="category" class="form-control" v-model="category">
-              <option disabled value=""> {{ uiLabels.chooseCategory }} </option>
-              <option> Culture </option>
-              <option> Nature </option>
-              <option> Events </option>
-              <option> Must-see </option>
-              <option> Food and drinks </option>
-              <option>Other</option>
-              </select>
+  <section class="report-page">
+    <!--Header specifik för sidan -->
+    <section class="report-header">
+      <h2 class="report-title"> {{ uiLabels.reportAHighlight }} </h2>
+      <p class="report-subtitle"> {{ uiLabels.currentLocation }} </p>
+    </section>
+
+   
+
+  <section class="form-section">
+
+  <!-- 1. Wrappa allt i en form-tagg -->
+      <form @submit.prevent="handleSubmit" class="form-container">
+
+        <div class="map-container">
+          <MapComponent 
+          ref="reportMap" 
+    @location-changed="updateCoords"
+    />
+
+            <!-- Recent reports i hörnet av kartan -->
+            <aside class="recent-report">
+              <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
+              <ul class="recent-reports-list">
+                    <li> Beautiful flower </li>
+                    <li> Lovely Bench </li>
+                    <li> Perfect ramp </li>
+                </ul>
+            </aside>
           </div>
-  
+          <div class="form-field">
+
+      <label class="form-label">Where is the highlight located?</label>
+      <div class="search-group">
+        <input 
+          type="text" 
+          v-model="addressSearch" 
+          placeholder="Search for an address..." 
+          class="form-control"
+          @keyup.enter="searchAddress" 
+        />
+        <button type="button" @click="searchAddress" class="btn-secondary">Search</button>
+      </div>
+      </div>
+
         <div class="form-field">
-          <label for="description" class="form-label"> {{ uiLabels.describeYourProblem }} </label>
-            <textarea
-              id="description"
-              class="form-input"
-              placeholder="Describe the highlight"
-              rows="5"
-              v-model="description"
-            ></textarea>
+          <label for="category" class="form-label"> Category </label>
+          <select id="category" class="form-control" v-model="formData.category" required>
+            <option disabled value="">{{ uiLabels.chooseCategory }}</option>
+            <option value="culture">{{uiLabels.culture}}</option>
+            <option value="event">{{uiLabels.event}}</option>
+            <option value="nature">{{uiLabels.nature}}</option>
+            <option value="mustsee">{{uiLabels.mustsee}}</option>
+            <option value="foodanddrink">{{uiLabels.foodanddrink}}</option>
+            <option value="other">{{uiLabels.other}}</option>
+          
+          </select>
         </div>
-  
+
         <div class="form-field">
-          <label for="photo" class="form-label"> {{ uiLabels.photo }} </label>
+          <label for="description" class="form-label"> {{ uiLabels.describeYourProblem }}</label>
+          <textarea
+            id="description"
+            class="form-input"
+            placeholder="What do you want to highlight?"
+            rows="5"
+            v-model="formData.description"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="photo" class="form-label">Photo</label>
           <label for="photo" class="form-control file-control">
-            <span class="file-control-text"> {{ uiLabels.uploadPhoto }} </span>
+            <span class="file-control-text">Upload or take a photo</span>
             <span class="file-control-icon">🖼️</span>
-              <input
-                id="photo"
-                type="file"
-                accept="image/*"
-                capture="environment"
-                class="file-input"
-                @change="photo = $event.target.files[0]"
-              />
-            </label>
+            <input
+              id="photo"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              class="file-input"
+              @change="handlePhotoUpload"
+            />
+          </label>
         </div>
         
-      <!--Submit knappen och popup fönstret -->
-      <button class="submit-button" @click="handleSubmit">
-        {{ uiLabels.sendInHighlight }}
+        <div v-if="imagePreview" class="preview-container">
+      <p class="preview-text">Selected photo:</p>
+      <img :src="imagePreview" class="image-preview" />
+      
+      <!-- En knapp för att ångra sig och ta bort bilden -->
+      <button type="button" @click="removeImage" class="remove-image-btn">
+        Remove photo
       </button>
-  
-      <!-- Popup-fönstret -->
-      <div v-if="showPopup" class="popup-overlay">
-        <div class="popup-box">
-        <p class="popup-text"> {{ uiLabels.thankYouText }} </p>
-          <h3 class="popup-title"> {{ uiLabels.whatHappensNow }} </h3>
-            <p class="popup-description">
-              {{ uiLabels.sentReportInfo }}
-            </p>
-        <button class="popup-button" @click="handleDone"> {{uiLabels.done}} </button>
+    </div>
+
+        <div class="form-field">
+          <label for="email" class="form-label">Email</label>
+          <input
+            v-if="props.session"
+            id="email"
+            type="email"
+            class="form-input-locked"
+            :value="props.session.user.email"
+            readonly
+          
+          />
+          <input
+            v-else
+            id="email"
+            type="email"
+            class="form-input"
+            placeholder="Your email"
+            v-model="formData.email"
+          />
         </div>
-      </div>
-      </div>
-      </section>
-    </section>
-    </main>
-  </template>
-  
+
+        <button type="submit" class="submit-button" :disabled="isSubmitting">
+          {{ isSubmitting ? 'Sending...' : 'Send in your highlight!' }}
+        </button>
+      </form>
+  </section>
+
+
+  </section>
+  </main>
+</template>
+
+
 <script setup>
-  //Imports
-  import { ref, onMounted, watch } from 'vue' 
-  import { useRouter } from 'vue-router' //Programmatisk navigering, när något ska hända innan användaren skickas vidare vid klick
+//Imports
+  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
-  import MapComponent from "@/components/MapComponent.vue"
-  import { saveSubmission } from '../utils/storage.js'
+  import { useRouter } from 'vue-router'
+  import MapComponent from "@/components/MapComponent.vue";
+  import { supabase } from '@/utils/supabase'
+  import L from 'leaflet'
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
 
   //Data
-  const router = useRouter()
   const uiLabels = ref({})
-  const category = ref('') 
-  const description = ref('') 
-  const photo = ref(null) 
-  const showPopup = ref(false) 
+  const formData = ref({
+  type: 'highlight', // Förvalt värde
+  category: '',
+  description: '',
+  image_url: '',
+  email: '',
+  latitude: 59.8586, // Förvalt till centrala Uppsala
+  longitude: 17.6389 // Förvalt till centrala Uppsala
+  })
 
+  const isSubmitting = ref(false)
+  const photo = ref(null) 
+  const selectedFile = ref(null)
+  const router = useRouter()
+  const showPopup = ref(false) 
+  const imagePreview = ref(null)
+  const addressSearch = ref('')
+  const reportMap = ref(null)
+  
+
+  function updateCoords({ lat, lng }) {
+  formData.value.latitude = lat
+  formData.value.longitude = lng
+  console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
+}
+  
   //Socket listeners
   socket.on("uiLabels", (labels) => {
-  uiLabels.value = labels
+    uiLabels.value = labels
   })
 
   //Watchers
   watch(() => props.currentLang, (newLang) => { //vakta språket
-    socket.emit("getUILabels", newLang);
+    if (newLang) {
+      socket.emit("getUILabels", newLang);
+    } else {
+      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
+    }
   }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
+
   //Methods
-  const handleSubmit = () => { 
-    const highlightData = { // Samla in datan från formuläret
-      title: category.value,
-      description: description.value,
-    };
-    saveSubmission(highlightData, 'highlight'); // Spara datan och berätta att det är av typen 'highlight'
-    showPopup.value = true;
+ async function handleSubmit() {
+  isSubmitting.value = true
+  if (props.session) {
+    formData.value.email = props.session.user.email
   }
-  const handleDone = () => {  // Nollställ formuläret och gå tillbaka till startsidan
+  const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
+  const reportData = { // 2. Förbered datan som ska till databasen
+    ...formData.value,
+    image_url: imageUrl // Här lägger vi till länken vi just fick
+  }
+  const { error } = await supabase // 3. Skicka till reports-tabellen
+    .from('reports')
+    .insert([reportData])
+
+  if (error) {
+    alert("Kunde inte skicka: " + error.message)
+  } else {
+    router.push('/feedback/')
+  }
+  
+  isSubmitting.value = false
+}
+
+async function searchAddress() {
+  // ... din fetch-kod från tidigare ...
+  if (data.length > 0) {
+    const { lat, lon } = data[0]
+    // Anropa kartans funktion för att flytta markören dit
+    reportMap.value.setLocation(parseFloat(lat), parseFloat(lon))
+  }
+}
+
+async function uploadImage() {
+  if (!selectedFile.value) return null
+
+  // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
+  const fileName = `${Date.now()}-${selectedFile.value.name}`
+  
+  const { data, error } = await supabase.storage
+    .from('report-images') // Namnet på din bucket
+    .upload(fileName, selectedFile.value)
+
+  if (error) {
+    console.error("Storage error:", error)
+    return null
+  }
+  const { data: publicUrlData } = supabase.storage
+    .from('report-images')
+    .getPublicUrl(fileName)
+
+  return publicUrlData.publicUrl
+}
+
+  const handleDone = () => { 
     category.value = ''
     description.value = ''
     photo.value = null
     showPopup.value = false
+    // Omdirigerar tillbaka till startsidan där listan uppdateras
     router.push({ name: 'StartMWC' })
   }
 
+  function handlePhotoUpload(event) {
+  const file = event.target.files[0]
+  if (!file) return
+
+  selectedFile.value = file
+
+  // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
+  imagePreview.value = URL.createObjectURL(file)
+} 
+function removeImage() {
+  selectedFile.value = null
+  imagePreview.value = null
+  // Tips: nollställ även själva input-fältet om du vill vara extra noga
+  document.getElementById('photo').value = ""
+}
+
+
+
 </script>
-  
 
 
 
 
-  <style scoped>
-  
-  .report-page {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Alla formulärelement ska använda samma font */
-  input,
-  textarea,
-  select,
-  button {
-    font-family: inherit;
-    font-size: 16px;
-  }
-    
-  /* ===== Sidhuvud ===== */
-  .report-header {
-    padding: 16px;
-  }
-  
-  .report-title {
-    margin-bottom: 8px;
-  }
-  
-  .report-subtitle {
-    margin: 0;
-  }
-  
-  /* ===== Karta ===== */
-  
-  .map-section {
-    padding: 16px;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .map-container {
-    position: relative;
-    width: 100%;
-    max-width: 900px;   /* gör kartan mindre i bredd */
-    border: 2px solid #aaa;
-    border-radius: 12px;
-    padding: 12px;
-    overflow: hidden;
-    box-sizing: border-box;
-  }
-  
-  .map-image {
-    display: block;
-    width: 100%;
-    height: 420px;      /* mindre höjd */
-    object-fit: cover;
-    border-radius: 12px;
-  }
-  
-  /* ===== Recent reports ===== */
-  .recent-report {
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    width: 220px;
-    max-width: 45%;
-    background-color: rgba(255, 255, 255, 0.7);
-    border-radius: 10px;
-    padding: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    max-height: 180px;
-    overflow-y: auto;
-    box-sizing: border-box;
-  }
-  
-  .recent-reports-title {
-    margin-top: 0;
-  }
-  
-  .recent-reports-list {
-    margin: 0;
-    padding-left: 20px;
-  }
-  
-  /* ===== Formulärsektion ===== */
-  
-  .form-section {
-    display: flex;
-    justify-content: center;
-    padding: 32px 16px 40px;
-  }
-  
-  .form-container {
-    width: 100%;
-    max-width: 700px;
-    background-color: #c9e2df;
-    border-radius: 20px;
-    padding: 24px 20px;
-    box-sizing: border-box;
-  }
-  
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 24px;
-  }
-  
-  .form-label {
+<!-- CSS-->
+<style scoped>
+
+.preview-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  display: block;
+  margin: 10px auto;
+}
+
+.preview-text {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.remove-image-btn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.report-page {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Alla formulärelement ska använda samma font */
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: 16px;
+}
+
+
+/* ===== Sidhuvud ===== */
+.report-header {
+  padding: 16px;
+}
+
+.report-title {
+  margin-bottom: 8px;
+}
+
+.report-subtitle {
+  margin: 0;
+}
+
+/* ===== Karta ===== */
+
+.map-section {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;   /* gör kartan mindre i bredd */
+  border: 2px solid #aaa;
+  border-radius: 12px;
+  padding: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.map-image {
+  display: block;
+  width: 100%;
+  height: 420px;      /* mindre höjd */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* ===== Recent reports ===== */
+.recent-report {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 220px;
+  max-width: 45%;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  max-height: 180px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index:1000;
+}
+
+.recent-reports-title {
+  margin-top: 0;
+}
+
+.recent-reports-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+/* ===== Formulärsektion ===== */
+
+.form-section {
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px 40px;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 700px;
+  background-color: #c9e2df;
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-sizing: border-box;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.form-label {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #1e1e1e;
+}
+/* ===== Form controls ===== */
+
+.form-control,
+.form-input {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background-color: white;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.form-input-locked {
+  width: 100%;
+  padding: 16px;
+  background-color: #edf2f7bc; /* Ljusgrå bakgrund */
+  color: #718096;           /* Lite blekare textfärg */
+  cursor: not-allowed;      /* Visar en "stopp"-symbol vid hovring */
+  border: 1px solid #cbd5e0;
+  border-radius: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+/* Select behöver extra reset */
+select.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Textarea */
+textarea.form-input {
+  resize: vertical;
+  min-height: 140px;
+}
+
+/* ===== Filuppladdning ===== */
+
+.file-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.file-control-text {
+  color: #777;
+}
+
+.file-control-icon {
+  font-size: 20px;
+}
+
+.file-input {
+  display: none;
+}
+
+/* ===== Knapp ===== */
+
+.submit-button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background-color: #2f2f2f;
+  color: white;
+  cursor: pointer;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.popup-box {
+  width: 90%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.popup-text {
+  font-size: 20px;
+  margin-bottom: 24px;
+}
+
+.popup-title {
+  margin-bottom: 12px;
+}
+
+.popup-description {
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.popup-button {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  background-color: #2f2f2f;
+  color: white;
+  cursor: pointer;
+}
+
+/* ===== Anpassad till telefon ===== */
+
+@media (max-width: 768px) {
+  .site-title {
     font-size: 18px;
-    margin-bottom: 8px;
-    color: #1e1e1e;
   }
-  /* ===== Form controls ===== */
-  
-  .form-control,
-  .form-input {
-    width: 100%;
-    padding: 16px;
-    border: none;
+
+  .report-title {
+  margin-bottom: 8px;
+  font-size: clamp(28px, 4vw, 56px);
+  text-align: center;
+  }
+
+.report-subtitle {
+  margin: 0;
+  font-size: clamp(16px, 2.2vw, 28px);
+  text-align: center;
+  }
+
+  .map-container {
+    max-width: 100%;
+    padding: 8px;
+  }
+
+  .map-image {
+    height: 260px;
+  }
+
+  .recent-report {
+    width: 42%;
+    min-width: 140px;
+    max-width: 220px;
+    right: 12px;
+    bottom: 12px;
+    left: auto;         /* viktigt */
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .form-container {
+    padding: 20px 16px;
     border-radius: 16px;
-    background-color: white;
-    box-sizing: border-box;
-    font-family: inherit;
+  }
+
+  .form-label {
     font-size: 16px;
   }
-  
-  /* Select behöver extra reset */
-  select.form-control {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-  }
-  
-  /* Textarea */
-  textarea.form-input {
-    resize: vertical;
-    min-height: 140px;
-  }
-  
-  /* ===== Filuppladdning ===== */
-  
-  .file-control {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .file-control-text {
-    color: #777;
-  }
-  
-  .file-control-icon {
-    font-size: 20px;
-  }
-  
-  .file-input {
-    display: none;
-  }
-  
-  /* ===== Knapp ===== */
-  
+
+  .form-control,
+  .form-input,
   .submit-button {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 16px;
-    background-color: #2f2f2f;
-    color: white;
-    cursor: pointer;
+    font-size: 16px;
+    padding: 14px;
   }
-  
-  .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.35);
-  
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  
-    z-index: 1000;
+
+  textarea.form-control,
+  textarea.form-input {
+    min-height: 120px;
   }
-  
-  .popup-box {
-    width: 90%;
-    max-width: 500px;
-    background-color: white;
-    border-radius: 20px;
-    padding: 24px;
-    box-sizing: border-box;
-  }
-  
-  .popup-text {
-    font-size: 20px;
-    margin-bottom: 24px;
-  }
-  
-  .popup-title {
-    margin-bottom: 12px;
-  }
-  
-  .popup-description {
-    margin-bottom: 24px;
-    line-height: 1.4;
-  }
-  
-  .popup-button {
-    display: block;
-    margin: 0 auto;
-    padding: 12px 28px;
-    border: none;
-    border-radius: 12px;
-    background-color: #2f2f2f;
-    color: white;
-    cursor: pointer;
-  }
-  
-  /* ===== Anpassad till telefon ===== */
-  
-  @media (max-width: 768px) {
-    .site-title {
-      font-size: 18px;
-    }
-  
-    .report-title {
-    margin-bottom: 8px;
-    font-size: clamp(28px, 4vw, 56px);
-    text-align: center;
-    }
-  
-  .report-subtitle {
-    margin: 0;
-    font-size: clamp(16px, 2.2vw, 28px);
-    text-align: center;
-    }
-  
-    .map-container {
-      max-width: 100%;
-      padding: 8px;
-    }
-  
-    .map-image {
-      height: 260px;
-    }
-  
-    .recent-report {
-      width: 42%;
-      min-width: 140px;
-      max-width: 220px;
-      right: 12px;
-      bottom: 12px;
-      left: auto;         /* viktigt */
-      font-size: 14px;
-      padding: 10px;
-    }
-  
-    .form-container {
-      padding: 20px 16px;
-      border-radius: 16px;
-    }
-  
-    .form-label {
-      font-size: 16px;
-    }
-  
-    .form-control,
-    .form-input,
-    .submit-button {
-      font-size: 16px;
-      padding: 14px;
-    }
-  
-    textarea.form-control,
-    textarea.form-input {
-      min-height: 120px;
-    }
-  }
-  
-  </style>
+}
+
+</style>
