@@ -5,22 +5,25 @@
 	"allReports": "All reports",
 	"allReportsOnMap": "See all reports on map",
 
-	"backToHome": "No thanks, back to home",
+	"backToHome": "Back to home",
 
 	"category": "Category",
 	"changeLanguage": "Byt till svenska",
 	"chooseCategory": "Choose category",
 	"contactInfo": "Contact information",
+	"culture": "Culture",
 	"currentLocation": "Current Location",
 	"createAccount": "Create account",
 
 	"describeYourProblem": "Describe your problem",
 	"description": "Description",
 	"done": "Done",
+	
+	"event": "Event",
 
 	"feedbackProblem": "Your report is sent to Uppsala municipality who will make sure it gets fixed! You can check the status of your report in your profile.",
 	"feedbackHighlight": "Your highlight is sent to Uppsala municipality who will make sure it gets noticed! You can check the status of your highlight in your profile.",
-
+	"foodanddrink": "Food and drinks",
 	
 	"highlight": "Highlight",
 	"highlights": "Highlights",
@@ -34,10 +37,15 @@
 	"logIn": "Log In",
 
 	"memberSince": "Member since:",
+	"mustsee": "Must see",
 	"myReports": "My reports",
 
+	"nature": "Nature",
+	"noBackToHome": "No thanks, back to home",
 	"noReportsSubmitted": "No reports or highlights submitted yet.",
 
+
+	"other": "Other",
 	"or": "Or",
 
 	"perkTitle": "Do you want to be updated on your report?",
@@ -51,8 +59,10 @@
 
 	"recentReports": "Recent reports",
 	"report": "Report",
+	"reportAHighlight": "Report a highlight",
 	"reportAProblem": "Report a problem",
 	"reports": "Reports",
+
 
 	"sendInHighlight": "Send in your highlight!",
 	"sendInReport": "Send in your report!",
@@ -65,6 +75,9 @@
 	"thankYouText": "Thank you for caring about our city!",
 
 	"uploadPhoto": "Upload or take a photo",
+
+	"viewReport": "View your reports on your profile page!",
+	"visitProfile": "Visit your profile",
 
 	"whatHappensNow": "What happens now?",
 	"whatYouWantReport": "What do you want to report?",

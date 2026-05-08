@@ -6,36 +6,53 @@
   <main v-else class="feedback-page">
   
 
-  <section class="feedback-container">
-    <h2 class="feedback-title"> {{uiLabels.thankYouText}} </h2>
-    <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
-    <p class="feedback-text"> {{ uiLabels.feedbackProblem }} </p>
+    <section v-if="session" class="loggedin-feedback-container">
+        <h2 class="feedback-title"> {{uiLabels.thankYouText}} </h2>
+        <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
+        <p class="feedback-text"> {{ uiLabels.feedbackProblem }} </p>
 
-   
+        <div class="visit-profile-container" >
+        <h4 class="view-report-title"> {{uiLabels.viewReport}} </h4>
 
-    <div class="accountperks-container" >
-      <h4 class="accountperks-title"> {{uiLabels.perkTitle}} </h4>
+            <div class="visit-profile-button-container">
+                <router-link to="/profile/" class="btn visitProfile" > {{uiLabels.visitProfile}} </router-link> 
+            </div>
 
-       <div class="createAccount-button-container">
-      <router-link to="/login/" class="btn createAccount" > {{uiLabels.createAccount}} </router-link> 
-      <router-link to="/login/" class="btn logIn" > {{uiLabels.logIn}} </router-link> 
-    </div>
+        <div class="options-button-container">
+        <router-link to="/" class="btn backToHome" > {{uiLabels.backToHome}} </router-link>
+        <router-link to="/allreports/" class="btn allReports" > {{uiLabels.allReports}} </router-link>
+        </div>
 
-      <ul class="accountperks-list">
-        <li class="accountperks-item"> {{uiLabels.perk1}} </li>
-        <li class="accountperks-item"> {{uiLabels.perk2}} </li>
-        <li class="accountperks-item"> {{uiLabels.perk3}} </li>
-      </ul>
-      <div class="options-button-container">
-      <router-link to="/" class="btn backToHome" > {{uiLabels.backToHome}} </router-link>
-      <router-link to="/allreports/" class="btn allReports" > {{uiLabels.allReports}} </router-link>
-      </div>
-    </div>
+        </div>
 
+    </section>
 
-  </section>
+    <section v-else class="feedback-container">
+        <h2 class="feedback-title"> {{uiLabels.thankYouText}} </h2>
+        <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
+        <p class="feedback-text"> {{ uiLabels.feedbackProblem }} </p>
 
-  
+        <div class="accountperks-container" >
+        <h4 class="accountperks-title"> {{uiLabels.perkTitle}} </h4>
+
+        <div class="createAccount-button-container">
+        <router-link to="/login/" class="btn createAccount" > {{uiLabels.createAccount}} </router-link> 
+        <router-link to="/login/" class="btn logIn" > {{uiLabels.logIn}} </router-link> 
+        </div>
+
+        <ul class="accountperks-list">
+            <li class="accountperks-item"> {{uiLabels.perk1}} </li>
+            <li class="accountperks-item"> {{uiLabels.perk2}} </li>
+            <li class="accountperks-item"> {{uiLabels.perk3}} </li>
+        </ul>
+        <div class="options-button-container">
+        <router-link to="/" class="btn backToHome" > {{uiLabels.noBackToHome}} </router-link>
+        <router-link to="/allreports/" class="btn allReports" > {{uiLabels.allReports}} </router-link>
+        </div>
+        </div>
+
+    </section>
+
   </main>
 </template>
 
@@ -45,41 +62,15 @@
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
-  import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
-  import L from 'leaflet'
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang', 'session']) //ta emot språkval och session§ från app.vue
 
   //Data
   const uiLabels = ref({})
-  const formData = ref({
-  type: 'problem', // Förvalt värde
-  category: '',
-  description: '',
-  image_url: '',
-  email: '',
-  latitude: 59.8586, // Förvalt till centrala Uppsala
-  longitude: 17.6389 // Förvalt till centrala Uppsala
-  })
 
-  const isSubmitting = ref(false)
-  const photo = ref(null) 
-  const selectedFile = ref(null)
-  const router = useRouter()
-  const showPopup = ref(false) 
-  const imagePreview = ref(null)
-  const addressSearch = ref('')
-  const reportMap = ref(null)
-  
-
-  function updateCoords({ lat, lng }) {
-  formData.value.latitude = lat
-  formData.value.longitude = lng
-  console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
-}
   
   //Socket listeners
   socket.on("uiLabels", (labels) => {
@@ -96,84 +87,6 @@
   }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
 
-  //Methods
- async function handleSubmit() {
-  isSubmitting.value = true
-  const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
-  const reportData = { // 2. Förbered datan som ska till databasen
-    ...formData.value,
-    image_url: imageUrl // Här lägger vi till länken vi just fick
-  }
-  const { error } = await supabase // 3. Skicka till reports-tabellen
-    .from('reports')
-    .insert([reportData])
-
-  if (error) {
-    alert("Kunde inte skicka: " + error.message)
-  } else {
-    alert("Allt klart! Bild och rapport sparad.")
-    router.push('/allreports')
-  }
-  
-  isSubmitting.value = false
-}
-
-async function searchAddress() {
-  // ... din fetch-kod från tidigare ...
-  if (data.length > 0) {
-    const { lat, lon } = data[0]
-    // Anropa kartans funktion för att flytta markören dit
-    reportMap.value.setLocation(parseFloat(lat), parseFloat(lon))
-  }
-}
-
-async function uploadImage() {
-  if (!selectedFile.value) return null
-
-  // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
-  const fileName = `${Date.now()}-${selectedFile.value.name}`
-  
-  const { data, error } = await supabase.storage
-    .from('report-images') // Namnet på din bucket
-    .upload(fileName, selectedFile.value)
-
-  if (error) {
-    console.error("Storage error:", error)
-    return null
-  }
-  const { data: publicUrlData } = supabase.storage
-    .from('report-images')
-    .getPublicUrl(fileName)
-
-  return publicUrlData.publicUrl
-}
-
-  const handleDone = () => { 
-    category.value = ''
-    description.value = ''
-    photo.value = null
-    showPopup.value = false
-    // Omdirigerar tillbaka till startsidan där listan uppdateras
-    router.push({ name: 'StartMWC' })
-  }
-
-  function handlePhotoUpload(event) {
-  const file = event.target.files[0]
-  if (!file) return
-
-  selectedFile.value = file
-
-  // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
-  imagePreview.value = URL.createObjectURL(file)
-} 
-function removeImage() {
-  selectedFile.value = null
-  imagePreview.value = null
-  // Tips: nollställ även själva input-fältet om du vill vara extra noga
-  document.getElementById('photo').value = ""
-}
-
-
 </script>
 
 <!-- CSS-->
@@ -181,7 +94,7 @@ function removeImage() {
 .feedback-page {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   min-height: 85vh;
   background-color: #f8fafc; /* Ljusgrå bakgrund som får den vita boxen att poppa */
   padding: 20px;
@@ -189,9 +102,9 @@ function removeImage() {
 }
 
 /* Den vita "kort"-containern */
-.feedback-container {
+.feedback-container, .loggedin-feedback-container {
   background: white;
-  padding: 40px;
+  padding: 20px;
   border-radius: 32px; /* Kraftigt rundade hörn enligt prototyp */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   max-width: 440px;
@@ -224,7 +137,7 @@ function removeImage() {
 
 
 /* Knapp-containern */
-.createAccount-button-container {
+.createAccount-button-container, .visit-profile-button-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -247,7 +160,7 @@ function removeImage() {
 }
 
 /* Specifik stil för "Create Account" (Mörk) */
-.createAccount {
+.createAccount, .visitProfile {
   background-color: #2d3748;
   color: white;
 }
@@ -295,7 +208,7 @@ function removeImage() {
   border-radius: 20px;
 }
 
-.accountperks-title {
+.accountperks-title, .view-report-title {
   font-size: 20px;
   font-weight: 800;
   color: #23a88c;

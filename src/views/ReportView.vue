@@ -104,12 +104,21 @@
         <div class="form-field">
           <label for="email" class="form-label">Email</label>
           <input
+            v-if="props.session"
+            id="email"
+            type="email"
+            class="form-input-locked"
+            :value="props.session.user.email"
+            readonly
+          
+          />
+          <input
+            v-else
             id="email"
             type="email"
             class="form-input"
             placeholder="Your email"
             v-model="formData.email"
-            required
           />
         </div>
 
@@ -119,18 +128,7 @@
         </button>
       </form>
   </section>
-
-    <!-- Popup-fönstret -->
-    <div v-if="showPopup" class="popup-overlay">
-      <div class="popup-box">
-      <p class="popup-text"> {{ uiLabels.thankYouText }} </p>
-        <h3 class="popup-title"> {{ uiLabels.whatHappensNow }} </h3>
-          <p class="popup-description">
-            {{ uiLabels.sentReportInfo }}
-          </p>
-      <button class="popup-button" @click="handleDone"> Done </button>
-      </div>
-    </div>
+    
   </section>
   </main>
 </template>
@@ -147,7 +145,7 @@
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
 
   //Data
   const uiLabels = ref({})
@@ -195,6 +193,9 @@
   //Methods
  async function handleSubmit() {
   isSubmitting.value = true
+  if (props.session) {
+    formData.value.email = props.session.user.email
+  }
   const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
   const reportData = { // 2. Förbered datan som ska till databasen
     ...formData.value,
@@ -425,6 +426,19 @@ button {
   border: none;
   border-radius: 16px;
   background-color: white;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.form-input-locked {
+  width: 100%;
+  padding: 16px;
+  background-color: #edf2f7bc; /* Ljusgrå bakgrund */
+  color: #718096;           /* Lite blekare textfärg */
+  cursor: not-allowed;      /* Visar en "stopp"-symbol vid hovring */
+  border: 1px solid #cbd5e0;
+  border-radius: 16px;
   box-sizing: border-box;
   font-family: inherit;
   font-size: 16px;
