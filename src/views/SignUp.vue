@@ -1,10 +1,11 @@
 <template>
   <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
   <section class="login-container">
+
     <div class="login-form">
-      <input type="email" v-model="email" placeholder="Email" class="login-input" />
-      <input type="password" v-model="password" placeholder="Password" class="login-input" />
-      <button class="button-report" @click="handleLogin"> {{ uiLabels.logIn }} </button>
+      <input type="email" v-model="email" placeholder="Your email" class="login-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
+      <input type="password" v-model="password" placeholder="Your password" class="login-input" />
+      <button class="button-report" @click="handleSignUp"> {{ uiLabels.signUp }} </button>
     </div>
 
     <div class="separator-text">
@@ -51,22 +52,18 @@
   }, { immediate: true }); //Språket laddas direkt när sidan laddas
   
   //Methods
-  const handleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value,
+  const handleSignUp = async () => { //Async för att allt inte ska frysa medan vi pratar med databasen
+    const { data, error } = await supabase.auth.signUp({ //Await, koden väntar tills vi får svar
+    email: email.value,
+    password: password.value,
   })
-
-  if (error) {
-    alert("Inloggning misslyckades: " + error.message)
-  } else {
-    // Om det lyckas, skicka användaren till startsidan eller rapportsidan
-    router.push({ name: 'StartMWC' }) 
+    if (error) {
+      alert("Fel vid registrering: " + error.message)
+    } else {
+      alert("Kolla din e-post för att bekräfta kontot!")
+    }
   }
-}
-
-
-
+ 
 </script>
 
 
