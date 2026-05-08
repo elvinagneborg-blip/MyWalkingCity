@@ -17,9 +17,24 @@
                         {{ currentLang === 'sv' ? 'English' : 'Svenska' }} <!--Det som står på knappen, info fås från app.vue-->
                 </button>
                 
-                <div class="web-header-avatar" aria-label="User avatar"></div>
+                <div >
+                    <div v-if="!session">
+                        <button  @click="router.push('/login')"> <!--KOllar om man är inloggad-->
+                            Logga in
+                        </button>
+                        <button  @click="router.push('/signup')"> <!--KOllar om man är inloggad-->
+                            Skapa Konto
+                        </button>
+                    </div>
 
-            
+                    <div v-else>
+                        <button @click="handleLogout"> 
+                        Logga ut
+                        </button>
+                        <div class="web-header-avatar" aria-label="User avatar"></div>
+                    </div>
+                </div>
+
             <!--Öppna meny knappen-->
                 <button 
                     class="web-header-menu-button" @click="toggleMenu" aria-label="Open menu"> 
@@ -34,7 +49,14 @@
 
                 <div class="menu-popup-nav">
                     <RouterLink :to="{ name: 'StartMWC' }" class="menu-popup-link" @click="closeMenu">Home</RouterLink> <!-- Tar oss till homepage och stänger ner menyn-->
-                    <RouterLink :to="{ name: 'ProfileView' }" class="menu-popup-link" @click="closeMenu">My profile</RouterLink>
+                    <template v-if="session"> <!--Ifall vi är inloggade-->
+                        <RouterLink :to="{ name: 'ProfileView' }" class="menu-popup-link" @click="closeMenu">My profile</RouterLink>
+                    </template>
+
+                    <template v-else> <!--ifall vi inte är inloggade-->
+                        <RouterLink :to="{ name: 'LogIn' }" class="menu-popup-link" @click="closeMenu">Log in</RouterLink>
+                        <RouterLink :to="{ name: 'SignUp' }" class="menu-popup-link" @click="closeMenu">Sign Up</RouterLink>
+                    </template>
                     <RouterLink :to="{ name: 'OptionView' }" class="menu-popup-link" @click="closeMenu">Report</RouterLink>
                     <RouterLink :to="{ name: 'AllReportsView' }" class="menu-popup-link" @click="closeMenu">All reports</RouterLink>
                     
@@ -55,16 +77,18 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import ResponsiveNav from './ResponsiveNav.vue'
+import { supabase } from '@/utils/supabase'
+import { useRouter } from 'vue-router'
 
 //Data
 const menuOpen = ref(false)
+const router = useRouter()
 
 //Emits (Output)
 const emit = defineEmits(['toggle-lang']) //Så att knappen får skicka info till app.vue
 
 //Props (Input)
-defineProps(['currentLang']) //Så att knappen kan ta emot språket från app.vue
-
+const props = defineProps(['session', 'currentLang']) // Ta emot sessionen från App.vue
 
 //Methods
 const toggleMenu = () => { /* Utgår från att den är stängd, men sedan växlar den värde */
@@ -72,6 +96,10 @@ const toggleMenu = () => { /* Utgår från att den är stängd, men sedan växla
 }
 const closeMenu = () => {
     menuOpen.value = false
+}
+const handleLogout = async () => {
+  await supabase.auth.signOut()
+  router.push('/')
 }
 </script>
 

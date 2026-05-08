@@ -28,7 +28,6 @@
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
-  import WebbHeader from '@/components/WebbHeader.vue'
   import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
   import L from 'leaflet'

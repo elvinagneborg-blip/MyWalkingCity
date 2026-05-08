@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, defineEmits } from "vue"; /* onMounted kör kod när komponenten har laddats, ref används för referens */
+import { onMounted, ref } from "vue"; /* onMounted kör kod när komponenten har laddats, ref används för referens */
 import L from "leaflet"; /* importerar leaflet - biblioteket */
 import "leaflet/dist/leaflet.css";
 
