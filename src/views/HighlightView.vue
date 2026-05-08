@@ -209,7 +209,7 @@
   if (error) {
     alert("Kunde inte skicka: " + error.message)
   } else {
-    router.push('/feedback/')
+    router.push( { path: '/feedback/', query: { type: 'highlight' } })
   }
   
   isSubmitting.value = false

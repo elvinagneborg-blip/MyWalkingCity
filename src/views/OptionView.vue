@@ -127,7 +127,7 @@
     transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-.main-option:hover {
+.main-option:hover, .secondary-option:hover {
     transform: scale(1.02);
     opacity: 0.95;
 }
