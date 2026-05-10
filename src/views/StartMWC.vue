@@ -1,12 +1,18 @@
 <template>
-  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+  <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
+    <p>Laddar My Walking City...</p>
+  </div>
+
+  <main v-else>
   <section class="body-top">
     <h2 class="section-title"> {{ uiLabels.shapeUppsala }} <br> {{ uiLabels.withAPhoto }} </h2>
     <h6> {{ uiLabels.startDescription}}</h6>
     
     <div>
-      <p><button class="report"><RouterLink to="/option/"> {{ uiLabels.report }} </RouterLink></button></p>
-      <p><button class="how-it-works"> {{ uiLabels.howDoesItWork }} </button></p>
+      <p><RouterLink to="/option/" class="report"> {{ uiLabels.report }} </RouterLink></p>
+      <p><a href="#howItWorks-section" class="how-it-works"> 
+    {{ uiLabels.howDoesItWork }} 
+  </a></p>
     </div>
 
     <div class="stats-container">
@@ -19,7 +25,7 @@
   <section class="body-latest-reports">
     <h6> {{ uiLabels.liveFeed }} </h6>
     <h2> {{ uiLabels.latestReports }} </h2>
-    <h2> {{ uiLabels.latestReportsDescription }} </h2>
+    <h5> {{ uiLabels.latestReportsDescription }} </h5>
 
     <div class="report-list">
       <!-- Visas om det är tomt i sessionStorage -->
@@ -28,28 +34,21 @@
       </div>
 
       <!-- Loopar igenom den hämtade datan -->
-      <div 
+      <RecentReport 
         v-else
         v-for="report in allUserReports" 
         :key="report.id" 
-        :class="['report-card', report.type === 'problem' ? 'red-bg' : 'green-bg']">
-        <h4>{{ report.title }}</h4>
-        <p>{{ report.description }}</p>
-        <img 
-                    v-if="report.image_url" 
-                    :src="report.image_url" 
-                    alt="Rapportbild"
-                />
-        <small style="font-size: 0.8em; opacity: 0.7;">{{ new Date(report.created_at).toLocaleDateString() }}</small>
+        :report="report"
+        :session="session"
+       />
       </div>
-    </div>
 
     
       
-    <h5> {{ uiLabels.allReportsOnMap }} </h5>
+    <p><RouterLink to="/allreports/" class="report"> {{ uiLabels.allReportsOnMap }} </RouterLink></p>
     </section>
 
-    <section class="body-how-it-works">
+    <section id="howItWorks-section" class="body-how-it-works">
       <h6> {{ uiLabels.howItWorks }} </h6>
       <h2> {{ uiLabels.fourSteps }}
       </h2>
@@ -71,10 +70,11 @@
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
   import { supabase } from '@/utils/supabase' 
+  import RecentReport from '../components/RecentReport.vue'
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
 
   //Data
   const uiLabels = ref({})
@@ -113,6 +113,8 @@
     }
   }
 
+  
+
   //Startup (only once when page loads)
   onMounted(() => { 
     fetchLatestReports()
@@ -122,6 +124,11 @@
 
 
 <style scoped>
+
+html {
+  scroll-behavior: smooth
+}
+
 .body-top {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/img/Uppsala_domkyrka_flygbild-scaled.jpg');
   display: flex;
@@ -143,27 +150,7 @@
   margin-top: 20px;
 }
 
-.report-card {
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 15px;
-  border-radius: 8px; 
-  color: rgb(42, 91, 42);
-}
 
-.report-card h4 {
-  margin-bottom: 5px;
-}
-
-.red-bg {
-  background-color: rgba(255, 0, 0, 0.4); 
-}
-
-.green-bg {
-  background-color: rgba(0, 255, 136, 0.4); 
-}
 
 .stats-container {
   display: flex;
