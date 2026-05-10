@@ -37,14 +37,20 @@
                 </div>
 
                 <div class="allreports-recent-report-list">
-                    <article v-for="report in reports" :key="report.id" class="allreports-recent-report-item">
-                        <dl class="allreports-recent-report-text">
-                            <dt>Kategori: </dt>
-                            <dd>{{ report.category }}</dd>
+                    <article v-for="report in reports" :key="report.report_id" class="allreports-recent-report-item">
+                        <div class="report-content">
+                            <dl class="allreports-recent-report-text">
+                                <dt> {{ uiLabels.category }} </dt>
+                                <dd>{{ report.category }}</dd>
 
-                            <dt>Beskrivning: </dt>
-                            <dd>{{ report.description }}</dd>
-                        </dl>
+                                <dt> {{ uiLabels.description }} </dt>
+                                <dd>{{ report.description }}</dd>
+                            </dl>
+
+                            <button class="boost-action-btn" @click="handleBoost(report.report_id, props.session)" :disabled="isBoosting">
+                                {{ isBoosting ? '...' : '🚀 Boosta' }}
+                            </button>
+                        </div>
                         <img v-if="report.image_url" :src="report.image_url" class="report-thumb" />
                     </article>
 
@@ -60,13 +66,15 @@
 <script setup>
 //Imports
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { useBoost } from '@/composables/useBoost' //för att kunna använda boost funktionen
   import io from 'socket.io-client' //kontakt med server
     import MapComponent from "@/components/MapComponent.vue";
     import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
 
 //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
+  const { handleBoost, isBoosting } = useBoost()
 
   //Data
   const uiLabels = ref({})
@@ -276,5 +284,29 @@ onMounted(async () => {
     margin-left: 15px;
 }
 
+.boost-action-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: #ffd700; /* Guld/Gul för boost */
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.2s;
+}
+
+.boost-action-btn:hover {
+    transform: scale(1.05);
+}
+
+.boost-action-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.report-content {
+    flex: 1; /* Gör att texten tar upp platsen till vänster om bilden */
+}
 
 </style>
