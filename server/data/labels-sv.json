@@ -1,4 +1,5 @@
 {
+	"accessibility": "Tillgänglighet",
 	"activeUsers": "Aktiva användare",	
 	"addHighlight": "Lägg till en höjdpunkt!",
 	"all": "Alla",
@@ -20,6 +21,7 @@
 	"done": "Klart",
 
 	"event": "Evenemang",
+	"email": "Email",
 
 	"feedbackProblem": "Din rapport skickas till Uppsala kommun som ser till att det fixas! Du kan kolla statusen på din rapport i din profil.",
 	"feedbackHighlight": "Din höjdpunkt görs synlig för andra invånare som kan njuta av den! Du kan se alla dina höjdpunkter i din profil.",
@@ -35,7 +37,9 @@
 	"latestReports": "Senaste rapporter",
 	"latestReportsDescription": "Se senaste rapporter från invånvare i Uppsala, både förbättringsförslag och positiva observationer",
 	"levelUp": "Levla upp",
+	"lights": "Ljus",
 	"liveFeed": "Liveflöde",
+	"locationOfProblem": "Var är problemet?",
 	"logIn": "Logga in",
 
 	"memberSince": "Medlem sedan:",
@@ -54,16 +58,22 @@
 	"perk2": "✅ Få uppdateringar om statusen på dina rapporter",
 	"perk3": "✅ Samla poäng, levla upp och bli en superinvånare!",
 	"photo": "Bild",
+	"photoPlaceholder": "Ladda upp eller ta en bild",
 	"problem": "Problem",
 	"problems": "Problem",
 	"profileLevelDescription": "Rapoortera problem och höjdpunkter i din stad för att få poäng och levla upp!",
+	"publicutilities": "Allmänna tjänster",
 
 	"recentReports": "Senaste rapporter",
+	"removeImage": "Ta bort bild",
 	"report": "Rapportera",
 	"reportAHighlight": "Rapportera en höjdpunkt",
 	"reportAProblem": "Rapportera ett problem",
 	"reports": "Rapporter",
 
+	"search": "Sök",
+	"searchForLocation": "Sök efter plats",
+	"selectedPhoto": "Vald bild:",
 	"sendInHighlight": "Skicka in din höjdpunkt!",
 	"sendInReport": "Skicka in din rapport!",
 	"sentReportInfo": "Din rapport skickas till Uppsala kommun som ser till att det fixas!",
@@ -71,11 +81,14 @@
 	"signUp": "Skapa konto",
 	"solved": "Löst",
 	"startDescription": "Rapportera problem och highlight bra saker i din stad. Samla poäng, levla upp och gör Uppsala bättre tillsammans!",
-	
+	"streets": "Gator",
+	"sidewalks_and_bike_lanes": "Trottoarer och cykelstigar",
+
 	"thankYouText": "Tack för att du bryr dig om vår stad!",
 
 	"uploadPhoto": "Ladda upp eller ta en bild",
 
+	"vandalism": "Vandalism",
 	"viewReport": "Se dina rapporter på din profilsida!",
 	"visitProfile": "Besök din profil",
 
