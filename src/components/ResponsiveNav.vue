@@ -28,7 +28,7 @@ nav {
     right: clamp(16px, 5vw, 48px);
 
     background-color: #0c7f6d;
-    z-index: 200;
+    z-index: 2000;
 
     border-radius: 16px 16px 0 0;
     padding: clamp(56px, 10vw, 90px) clamp(16px, 4vw, 32px) clamp(24px, 5vw, 40px);

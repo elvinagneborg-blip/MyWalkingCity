@@ -23,21 +23,28 @@
 
     <div class="report-list">
       <!-- Visas om det är tomt i sessionStorage -->
-      <div v-if="reports.length === 0">
+      <div v-if="allUserReports.length === 0">
         <p> {{ uiLabels.noReportsSubmitted }}</p>
       </div>
 
       <!-- Loopar igenom den hämtade datan -->
       <div 
         v-else
-        v-for="(report, index) in reports" 
-        :key="index" 
-        :class="['report-card', report.type === 'report' ? 'red-bg' : 'green-bg']">
+        v-for="report in allUserReports" 
+        :key="report.id" 
+        :class="['report-card', report.type === 'problem' ? 'red-bg' : 'green-bg']">
         <h4>{{ report.title }}</h4>
         <p>{{ report.description }}</p>
-        <small style="font-size: 0.8em; opacity: 0.7;">{{ report.createdAt }}</small>
+        <img 
+                    v-if="report.image_url" 
+                    :src="report.image_url" 
+                    alt="Rapportbild"
+                />
+        <small style="font-size: 0.8em; opacity: 0.7;">{{ new Date(report.created_at).toLocaleDateString() }}</small>
       </div>
     </div>
+
+    
       
     <h5> {{ uiLabels.allReportsOnMap }} </h5>
     </section>
@@ -63,6 +70,7 @@
   //Imports
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
+  import { supabase } from '@/utils/supabase' 
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
@@ -70,7 +78,7 @@
 
   //Data
   const uiLabels = ref({})
-  const reports = ref([])
+  const allUserReports = ref([])
   const steps = ref([  // Steg för "How it works"
     { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
     { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
@@ -88,12 +96,26 @@
     socket.emit("getUILabels", newLang);
   }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
+
+  //Method
+  const fetchLatestReports = async () => {
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', {ascending: false})
+      .limit(5) //hämtar 5 stycken rapporter
+
+    if (!error) {
+        allUserReports.value = data
+    }
+    else {
+      console.error("Kunde inte hämta live-feed:", error.message)
+    }
+  }
+
   //Startup (only once when page loads)
   onMounted(() => { 
-    const savedData = sessionStorage.getItem('mwc_submissions') // Hämta datan som vi sparade via formuläret
-    if (savedData) {
-      reports.value = JSON.parse(savedData)
-    }
+    fetchLatestReports()
   })
 </script>
 
@@ -224,6 +246,7 @@
   max-width: 400px; /* Texten bryts automatiskt när den blir bredare än så här */
   line-height: 1.5;
 }
+
 
 .body-latest-reports h6 {
   color: #1EBC9C;

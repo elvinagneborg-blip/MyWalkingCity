@@ -22,7 +22,9 @@
                 @click="showRecentReports = true">
                 {{uiLabels.recentReports}}
             </button>
-            <!-- Panel med recent reports -->
+          
+        </div>
+          <!-- Panel med recent reports -->
             <aside v-if="showRecentReports" class="allreports-recent-report-panel">
                 <div class="allreports-recent-report-header">
                     <h3 class="allreports-recent-report-title"> {{uiLabels.recentReports}} </h3>
@@ -55,7 +57,6 @@
                     <p v-if="reports.length === 0">Inga rapporter hittades.</p>
                  </div>
             </aside>
-        </div>
     </section>
     </main>
 
@@ -95,7 +96,11 @@
   }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
 async function getReports() {
-  const { data } = await supabase.from("reports").select()
+  const { data } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', {ascending: false})
+      .limit(5) //hämtar 5 stycken rapporter
   reports.value = data
   console.log('Rapporter från databasen:', data)
 }
@@ -180,7 +185,8 @@ onMounted(async () => {
 
 /* ===== Recent report panel =====*/
 .allreports-recent-report-panel {
-    position: absolute;
+    position: relative;
+    margin-top: -570px;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -191,11 +197,12 @@ onMounted(async () => {
 }
 
 .allreports-recent-report-header {
-    position: relative;
+    position: relative; /* Detta gör att knappen utgår från denna box */
+    width: 100%;        /* Sträck ut över hela panelens bredd */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 24px;
+    padding: 0 20px;    /* Ger lite luft på sidorna */
 }
 
 .allreports-recent-report-title {
@@ -207,14 +214,25 @@ onMounted(async () => {
 
 .allreports-close-recent-report-panel {
     position: absolute;
-    right: 0;
-    top: 0;
-    background: none;
+    right: 0;           /* Lägg den längst till höger i headern */
+
+    
+    background: #20c7b5; /* Din gröna färg som bakgrund gör den lättare att se */
+    color: white;
     border: none;
-    font-size: 28px;
-    line-height: 1;
+    border-radius: 50%;  /* Gör den rund */
+    width: 36px;
+    height: 36px;
+    
+    font-size: 20px;
+    font-weight: bold;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;         /* Se till att den ligger överst */
 }
+
 
 /* ===== Recent report listan  =====*/
 
