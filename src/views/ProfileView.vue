@@ -18,12 +18,12 @@
             <dl class="personal-dev-info">
                 <div class="personal-dev-row"> 
                     <dt class="personal-dev-label"> {{uiLabels.memberSince}} </dt>
-                    <dd class="personal-dev-value"> 2025 </dd>
+                    <dd class="personal-dev-value">  </dd>
                 </div>
 
                 <div class="personal-dev-row">
                     <dt class="personal-dev-label"> {{uiLabels.reports}} </dt>
-                    <dd class="personal-dev-value"> 7 </dd>
+                    <dd class="personal-dev-value"> {{ userReports.length }} </dd>
                 </div>
 
                 <div class="personal-dev-row">
@@ -110,15 +110,25 @@
             <button class="filter-button"> {{uiLabels.highlights}} </button>
         </div>
 
-        <div class="reports-list">
-            <article class="report-container">
-                <span class="report-tag"> {{ uiLabels.category }} </span>
-                <h3 class="report-text"> {{uiLabels.description}} </h3>
-            </article>
 
-            <article class="report-container">
-                <span class="report-tag"> {{ uiLabels.category }} </span>
-                <h3 class="report-text"> {{uiLabels.description}} </h3> <!--Alternative <p> men beroende på hur vi gör med det -->
+        <div class="reports-list">
+            <p v-if="userReports.length === 0">
+                Du har inte skickat in några rapporter än
+            </p>
+
+            <article v-else v-for="report in userReports" :key="report.id" class="report-container">
+                <div class="report-header">
+                    <span class="report-tag"> {{ report.category }} </span>
+                    <small>{{ new Date(report.created_at).toLocaleDateString() }}</small>
+                </div>
+
+                <h3 class="report-text"> {{ report.description }} </h3>
+               
+                <img 
+                    v-if="report.image_url" 
+                    :src="report.image_url" 
+                    alt="Rapportbild"
+                />
             </article>
         </div>
     </section>
@@ -160,15 +170,19 @@
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import { useRouter } from 'vue-router'
   import io from 'socket.io-client' //kontakt med server
+  import { supabase } from '@/utils/supabase' 
+
   
 
 //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
+  const userReports = ref([])
 
   //Data
   const router = useRouter()
   const uiLabels = ref({})
+
 
   //Socket listeners
   socket.on("uiLabels", (labels) => {
@@ -181,6 +195,25 @@
   }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
   //Methods
+
+  const fetchUserReports = async () => {
+    if (!props.session) return //KOllar om man är inoggad
+
+    const { data, error } = await supabase
+        .from('reports')
+        .select('*')
+        .eq('user_id', props.session.user.id) //hämta mina rapporter
+        .order('created_at', {ascending: false})
+
+    if (!error) {
+        userReports.value = data
+    }
+  }
+
+  //Startup
+  onMounted(() => {
+    fetchUserReports()
+  })
 
 </script>
 
@@ -499,6 +532,13 @@
     line-height: 1.1;
     font-weight: 500;
     color: #0d7868;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
 /* ===== Contact information ===== */
