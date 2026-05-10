@@ -59,7 +59,7 @@
 
     //Methods
     const goToProblem = () => {
-        router.push({ name: 'ReportView' })
+        router.push({ name: 'ProblemView' })
     }
     const goToHighlight = () => {
         router.push({ name: 'HighlightView' })
