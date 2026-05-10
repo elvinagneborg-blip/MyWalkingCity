@@ -199,7 +199,8 @@
   const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
   const reportData = { // 2. Förbered datan som ska till databasen
     ...formData.value,
-    image_url: imageUrl // Här lägger vi till länken vi just fick
+    image_url: imageUrl, // Här lägger vi till länken vi just fick
+    user_id: props.session ? props.session.user.id : null //spara anv UUID
   }
   const { error } = await supabase // 3. Skicka till reports-tabellen
     .from('reports')
