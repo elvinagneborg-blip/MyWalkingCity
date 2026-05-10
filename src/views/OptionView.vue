@@ -10,7 +10,7 @@
     <!-- Report / highligt knappar -->
     <div class="content">
     <div class="option-buttons">
-        <button class="main-option" @click="goToReport">
+        <button class="main-option" @click="goToProblem">
             <span class="icon">⚠</span>
             <span> {{ uiLabels.problem }} </span>
         </button>
@@ -58,8 +58,8 @@
     }, { immediate: true }); //Språket laddas direkt när sidan laddas
 
     //Methods
-    const goToReport = () => {
-        router.push({ name: 'ReportView' })
+    const goToProblem = () => {
+        router.push({ name: 'ProblemView' })
     }
     const goToHighlight = () => {
         router.push({ name: 'HighlightView' })

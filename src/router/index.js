@@ -15,9 +15,9 @@ const router = createRouter({
       component: () => import('../views/StartMWC.vue')
     },
     {
-      path: '/report/',
-      name: 'ReportView',
-      component: () => import('../views/ReportView.vue')
+      path: '/problem/',
+      name: 'ProblemView',
+      component: () => import('../views/ProblemView.vue')
     },
     {
       path: '/highlight/',

@@ -44,7 +44,7 @@
           v-model="addressSearch" 
           placeholder="Search for an address..." 
           class="form-control"
-          @keyup.enter="searchAddress" 
+          @keydown.enter.prevent="searchAddress" 
         />
         <button type="button" @click="searchAddress" class="btn-secondary">Search</button>
       </div>
@@ -220,11 +220,39 @@
 }
 
 async function searchAddress() {
-  // ... din fetch-kod från tidigare ...
-  if (data.length > 0) {
-    const { lat, lon } = data[0]
-    // Anropa kartans funktion för att flytta markören dit
-    reportMap.value.setLocation(parseFloat(lat), parseFloat(lon))
+  const query = addressSearch.value
+  if (!query) return // Sök inte om fältet är tomt
+
+  try {
+    // 1. Vi skickar adressen till Nominatim. 
+    // encodeURIComponent ser till att mellanslag och ÅÄÖ fungerar i webbadressen.
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+    )
+    const data = await response.json()
+
+    if (data.length > 0) {
+      // 2. Vi tar det första resultatet (oftast det mest relevanta)
+      const { lat, lon } = data[0]
+      const newLat = parseFloat(lat)
+      const newLon = parseFloat(lon)
+
+      // 3. Flytta kartan och markören via din MapComponent
+      if (reportMap.value) {
+        reportMap.value.setLocation(newLat, newLon)
+      }
+
+      // 4. Uppdatera din formData så att rätt koordinater skickas till databasen
+      formData.value.latitude = newLat
+      formData.value.longitude = newLon
+      
+      console.log("Hittade adressen:", data[0].display_name)
+    } else {
+      alert("Kunde inte hitta adressen. Prova att vara mer specifik (t.ex. lägg till 'Uppsala').")
+    }
+  } catch (error) {
+    console.error("Sökfel:", error)
+    alert("Något gick fel vid sökningen. Kontrollera din internetanslutning.")
   }
 }
 

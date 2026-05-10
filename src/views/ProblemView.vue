@@ -28,51 +28,47 @@
             <aside class="recent-report">
               <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
               <ul class="recent-reports-list">
-                    <li> Streets </li>
-                    <li> Sidewalks and bike lanes </li>
-                    <li> Lights </li>
-                    <li> Vandalism</li>
-                    <li> Public utilities</li>
-                    <li> Accessibility </li>
-                    <li> Other</li>
+                    <li> recent </li>
+                    <li> recent </li>
                 </ul>
             </aside>
           </div>
           <div class="form-field">
 
-      <label class="form-label">Where is the problem?</label>
+      <label class="form-label">{{ uiLabels.locationOfProblem }}</label>
       <div class="search-group">
         <input 
           type="text" 
           v-model="addressSearch" 
-          placeholder="Search for an address..." 
+          :placeholder="uiLabels.searchForLocation"
           class="form-control"
-          @keyup.enter="searchAddress" 
+          @key.enter.prevent="searchAddress" 
         />
-        <button type="button" @click="searchAddress" class="btn-secondary">Search</button>
+        <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
       </div>
       </div>
 
         <div class="form-field">
-          <label for="category" class="form-label"> Category </label>
+          <label for="category" class="form-label"> {{uiLabels.category}} </label>
           <!-- 2. Uppdatera v-model till formData.category -->
           <select id="category" class="form-control" v-model="formData.category" required>
-            <option disabled value="">Choose category</option>
-            <option value="pothole">Pothole</option>
-            <option value="broken_bench">Broken bench</option>
-            <option value="ramp_missing">Ramp missing</option>
-            <option value="lighting_issue">Lighting issue</option>
-            <option value="other">Other</option>
+            <option disabled value="">{{ uiLabels.chooseCategory }}</option>
+            <option value="streets">{{ uiLabels.streets }}</option>
+            <option value="sidewalks_and_bike_lanes">{{ uiLabels.sidewalks_and_bike_lanes }}</option>
+            <option value="lights">{{ uiLabels.lights }}</option>
+            <option value="publicutilities">{{ uiLabels.publicutilities }}</option>
+            <option value="vandalism">{{ uiLabels.vandalism }}</option>
+            <option value="accessibility">{{ uiLabels.accessibility }}</option>
+            <option value="other">{{uiLabels.other}}</option>
           </select>
         </div>
 
         <div class="form-field">
-          <label for="description" class="form-label"> Describe your problem</label>
-          <!-- 3. Uppdatera v-model till formData.description -->
+          <label for="description" class="form-label"> {{uiLabels.description}}</label>
           <textarea
             id="description"
             class="form-input"
-            placeholder="What is wrong?"
+            :placeholder="uiLabels.describeYourProblem"
             rows="5"
             v-model="formData.description"
             required
@@ -80,9 +76,9 @@
         </div>
 
         <div class="form-field">
-          <label for="photo" class="form-label">Photo</label>
+          <label for="photo" class="form-label">{{uiLabels.photo}}</label>
           <label for="photo" class="form-control file-control">
-            <span class="file-control-text">Upload or take a photo</span>
+            <span class="file-control-text">{{uiLabels.photoPlaceholder}}</span>
             <span class="file-control-icon">🖼️</span>
             <input
               id="photo"
@@ -96,17 +92,17 @@
         </div>
         
         <div v-if="imagePreview" class="preview-container">
-      <p class="preview-text">Selected photo:</p>
+      <p class="preview-text">{{uiLabels.selectedPhoto}}</p>
       <img :src="imagePreview" class="image-preview" />
       
       <!-- En knapp för att ångra sig och ta bort bilden -->
       <button type="button" @click="removeImage" class="remove-image-btn">
-        Remove photo
+        {{uiLabels.removeImage}}
       </button>
     </div>
 
         <div class="form-field">
-          <label for="email" class="form-label">Email</label>
+          <label for="email" class="form-label">{{uiLabels.email}}</label>
           <input
             v-if="props.session"
             id="email"
@@ -121,7 +117,7 @@
             id="email"
             type="email"
             class="form-input"
-            placeholder="Your email"
+            :placeholder="uiLabels.email"
             v-model="formData.email"
           />
         </div>
@@ -164,10 +160,8 @@
   })
 
   const isSubmitting = ref(false)
-  const photo = ref(null) 
   const selectedFile = ref(null)
   const router = useRouter()
-  const showPopup = ref(false) 
   const imagePreview = ref(null)
   const addressSearch = ref('')
   const reportMap = ref(null)
@@ -223,11 +217,39 @@
 }
 
 async function searchAddress() {
-  // ... din fetch-kod från tidigare ...
-  if (data.length > 0) {
-    const { lat, lon } = data[0]
-    // Anropa kartans funktion för att flytta markören dit
-    reportMap.value.setLocation(parseFloat(lat), parseFloat(lon))
+  const query = addressSearch.value
+  if (!query) return // Sök inte om fältet är tomt
+
+  try {
+    // 1. Vi skickar adressen till Nominatim. 
+    // encodeURIComponent ser till att mellanslag och ÅÄÖ fungerar i webbadressen.
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+    )
+    const data = await response.json()
+
+    if (data.length > 0) {
+      // 2. Vi tar det första resultatet (oftast det mest relevanta)
+      const { lat, lon } = data[0]
+      const newLat = parseFloat(lat)
+      const newLon = parseFloat(lon)
+
+      // 3. Flytta kartan och markören via din MapComponent
+      if (reportMap.value) {
+        reportMap.value.setLocation(newLat, newLon)
+      }
+
+      // 4. Uppdatera din formData så att rätt koordinater skickas till databasen
+      formData.value.latitude = newLat
+      formData.value.longitude = newLon
+      
+      console.log("Hittade adressen:", data[0].display_name)
+    } else {
+      alert("Kunde inte hitta adressen. Prova att vara mer specifik (t.ex. lägg till 'Uppsala').")
+    }
+  } catch (error) {
+    console.error("Sökfel:", error)
+    alert("Något gick fel vid sökningen. Kontrollera din internetanslutning.")
   }
 }
 

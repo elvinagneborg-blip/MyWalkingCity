@@ -1,4 +1,5 @@
 {
+	"accessibility": "Accessibility",
 	"activeUsers": "Active users",
 	"addHighlight": "Add a highlight!",
 	"all": "all",
@@ -20,6 +21,7 @@
 	"done": "Done",
 	
 	"event": "Event",
+	"email": "Email",
 
 	"feedbackProblem": "Your report is sent to Uppsala municipality who will make sure it gets fixed! You can check the status of your report in your profile.",
 	"feedbackHighlight": "Your highlight is made visible to other residents who can enjoy it! You can see all your highlight in your profile.",
@@ -33,7 +35,9 @@
 	"latestReports": "Latest reports",
 	"latestReportsDescription": "See the latest reports of citizens in Uppsala, both improvement and positive observations",
 	"levelUp": "Level up your citizenship",
+	"lights": "Lights",
 	"liveFeed": "Live feed",
+	"locationOfProblem": "Where is the problem located?",
 	"logIn": "Log In",
 
 	"memberSince": "Member since:",
@@ -53,22 +57,30 @@
 	"perk2": "✅ Get updated about the status of your reports",
 	"perk3": "✅ Collect points, level up and become a super resident!",
 	"photo": "Photo",
+	"photoPlaceholder": "Upload or take a photo",
 	"problem": "Problem",
 	"problems": "Problems",
 	"profileLevelDescription": "Report problems and highlights in your city to gain points and level up!",
+	"publicutilities": "Public utilities",
 
 	"recentReports": "Recent reports",
+	"removeImage": "Remove image",
 	"report": "Report",
 	"reportAHighlight": "Report a highlight",
 	"reportAProblem": "Report a problem",
 	"reports": "Reports",
 
 
+	"search": "Search",
+	"searchForLocation": "Search for location",
+	"selectedPhoto": "Selected photo:",
 	"sendInHighlight": "Send in your highlight!",
 	"sendInReport": "Send in your report!",
 	"sentReportInfo": "Your report is sent to Uppsala municipality who will make sure it gets fixed!",
 	"shapeUppsala": "Shape Uppsala",
+	"sidewalks_and_bike_lanes": "Sidewalks and bike lanes",
 	"signUp": "Sign up",
+	"streets": "Streets",
 	"solved": "Solved",
 	"startDescription": "Report problems and highlight good things in your city. Collect points, level up and make Uppsala greater together!",
 
@@ -76,6 +88,7 @@
 
 	"uploadPhoto": "Upload or take a photo",
 
+	"vandalism": "Vandalism",
 	"viewReport": "View your reports on your profile page!",
 	"visitProfile": "Visit your profile",
 
