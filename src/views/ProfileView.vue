@@ -13,7 +13,7 @@
     <!--Personal developement information -->
     <section class="personal-dev-container">
         <div class="personal-dev-text">
-            <h2>John Doe</h2>
+            <h2> {{ props.session.user.email }}</h2>
 
             <dl class="personal-dev-info">
                 <div class="personal-dev-row"> 
@@ -105,9 +105,14 @@
         <h2 class="reports-title"> {{ uiLabels.myReports }} </h2>
 
         <div class="reports-filter-box">
-            <button class="filter-button active"> {{ uiLabels.all }} </button>
-            <button class="filter-button"> {{uiLabels.problems}} </button>
-            <button class="filter-button"> {{uiLabels.highlights}} </button>
+            <button class="filter-button" :class="{ active: currentFilter === 'all' }" @click="currentFilter = 'all'"> 
+            {{ uiLabels.all }} </button>
+        
+            <button class="filter-button" :class="{ active: currentFilter === 'problem' }" @click="currentFilter = 'problem'"> 
+            {{ uiLabels.problems }} </button>
+        
+            <button class="filter-button" :class="{ active: currentFilter === 'highlight' }" @click="currentFilter = 'highlight'"> 
+            {{ uiLabels.highlights }}  </button>
         </div>
 
 
@@ -116,7 +121,7 @@
                 Du har inte skickat in några rapporter än
             </p>
 
-            <article v-else v-for="report in userReports" :key="report.id" class="report-container">
+            <article v-else v-for="report in filteredReports" :key="report.id" class="report-container"> <!--beroende på "filter" så loopar den igenom en specifik lista av rapporter-->
                 <div class="report-header">
                     <span class="report-tag"> {{ report.category }} </span>
                     <small>{{ new Date(report.created_at).toLocaleDateString() }}</small>
@@ -141,22 +146,22 @@
             <dl class="contact-list">
                 <div class="contact-row" >
                     <dt class="contact-label">Name</dt>
-                    <dd class="contact-value">Erika Eriksson</dd>
+                    <dd class="contact-value"> ?? </dd>
                 </div>
 
                 <div class="contact-row" >
                     <dt class="contact-label">Email</dt>
-                    <dd class="contact-value">erika.eriksson@email.com</dd>
+                    <dd class="contact-value"> {{ props.session.user.email }} </dd>
                 </div>
 
                 <div class="contact-row" >
                     <dt class="contact-label">Phone</dt>
-                    <dd class="contact-value">070-123 45 67</dd>
+                    <dd class="contact-value"> ?? </dd>
                 </div>  
 
                 <div class="contact-row" >
                     <dt class="contact-label">City</dt>
-                    <dd class="contact-value">Flen</dd>
+                    <dd class="contact-value"> ?? </dd>
                 </div>
             </dl>
         </div>
@@ -167,7 +172,7 @@
 
 <script setup>
 //Imports
-  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { ref, onMounted, watch, computed } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import { useRouter } from 'vue-router'
   import io from 'socket.io-client' //kontakt med server
   import { supabase } from '@/utils/supabase' 
@@ -209,6 +214,17 @@
         userReports.value = data
     }
   }
+
+  const currentFilter = ref('all') // Standardvärde är att visa alla
+
+    const filteredReports = computed(() => {
+    // Om filtret är 'all', skicka tillbaka hela listan
+    if (currentFilter.value === 'all') {
+     return userReports.value
+    }
+    // Annars, filtrera fram de som matchar (notera små bokstäver 'problem'/'highlight')
+    return userReports.value.filter(report => report.type === currentFilter.value)
+    })
 
   //Startup
   onMounted(() => {

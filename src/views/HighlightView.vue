@@ -28,10 +28,8 @@
             <!-- Recent reports i hörnet av kartan -->
             <aside class="recent-report">
               <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
-              <ul class="recent-reports-list">
-                    <li> Beautiful flower </li>
-                    <li> Lovely Bench </li>
-                    <li> Perfect ramp </li>
+              <ul class="recent-reports-list" v-for="report in allUserReports">
+                    <li> {{ report.category }} <br> {{ report.description }} </li>
                 </ul>
             </aside>
           </div>
@@ -149,6 +147,7 @@
   const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
 
   //Data
+  const allUserReports = ref({})
   const uiLabels = ref({})
   const formData = ref({
   type: 'highlight', // Förvalt värde
@@ -196,6 +195,21 @@
 
 
   //Methods
+const fetchLatestReports = async () => {
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', {ascending: false})
+      .limit(5) //hämtar 5 stycken rapporter
+
+    if (!error) {
+        allUserReports.value = data
+    }
+    else {
+      console.error("Kunde inte hämta live-feed:", error.message)
+    }
+  }
+
  async function handleSubmit() {
   isSubmitting.value = true
   if (props.session) {
@@ -314,6 +328,10 @@ async function getAddressFromCoords(lat, lng) {
     return "Kunde inte hämta adress";
   }
 }
+
+onMounted(() => { 
+    fetchLatestReports()
+  })
 
 </script>
 
