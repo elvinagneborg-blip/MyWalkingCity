@@ -17,14 +17,16 @@ import "leaflet/dist/leaflet.css";
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
-  // Skapa markören
   marker = L.marker([59.8586, 17.6389], { draggable: true }).addTo(map)
 
-  // Varje gång markören flyttas, berätta det för föräldern
   marker.on('dragend', (e) => {
     const { lat, lng } = e.target.getLatLng();
-    
-  emit('location-changed', { lat, lng });
+    setLocation(lat, lng)
+  })
+
+  map.on('click', (e) => {
+    const { lat, lng } = e.latlng;
+    setLocation(lat, lng)
   })
 })
 

@@ -9,7 +9,7 @@
     <!--Header specifik för sidan -->
     <section class="report-header">
       <h2 class="report-title"> {{ uiLabels.reportAHighlight }} </h2>
-      <p class="report-subtitle"> {{ uiLabels.currentLocation }} </p>
+      
     </section>
 
    
@@ -170,10 +170,14 @@
   const reportMap = ref(null)
   
 
-  function updateCoords({ lat, lng }) {
+  async function updateCoords({ lat, lng }) {
   formData.value.latitude = lat
   formData.value.longitude = lng
+
   console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
+
+  const address = await getAddressFromCoords(lat, lng)
+  addressSearch.value = address;
 }
   
   //Socket listeners
@@ -245,14 +249,6 @@ async function uploadImage() {
   return publicUrlData.publicUrl
 }
 
-  const handleDone = () => { 
-    category.value = ''
-    description.value = ''
-    photo.value = null
-    showPopup.value = false
-    // Omdirigerar tillbaka till startsidan där listan uppdateras
-    router.push({ name: 'StartMWC' })
-  }
 
   function handlePhotoUpload(event) {
   const file = event.target.files[0]
@@ -270,7 +266,26 @@ function removeImage() {
   document.getElementById('photo').value = ""
 }
 
-
+async function getAddressFromCoords(lat, lng) {
+  try {
+    // Vi anropar Nominatims API
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+    );
+    const data = await response.json();
+    
+    // Nominatim ger tillbaka mycket info, vi försöker plocka ut gata och nummer
+    if (data && data.address) {
+      const street = data.address.road || '';
+      const number = data.address.house_number || '';
+      return `${street} ${number}`.trim() || data.display_name;
+    }
+    return "Okänd adress";
+  } catch (error) {
+    console.error("Kunde inte hämta adress:", error);
+    return "Kunde inte hämta adress";
+  }
+}
 
 </script>
 
