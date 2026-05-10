@@ -18,17 +18,17 @@
             <dl class="personal-dev-info">
                 <div class="personal-dev-row"> 
                     <dt class="personal-dev-label"> {{uiLabels.memberSince}} </dt>
-                    <dd class="personal-dev-value">  </dd>
+                    <dd class="personal-dev-value"> {{ props.session?.user.created_at ? new Date(props.session.user.created_at).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Laddar...' }}  </dd> <!--behålla frågetecknena?-->
                 </div>
 
                 <div class="personal-dev-row">
                     <dt class="personal-dev-label"> {{uiLabels.reports}} </dt>
-                    <dd class="personal-dev-value"> {{ userReports.length }} </dd>
+                    <dd class="personal-dev-value"> {{ userReports.filter(r => r.type === 'problem').length }} </dd>
                 </div>
 
                 <div class="personal-dev-row">
                     <dt class="personal-dev-label"> {{uiLabels.highlights}} </dt>
-                    <dd class="personal-dev-value"> 8 </dd>
+                    <dd class="personal-dev-value"> {{ userReports.filter(r => r.type === 'highlight').length }} </dd>
                 </div>
             </dl>
         </div>
@@ -67,17 +67,17 @@
 <!-- Statistiken som står under leveln -->
             <div class="stats-row">
                 <div class="mini-stat">
-                    <span class="stat-number">18</span>
+                    <span class="stat-number">??</span>
                     <span class="stat-label">{{uiLabels.reports}}</span>
                 </div>
             
                 <div class="mini-stat">
-                    <span class="stat-number">7</span>
+                    <span class="stat-number">??</span>
                     <span class="stat-label">{{uiLabels.done}}</span>
                 </div>
 
                 <div class="mini-stat">
-                    <span class="stat-number">5</span>
+                    <span class="stat-number">??</span>
                     <span class="stat-label">{{uiLabels.highlights}}</span>
                 </div>
             </div>
