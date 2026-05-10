@@ -1,6 +1,6 @@
 <template>
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar Uppsala City...</p>
+    <p>Laddar My Walking City...</p>
   </div>
 
   <main v-else class="allreports-page">
@@ -36,26 +36,21 @@
                     </button>
                 </div>
 
-                <div class="allreports-recent-report-list">
-                    <article v-for="report in reports" :key="report.report_id" class="allreports-recent-report-item">
-                        <div class="report-content">
-                            <dl class="allreports-recent-report-text">
-                                <dt> {{ uiLabels.category }} </dt>
-                                <dd>{{ report.category }}</dd>
+         <div class="report-list">
+            <!-- Visas om det är tomt i sessionStorage -->
+        <div v-if="allUserReports.length === 0">
+            <p> {{ uiLabels.noReportsSubmitted }}</p>
+        </div>
 
-                                <dt> {{ uiLabels.description }} </dt>
-                                <dd>{{ report.description }}</dd>
-                            </dl>
-
-                            <button class="boost-action-btn" @click="handleBoost(report.report_id, props.session)" :disabled="isBoosting">
-                                {{ isBoosting ? '...' : '🚀 Boosta' }}
-                            </button>
-                        </div>
-                        <img v-if="report.image_url" :src="report.image_url" class="report-thumb" />
-                    </article>
-
-                    <p v-if="reports.length === 0">Inga rapporter hittades.</p>
-                 </div>
+            <!-- Loopar igenom den hämtade datan -->
+        <RecentReport 
+            v-else
+            v-for="report in allUserReports" 
+            :key="report.id" 
+            :report="report"
+            :session="session"
+        />
+        </div>
             </aside>
     </section>
     </main>
@@ -70,6 +65,7 @@
   import io from 'socket.io-client' //kontakt med server
     import MapComponent from "@/components/MapComponent.vue";
     import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
+    import RecentReport from '@/components/RecentReport.vue'
 
 //Setup and Props (Input)
   const socket = io("localhost:3000")
@@ -79,7 +75,7 @@
   //Data
   const uiLabels = ref({})
   const showRecentReports = ref(false)
-  const reports = ref([])
+  const allUserReports = ref([])
 
   //Socket listeners
   socket.on("uiLabels", (labels) => {
@@ -101,7 +97,7 @@ async function getReports() {
       .select('*')
       .order('created_at', {ascending: false})
       .limit(5) //hämtar 5 stycken rapporter
-  reports.value = data
+  allUserReports.value = data
   console.log('Rapporter från databasen:', data)
 }
 

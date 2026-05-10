@@ -1,5 +1,8 @@
 <template>
-  <main v-if="uiLabels && Object.keys(uiLabels).length > 0">
+  <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
+    <p>Laddar My Walking City...</p>
+  </div>
+  <main v-else>
   <section class="login-container">
 
     <div class="login-form">

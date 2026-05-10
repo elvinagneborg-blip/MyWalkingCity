@@ -41,7 +41,7 @@ nav {
 }
 
 .hide {
-    transform: translateX(100%);
+    visibility: hidden;
   }
 
 .menu-popup-top {
