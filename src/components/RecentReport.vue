@@ -22,16 +22,7 @@ import { useBoost } from '@/composables/useBoost' //för att kunna använda boos
 
 const { handleBoost, isBoosting } = useBoost()
 
-const props = defineProps({
-  report: {
-    type: Object,
-    required: true
-  },
-  session:  {
-    type: Object,
-    required: true
-  }
-})
+const props = defineProps(['report', 'session'])
 
 </script>
 
