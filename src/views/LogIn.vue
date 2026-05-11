@@ -10,16 +10,6 @@
       <input type="password" v-model="password" placeholder="Password" class="login-input" />
       <button class="button-report" @click="handleLogin"> {{ uiLabels.logIn }} </button>
     </div>
-
-    <div class="separator-text">
-      {{ uiLabels.or }}
-    </div>
-
-    <div class="social-login">
-      <button class="social-button button-google">Log in with Google</button>
-      <button class="social-button button-apple">Log in with apple</button>
-    </div>
-
     <div class="signup-section">
       <button class="button-how-it-works signup-button"> {{ uiLabels.signUp }} </button>
     </div>
