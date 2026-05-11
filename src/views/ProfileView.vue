@@ -174,53 +174,43 @@
 </template>
 
 <script setup>
-//Imports
+  //Imports
   import { ref, onMounted, watch, computed } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
-  import { useRouter } from 'vue-router'
-  import io from 'socket.io-client' //kontakt med server
+  import io from 'socket.io-client'                     //kontakt med server
   import { supabase } from '@/utils/supabase' 
 
-  
-
-//Setup and Props (Input)
+  //Setup and Props (Input)
   const socket = io("localhost:3000")
   const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
-  const userReports = ref([])
 
-  //Data
-  const router = useRouter()
+  //UI and language
   const uiLabels = ref({})
 
-
-  //Socket listeners
   socket.on("uiLabels", (labels) => {
     uiLabels.value = labels
   })
 
-  //Watchers
   watch(() => props.currentLang, (newLang) => { //vakta språket
-    socket.emit("getUILabels", newLang);
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
-
-  //Methods
+    socket.emit("getUILabels", newLang || "en");
+  }, { immediate: true });                      //Språket laddas direkt när sidan laddas
+  
+  //User reports
+  const userReports = ref([])
+  const currentFilter = ref('all') // Standardvärde är att visa alla
 
   const fetchUserReports = async () => {
     if (!props.session) return //KOllar om man är inoggad
-
     const { data, error } = await supabase
         .from('reports')
         .select('*')
         .eq('user_id', props.session.user.id) //hämta mina rapporter
         .order('created_at', {ascending: false})
-
     if (!error) {
         userReports.value = data
     }
   }
 
-  const currentFilter = ref('all') // Standardvärde är att visa alla
-
-    const filteredReports = computed(() => {
+  const filteredReports = computed(() => {
     // Om filtret är 'all', skicka tillbaka hela listan
     if (currentFilter.value === 'all') {
      return userReports.value
@@ -229,11 +219,10 @@
     return userReports.value.filter(report => report.type === currentFilter.value)
     })
 
-  //Startup
+  //Lifecycle hooks
   onMounted(() => {
     fetchUserReports()
   })
-
 </script>
 
 <!-- CSS basic -->

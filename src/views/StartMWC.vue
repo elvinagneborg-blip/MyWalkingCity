@@ -29,14 +29,14 @@
 
     <div class="report-list">
       <!-- Visas om det är tomt i sessionStorage -->
-      <div v-if="allUserReports.length === 0">
+      <div v-if="latestUserReports.length === 0">
         <p> {{ uiLabels.noReportsSubmitted }}</p>
       </div>
 
       <!-- Loopar igenom den hämtade datan -->
       <RecentReport 
         v-else
-        v-for="report in allUserReports" 
+        v-for="report in latestUserReports" 
         :key="report.id" 
         :report="report"
         :session="session"
@@ -67,55 +67,52 @@
 
 <script setup>
   //Imports
-  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
-  import io from 'socket.io-client' //kontakt med server
-  import { supabase } from '@/utils/supabase' 
-  import RecentReport from '../components/RecentReport.vue'
+  import { ref, onMounted, watch } from 'vue'               //för att kunna ha reaktiva variabler och övervaka dem
+  import io from 'socket.io-client'                         //kontakt med server
+  import { supabase } from '@/utils/supabase'               //Databasen
+  import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang', 'session'])     //Ta emot språkval och inloggad/utloggad från app.vue
 
-  //Data
-  const uiLabels = ref({})
-  const allUserReports = ref([])
-  const steps = ref([  // Steg för "How it works"
+  //UI and language
+  const uiLabels = ref({})                      //Språkknappar/uiLabels
+
+  socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
+    uiLabels.value = labels
+  })
+
+  watch(() => props.currentLang, (newLang) => { //vakta språkvalet, ligger alltid och lyssnar
+    socket.emit("getUILabels", newLang || "en");        //Hämtar uiLabels enl. valt språk
+  }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
+
+  //Latest reports
+  const latestUserReports = ref([])             //Senaste rapporter (ev. byta namn?)
+
+  async function fetchLatestReports() {         //Hämtar de 5 senaste rapporterna, async = kan vänta på svar från databasen utan att hemsidan låser sig under tiden
+    const { data, error } = await supabase      //Await tills vi får svar, tar emot antingen data eller error
+      .from('reports')                          //Från reports-tabellen
+      .select('*')                              //Välj alla kolumner
+      .order('created_at', {ascending: false})  //Sortera i fallande ordn., nyast först (ifall true = äldst först)
+      .limit(5)                                 //Hämtar 5 stycken rapporter
+    if (!error) {                               //Om allt gått bra, inte error
+        latestUserReports.value = data          //Datan sparas i latestUserReports
+    }
+    else {
+      console.error("Could not fetch latest reports:", error.message) 
+    }
+  }
+
+  //
+  const steps = ref([                           // Steg för "How it works", ska detta vara kvar?
     { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
     { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
     { id: 3, title: 'Wait for feedback', description: 'Your report will be handled by policy makers. You will get notification when the problem is solved' },
     { id: 4, title: 'Level up and compete with your friends', description: 'Collect points by writing and boosting reports, leveling up and becoming a helping citizen.' }
   ])
 
-  //Socket listeners
-  socket.on("uiLabels", (labels) => {
-    uiLabels.value = labels
-  })
-
-  //Watchers
-  watch(() => props.currentLang, (newLang) => { //vakta språket
-    socket.emit("getUILabels", newLang);
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
-
-
-  //Method
-  const fetchLatestReports = async () => {
-    const { data, error } = await supabase
-      .from('reports')
-      .select('*')
-      .order('created_at', {ascending: false})
-      .limit(5) //hämtar 5 stycken rapporter
-
-    if (!error) {
-        allUserReports.value = data
-    }
-    else {
-      console.error("Kunde inte hämta live-feed:", error.message)
-    }
-  }
-
-  
-
-  //Startup (only once when page loads)
+  //Lifecycle hooks
   onMounted(() => { 
     fetchLatestReports()
   })

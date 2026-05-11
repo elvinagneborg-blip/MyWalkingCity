@@ -29,44 +29,40 @@
 
 <script setup>
   //Imports
-  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
-  import { useRouter } from 'vue-router'
-  import io from 'socket.io-client' //kontakt med server
+  import { ref, watch } from 'vue'              //för att kunna ha reaktiva variabler och övervaka dem
+  import io from 'socket.io-client'             //kontakt med server
   import { supabase } from '@/utils/supabase' 
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
-  const props = defineProps(['currentLang']) //ta emot språkval från app.vue
+  const props = defineProps(['currentLang'])    //ta emot språkval från app.vue
 
-  //Data
-  const router = useRouter()
-  const uiLabels = ref({})
-  const email = ref('')
-  const password = ref('')
+  //UI and language
+  const uiLabels = ref({})                      //Språkknappar/uiLabels
 
-  //Socket listeners
-  socket.on("uiLabels", (labels) => {
+  socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
     uiLabels.value = labels
   })
 
-  //Watchers
-  watch(() => props.currentLang, (newLang) => { //vakta språket
-    socket.emit("getUILabels", newLang);
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
-  
-  //Methods
-  const handleSignUp = async () => { //Async för att allt inte ska frysa medan vi pratar med databasen
+  watch(() => props.currentLang, (newLang) => { //vakta språkvalet, ligger alltid och lyssnar
+    socket.emit("getUILabels", newLang || "en");        //Hämtar uiLabels enl. valt språk
+  }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
+
+  //Sign up
+  const email = ref('')
+  const password = ref('')
+
+  async function handleSignUp() { //Async för att allt inte ska frysa medan vi pratar med databasen
     const { data, error } = await supabase.auth.signUp({ //Await, koden väntar tills vi får svar
     email: email.value,
     password: password.value,
   })
     if (error) {
-      alert("Fel vid registrering: " + error.message)
+      alert("Problem with sign up: " + error.message)
     } else {
-      alert("Kolla din e-post för att bekräfta kontot!")
+      alert("Kolla din e-post för att bekräfta kontot!") //Ändra till UILAbel
     }
   }
- 
 </script>
 
 

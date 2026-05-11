@@ -38,30 +38,27 @@
 
 <script setup>
     //Imports
-    import { ref, onMounted, watch } from 'vue'
+    import { ref, watch } from 'vue'
     import { useRouter } from 'vue-router'
     import io from 'socket.io-client' //kontakt med server
 
-
     //Setup and Props (Input)
     const socket = io("localhost:3000")
+    const router = useRouter()
     const props = defineProps(['currentLang']) //ta emot språkval från app.vue    
 
-    //Data
-    const router = useRouter()
-    const uiLabels = ref({})
+     //UI and language
+    const uiLabels = ref({})                      //Språkknappar/uiLabels
 
-    //Socket listeners
-    socket.on("uiLabels", (labels) => {
+    socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
         uiLabels.value = labels
     })
 
-    //Watchers
-    watch(() => props.currentLang, (newLang) => { //vakta språket
-        socket.emit("getUILabels", newLang);
-    }, { immediate: true }); //Språket laddas direkt när sidan laddas
+    watch(() => props.currentLang, (newLang) => {       //vakta språkvalet, ligger alltid och lyssnar
+        socket.emit("getUILabels", newLang || "en");    //Hämtar uiLabels enl. valt språk
+    }, { immediate: true })                             //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
 
-    //Methods
+    //Navigation
     const goToProblem = () => {
         router.push({ name: 'ProblemView' })
     }
@@ -74,7 +71,6 @@
     const goAllReports = () => {
         router.push({name: 'AllReportsView' })
     }
-
 </script>
 
 

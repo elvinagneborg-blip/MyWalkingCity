@@ -72,41 +72,41 @@
   const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
   const { handleBoost, isBoosting } = useBoost()
 
-  //Data
-  const uiLabels = ref({})
-  const showRecentReports = ref(false)
-  const allUserReports = ref([])
 
-  //Socket listeners
-  socket.on("uiLabels", (labels) => {
+   //UI and language
+  const uiLabels = ref({})                      //Språkknappar/uiLabels
+
+  socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
     uiLabels.value = labels
   })
 
-  //Watchers
-  watch(() => props.currentLang, (newLang) => { //vakta språket
-    if (newLang) {
-      socket.emit("getUILabels", newLang);
-    } else {
-      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
-    }
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
+  watch(() => props.currentLang, (newLang) => { //vakta språkvalet, ligger alltid och lyssnar
+    socket.emit("getUILabels", newLang || "en");        //Hämtar uiLabels enl. valt språk
+  }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
 
-async function getReports() {
-  const { data } = await supabase
+
+  //Reports
+  const showRecentReports = ref(false)
+  const allUserReports = ref([])
+
+async function getReports() {         //Ev. ändra och hämta 
+  const { data, error } = await supabase
       .from('reports')
       .select('*')
       .order('created_at', {ascending: false})
       .limit(5) //hämtar 5 stycken rapporter
+    if (!error) {
   allUserReports.value = data
-  console.log('Rapporter från databasen:', data)
+    }
+    else {
+      console.error("Could not fetch latest reports:", error.message) 
+    }
 }
 
-
-
+    //Lifecycle hooks
 onMounted(async () => {
   await getReports()
 })
-
 </script>
 
 

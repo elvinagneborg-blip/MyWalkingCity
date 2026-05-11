@@ -137,21 +137,32 @@
 
 
 <script setup>
-//Imports
+  //Imports
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
   import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
-  import L from 'leaflet'
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
   const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
+  const router = useRouter()
+
+  //UI and language
+  const uiLabels = ref({})                      //Språkknappar/uiLabels
+
+  socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
+    uiLabels.value = labels
+  })
+
+  watch(() => props.currentLang, (newLang) => { //vakta språkvalet, ligger alltid och lyssnar
+    socket.emit("getUILabels", newLang || "en");        //Hämtar uiLabels enl. valt språk
+  }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
+
 
   //Data
-  const allUserReports = ref([])
-  const uiLabels = ref({})
+  const isSubmitting = ref(false)
   const formData = ref({
   type: 'problem', // Förvalt värde
   category: '',
@@ -162,41 +173,139 @@
   longitude: 17.6389 // Förvalt till centrala Uppsala
   })
 
-  const isSubmitting = ref(false)
+  //Report Image
   const selectedFile = ref(null)
-  const router = useRouter()
   const imagePreview = ref(null)
-  const addressSearch = ref('')
+
+  function handlePhotoUpload(event) {
+    const file = event.target.files[0]
+    if (!file) return
+    selectedFile.value = file
+    // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
+    imagePreview.value = URL.createObjectURL(file)
+  } 
+
+  function removeImage() {
+    selectedFile.value = null
+    imagePreview.value = null
+    // Tips: nollställ även själva input-fältet om du vill vara extra noga
+    document.getElementById('photo').value = ""
+  }
+
+  async function uploadImage() {
+    if (!selectedFile.value) return null
+    // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
+    const fileName = `${Date.now()}-${selectedFile.value.name}`
+    const { data, error } = await supabase.storage
+      .from('report-images') // Namnet på din bucket
+      .upload(fileName, selectedFile.value)
+    if (error) {
+      console.error("Storage error:", error)
+      return null
+    }
+    const { data: publicUrlData } = supabase.storage
+      .from('report-images')
+      .getPublicUrl(fileName)
+    return publicUrlData.publicUrl
+  }
+
+  //Map and adress search
   const reportMap = ref(null)
-  
+  const addressSearch = ref('')
 
   async function updateCoords({ lat, lng }) {
-  formData.value.latitude = lat
-  formData.value.longitude = lng
+    formData.value.latitude = lat
+    formData.value.longitude = lng
+    console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
+    const address = await getAddressFromCoords(lat, lng)
+    addressSearch.value = address;
+  }
 
-  console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
+  async function searchAddress() {
+    const query = addressSearch.value
+    if (!query) return // Sök inte om fältet är tomt
 
-  const address = await getAddressFromCoords(lat, lng)
-  addressSearch.value = address;
-}
-  
-  //Socket listeners
-  socket.on("uiLabels", (labels) => {
-    uiLabels.value = labels
-  })
+    try {
+      // 1. Vi skickar adressen till Nominatim. 
+      // encodeURIComponent ser till att mellanslag och ÅÄÖ fungerar i webbadressen.
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+      )
+      const data = await response.json()
 
-  //Watchers
-  watch(() => props.currentLang, (newLang) => { //vakta språket
-    if (newLang) {
-      socket.emit("getUILabels", newLang);
-    } else {
-      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
+      if (data.length > 0) {
+        // 2. Vi tar det första resultatet (oftast det mest relevanta)
+        const { lat, lon } = data[0]
+        const newLat = parseFloat(lat)
+        const newLon = parseFloat(lon)
+
+        // 3. Flytta kartan och markören via din MapComponent
+      if (reportMap.value) {
+        reportMap.value.setLocation(newLat, newLon)
+      }
+
+      // 4. Uppdatera din formData så att rätt koordinater skickas till databasen
+      formData.value.latitude = newLat
+      formData.value.longitude = newLon
+      
+      console.log("Hittade adressen:", data[0].display_name)
+      } else {
+        alert("Kunde inte hitta adressen. Prova att vara mer specifik (t.ex. lägg till 'Uppsala').")
+      }
+    } catch (error) {
+      console.error("Sökfel:", error)
+      alert("Något gick fel vid sökningen. Kontrollera din internetanslutning.")
     }
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
+  }
 
+  async function getAddressFromCoords(lat, lng) {
+    try {
+      // Vi anropar Nominatims API
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+      );
+      const data = await response.json();
+    
+      // Nominatim ger tillbaka mycket info, vi försöker plocka ut gata och nummer
+      if (data && data.address) {
+        const street = data.address.road || '';
+        const number = data.address.house_number || '';
+        return `${street} ${number}`.trim() || data.display_name;
+      }
+      return "Okänd adress";
+    } catch (error) {
+      console.error("Kunde inte hämta adress:", error);
+      return "Kunde inte hämta adress";
+    }
+  }
 
-  //Methods
-  const fetchLatestReports = async () => {
+  //Submit
+  async function handleSubmit() {
+    isSubmitting.value = true
+    if (props.session) {
+      formData.value.email = props.session.user.email
+    }
+    const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
+    const reportData = { // 2. Förbered datan som ska till databasen
+      ...formData.value,
+      image_url: imageUrl, // Här lägger vi till länken vi just fick
+      user_id: props.session ? props.session.user.id : null //spara anv UUID
+    }
+    const { error } = await supabase // 3. Skicka till reports-tabellen
+      .from('reports')
+      .insert([reportData])
+    if (error) {
+      alert("Kunde inte skicka: " + error.message)
+    } else {
+      router.push('/feedback/')
+    }
+    isSubmitting.value = false
+  }
+
+  //Livefeed
+  const allUserReports = ref([])
+
+  async function fetchLatestReports() {
     const { data, error } = await supabase
       .from('reports')
       .select('*')
@@ -211,130 +320,13 @@
     }
   }
 
- async function handleSubmit() {
-  isSubmitting.value = true
-  if (props.session) {
-    formData.value.email = props.session.user.email
-  }
-  const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
-  const reportData = { // 2. Förbered datan som ska till databasen
-    ...formData.value,
-    image_url: imageUrl, // Här lägger vi till länken vi just fick
-    user_id: props.session ? props.session.user.id : null //spara anv UUID
-  }
-  const { error } = await supabase // 3. Skicka till reports-tabellen
-    .from('reports')
-    .insert([reportData])
-
-  if (error) {
-    alert("Kunde inte skicka: " + error.message)
-  } else {
-    router.push('/feedback/')
-  }
-  
-  isSubmitting.value = false
-}
-
-async function searchAddress() {
-  const query = addressSearch.value
-  if (!query) return // Sök inte om fältet är tomt
-
-  try {
-    // 1. Vi skickar adressen till Nominatim. 
-    // encodeURIComponent ser till att mellanslag och ÅÄÖ fungerar i webbadressen.
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
-    )
-    const data = await response.json()
-
-    if (data.length > 0) {
-      // 2. Vi tar det första resultatet (oftast det mest relevanta)
-      const { lat, lon } = data[0]
-      const newLat = parseFloat(lat)
-      const newLon = parseFloat(lon)
-
-      // 3. Flytta kartan och markören via din MapComponent
-      if (reportMap.value) {
-        reportMap.value.setLocation(newLat, newLon)
-      }
-
-      // 4. Uppdatera din formData så att rätt koordinater skickas till databasen
-      formData.value.latitude = newLat
-      formData.value.longitude = newLon
-      
-      console.log("Hittade adressen:", data[0].display_name)
-    } else {
-      alert("Kunde inte hitta adressen. Prova att vara mer specifik (t.ex. lägg till 'Uppsala').")
-    }
-  } catch (error) {
-    console.error("Sökfel:", error)
-    alert("Något gick fel vid sökningen. Kontrollera din internetanslutning.")
-  }
-}
-
-async function uploadImage() {
-  if (!selectedFile.value) return null
-
-  // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
-  const fileName = `${Date.now()}-${selectedFile.value.name}`
-  
-  const { data, error } = await supabase.storage
-    .from('report-images') // Namnet på din bucket
-    .upload(fileName, selectedFile.value)
-
-  if (error) {
-    console.error("Storage error:", error)
-    return null
-  }
-  const { data: publicUrlData } = supabase.storage
-    .from('report-images')
-    .getPublicUrl(fileName)
-
-  return publicUrlData.publicUrl
-}
-
-  function handlePhotoUpload(event) {
-  const file = event.target.files[0]
-  if (!file) return
-
-  selectedFile.value = file
-
-  // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
-  imagePreview.value = URL.createObjectURL(file)
-} 
-function removeImage() {
-  selectedFile.value = null
-  imagePreview.value = null
-  // Tips: nollställ även själva input-fältet om du vill vara extra noga
-  document.getElementById('photo').value = ""
-}
-
-async function getAddressFromCoords(lat, lng) {
-  try {
-    // Vi anropar Nominatims API
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
-    );
-    const data = await response.json();
-    
-    // Nominatim ger tillbaka mycket info, vi försöker plocka ut gata och nummer
-    if (data && data.address) {
-      const street = data.address.road || '';
-      const number = data.address.house_number || '';
-      return `${street} ${number}`.trim() || data.display_name;
-    }
-    return "Okänd adress";
-  } catch (error) {
-    console.error("Kunde inte hämta adress:", error);
-    return "Kunde inte hämta adress";
-  }
-}
-
-onMounted(() => { 
+  //Lifecycle hooks
+  onMounted(() => { 
     fetchLatestReports()
   })
-
 </script>
+
+
 <!-- CSS-->
 <style scoped>
 

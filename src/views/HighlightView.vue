@@ -140,100 +140,84 @@
   import { useRouter } from 'vue-router'
   import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
-  import L from 'leaflet'
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
   const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
-
-  //Data
-  const allUserReports = ref({})
-  const uiLabels = ref({})
-  const formData = ref({
-  type: 'highlight', // Förvalt värde
-  category: '',
-  description: '',
-  image_url: '',
-  email: '',
-  latitude: 59.8586, // Förvalt till centrala Uppsala
-  longitude: 17.6389 // Förvalt till centrala Uppsala
-  })
-
-  const isSubmitting = ref(false)
-  const photo = ref(null) 
-  const selectedFile = ref(null)
   const router = useRouter()
-  const showPopup = ref(false) 
-  const imagePreview = ref(null)
-  const addressSearch = ref('')
-  const reportMap = ref(null)
-  
 
-  async function updateCoords({ lat, lng }) {
-  formData.value.latitude = lat
-  formData.value.longitude = lng
+  //UI and language
+  const uiLabels = ref({})                      //Språkknappar/uiLabels
 
-  console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
-
-  const address = await getAddressFromCoords(lat, lng)
-  addressSearch.value = address;
-}
-  
-  //Socket listeners
-  socket.on("uiLabels", (labels) => {
+  socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
     uiLabels.value = labels
   })
 
-  //Watchers
-  watch(() => props.currentLang, (newLang) => { //vakta språket
-    if (newLang) {
-      socket.emit("getUILabels", newLang);
-    } else {
-      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
+  watch(() => props.currentLang, (newLang) => { //vakta språkvalet, ligger alltid och lyssnar
+    socket.emit("getUILabels", newLang || "en");        //Hämtar uiLabels enl. valt språk
+  }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
+
+  //Data
+  const isSubmitting = ref(false)
+  const formData = ref({
+    type: 'highlight', // Förvalt värde
+    category: '',
+    description: '',
+    image_url: '',
+    email: '',
+    latitude: 59.8586, // Förvalt till centrala Uppsala
+    longitude: 17.6389 // Förvalt till centrala Uppsala
+  })
+
+  //Images
+  const selectedFile = ref(null)
+  const imagePreview = ref(null)
+
+  function handlePhotoUpload(event) {
+    const file = event.target.files[0]
+    if (!file) return
+    selectedFile.value = file
+    // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
+    imagePreview.value = URL.createObjectURL(file)
+  } 
+
+  function removeImage() {
+    selectedFile.value = null
+    imagePreview.value = null
+    // Tips: nollställ även själva input-fältet om du vill vara extra noga
+    document.getElementById('photo').value = ""
+  }
+
+  async function uploadImage() {
+    if (!selectedFile.value) return null
+    // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
+    const fileName = `${Date.now()}-${selectedFile.value.name}`
+    const { data, error } = await supabase.storage
+      .from('report-images') // Namnet på din bucket
+      .upload(fileName, selectedFile.value)
+    if (error) {
+      console.error("Storage error:", error)
+      return null
     }
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
-
-
-  //Methods
-const fetchLatestReports = async () => {
-    const { data, error } = await supabase
-      .from('reports')
-      .select('*')
-      .order('created_at', {ascending: false})
-      .limit(5) //hämtar 5 stycken rapporter
-
-    if (!error) {
-        allUserReports.value = data
-    }
-    else {
-      console.error("Kunde inte hämta live-feed:", error.message)
-    }
+    const { data: publicUrlData } = supabase.storage
+      .from('report-images')
+      .getPublicUrl(fileName)
+    return publicUrlData.publicUrl
   }
 
- async function handleSubmit() {
-  isSubmitting.value = true
-  if (props.session) {
-    formData.value.email = props.session.user.email
-  }
-  const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
-  const reportData = { // 2. Förbered datan som ska till databasen
-    ...formData.value,
-    image_url: imageUrl // Här lägger vi till länken vi just fick
-  }
-  const { error } = await supabase // 3. Skicka till reports-tabellen
-    .from('reports')
-    .insert([reportData])
+  //Map and adress search
+  const reportMap = ref(null)
+  const addressSearch = ref('')
 
-  if (error) {
-    alert("Kunde inte skicka: " + error.message)
-  } else {
-    router.push( { path: '/feedback/', query: { type: 'highlight' } })
+  async function updateCoords({ lat, lng }) {
+    formData.value.latitude = lat
+    formData.value.longitude = lng
+    console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
+    const address = await getAddressFromCoords(lat, lng)
+    addressSearch.value = address;
   }
-  
-  isSubmitting.value = false
-}
 
-async function searchAddress() {
+  async function searchAddress() {
   const query = addressSearch.value
   if (!query) return // Sök inte om fältet är tomt
 
@@ -270,44 +254,6 @@ async function searchAddress() {
   }
 }
 
-async function uploadImage() {
-  if (!selectedFile.value) return null
-
-  // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
-  const fileName = `${Date.now()}-${selectedFile.value.name}`
-  
-  const { data, error } = await supabase.storage
-    .from('report-images') // Namnet på din bucket
-    .upload(fileName, selectedFile.value)
-
-  if (error) {
-    console.error("Storage error:", error)
-    return null
-  }
-  const { data: publicUrlData } = supabase.storage
-    .from('report-images')
-    .getPublicUrl(fileName)
-
-  return publicUrlData.publicUrl
-}
-
-
-  function handlePhotoUpload(event) {
-  const file = event.target.files[0]
-  if (!file) return
-
-  selectedFile.value = file
-
-  // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
-  imagePreview.value = URL.createObjectURL(file)
-} 
-function removeImage() {
-  selectedFile.value = null
-  imagePreview.value = null
-  // Tips: nollställ även själva input-fältet om du vill vara extra noga
-  document.getElementById('photo').value = ""
-}
-
 async function getAddressFromCoords(lat, lng) {
   try {
     // Vi anropar Nominatims API
@@ -329,13 +275,53 @@ async function getAddressFromCoords(lat, lng) {
   }
 }
 
+  //Submit
+ async function handleSubmit() {
+  isSubmitting.value = true
+  if (props.session) {
+    formData.value.email = props.session.user.email
+  }
+  const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
+  const reportData = { // 2. Förbered datan som ska till databasen
+    ...formData.value,
+    image_url: imageUrl // Här lägger vi till länken vi just fick
+  }
+  const { error } = await supabase // 3. Skicka till reports-tabellen
+    .from('reports')
+    .insert([reportData])
+
+  if (error) {
+    alert("Kunde inte skicka: " + error.message)
+  } else {
+    router.push( { path: '/feedback/', query: { type: 'highlight' } })
+  }
+  
+  isSubmitting.value = false
+}
+
+  //Latestreports
+  const allUserReports = ref({})
+
+  const fetchLatestReports = async () => {
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', {ascending: false})
+      .limit(5) //hämtar 5 stycken rapporter
+
+    if (!error) {
+        allUserReports.value = data
+    }
+    else {
+      console.error("Kunde inte hämta live-feed:", error.message)
+    }
+  }
+
+  //Lifecycle hooks
 onMounted(() => { 
     fetchLatestReports()
   })
-
 </script>
-
-
 
 
 <!-- CSS-->
