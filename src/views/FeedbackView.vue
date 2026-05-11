@@ -36,7 +36,7 @@
         <h4 class="accountperks-title"> {{uiLabels.perkTitle}} </h4>
 
         <div class="createAccount-button-container">
-        <router-link to="/login/" class="btn createAccount" > {{uiLabels.createAccount}} </router-link> 
+        <router-link to="/signup/" class="btn createAccount" > {{uiLabels.createAccount}} </router-link> 
         <router-link to="/login/" class="btn logIn" > {{uiLabels.logIn}} </router-link> 
         </div>
 

@@ -16,9 +16,9 @@
     </div>
 
     <div class="stats-container">
-      <div>4000<br> {{ uiLabels.reports }} </div>
-      <div>850<br> {{ uiLabels.activeUsers }} </div>
-      <div>99%<br> {{ uiLabels.solved }} </div>
+      <div>??<br> {{ uiLabels.reports }} </div>
+      <div>??<br> {{ uiLabels.activeUsers }} </div>
+      <div>??<br> {{ uiLabels.solved }} </div>
     </div>
   </section>
 
