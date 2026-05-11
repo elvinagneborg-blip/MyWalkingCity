@@ -29,38 +29,37 @@
 
 <script setup>
   //Imports
-  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { ref, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import { useRouter } from 'vue-router'
   import io from 'socket.io-client' //kontakt med server
   import { supabase } from '@/utils/supabase' 
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
+  const router = useRouter()
   const props = defineProps(['currentLang']) //ta emot språkval från app.vue
 
-  //Data
-  const router = useRouter()
-  const uiLabels = ref({})
-  const email = ref('')
-  const password = ref('')
+   //UI and language
+  const uiLabels = ref({})                      //Språkknappar/uiLabels
 
-  //Socket listeners
-  socket.on("uiLabels", (labels) => {
+  socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
     uiLabels.value = labels
   })
 
-  //Watchers
-  watch(() => props.currentLang, (newLang) => { //vakta språket
-    socket.emit("getUILabels", newLang);
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
-  
-  //Methods
-  const handleLogin = async () => {
+  watch(() => props.currentLang, (newLang) => {   //vakta språkvalet, ligger alltid och lyssnar
+    socket.emit("getUILabels", newLang || "en");  //Hämtar uiLabels enl. valt språk
+  }, { immediate: true })                         //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
+
+
+  //LogIn
+  const email = ref('')
+  const password = ref('')
+
+  async function handleLogin() {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
   })
-
   if (error) {
     alert("Inloggning misslyckades: " + error.message)
   } else {
@@ -68,9 +67,6 @@
     router.push({ name: 'StartMWC' }) 
   }
 }
-
-
-
 </script>
 
 

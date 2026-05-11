@@ -59,37 +59,29 @@
 
 <script setup>
 //Imports
-  import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { ref, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
   import { useRoute } from 'vue-router'
-  import { supabase } from '@/utils/supabase'
   import { computed } from 'vue'
 
   //Setup and Props (Input)
   const socket = io("localhost:3000")
   const props = defineProps(['currentLang', 'session']) //ta emot språkval och session§ från app.vue
   const route = useRoute()
-  const reportType = computed(() => route.query.type || 'problem')
 
-  const uiLabels = ref({})
+   //UI and language
+  const uiLabels = ref({})                      //Språkknappar/uiLabels
 
-
-  
-  //Socket listeners
-  socket.on("uiLabels", (labels) => {
+  socket.on("uiLabels", (labels) => {           //Lyssnare för uiLabels
     uiLabels.value = labels
   })
 
-  //Watchers
-  watch(() => props.currentLang, (newLang) => { //vakta språket
-    if (newLang) {
-      socket.emit("getUILabels", newLang);
-    } else {
-      socket.emit("getUILabels", "en"); //Om språkvalet inte hunnits skickas ner, kör på eng
-    }
-  }, { immediate: true }); //Språket laddas direkt när sidan laddas
+  watch(() => props.currentLang, (newLang) => { //vakta språkvalet, ligger alltid och lyssnar
+    socket.emit("getUILabels", newLang || "en");        //Hämtar uiLabels enl. valt språk
+  }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
 
-
+  //Feedback
+  const reportType = computed(() => route.query.type || 'problem')
 </script>
 
 <!-- CSS-->
