@@ -1,7 +1,10 @@
 <template>
-    <div :class="['report-card', report.type === 'problem' ? 'red-bg' : 'green-bg']">
-        <h4 class="report-category">{{ report.category }}</h4>
-        <p class="report-description">{{ report.description }}</p>
+    <div :class="['report-card', !report.image_url ? 'no-image' : '']">
+        <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">{{ report.category }}</p>
+        <div class="report-info">
+          <p class="report-title">Titel</p>
+          <p class="report-description">{{ report.description }}</p>
+        </div>
         <small class="report-date">{{ new Date(report.created_at).toLocaleDateString() }}</small>
         <img 
                     v-if="report.image_url" 
@@ -9,10 +12,12 @@
                     class="report-image"
                     alt="Rapportbild"
                 />
-
-        <button class="boost-action-btn" @click="handleBoost(report.report_id, props.session)" :disabled="isBoosting">
-            {{ isBoosting ? '...' : '🚀 Boosta' }}
-        </button>
+        <div class="report-footer">
+          <p class="report-location">Location</p>
+          <button class="boost-action-btn" @click="handleBoost(report.report_id, props.session)" :disabled="isBoosting">
+              {{ isBoosting ? '...' : '🚀 Boosta' }}
+          </button>
+        </div>
     </div>
 </template>
 
@@ -33,9 +38,9 @@ const props = defineProps(['report', 'session'])
     grid-template-columns: 2fr 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 
-    "category    image"
-    "description image"
-    "date        image";
+    "category    date"
+    "info       image"
+    "footer      footer";
    gap: 10px;
   width: 100%; /* Ändrat från 20% så den syns ordentligt */
   max-width: 600px;
@@ -44,39 +49,57 @@ const props = defineProps(['report', 'session'])
   padding: 20px;
   border-radius: 12px;
   align-items: start;
+  border: 1px solid;
+  background-color: #c8efeb5d;
 }
 
 .no-image {
-  grid-template-columns: 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-template-areas: 
-    "title"
-    "desc"
-    "date";
-}
-
-
-.report-card h4 {
-  margin-bottom: 5px;
+    "category    date"
+    "info       image"
+    "footer      footer";
 }
 
 .report-category { 
   grid-area: category; 
   margin: 0;
-  font-size: 1.1rem;
-  /* Ingen align-self center här, då hamnar den i toppen av sin rad */
+  font-size: 0.8rem;
+  justify-self: start;
+  text-align: left;
+  background-color: #27c4b4b4;
+  border-radius: 50px;
+  padding: 5px;  /**/
+}
+
+.report-info{
+  grid-area: info;
+  border-radius: 8px;
+  padding: 15px;
+
+}
+
+.report-title {
+  font-size: 20px;
+  margin: 0;
+  text-align: left;
+  margin-top: -5px;
 }
 
 .report-description { 
-  grid-area: description; 
   margin: 0; /* Ta bort margin-top för att få upp den helt */
+  text-align: left;
   padding-top: 5px; /* Lägg till lite padding om det blir för trångt */
   align-self: start; /* Tvingar elementet till toppen av sin cell */
   line-height: 1.4;
+  font-size: 16px;
 }
+
 
 .report-date { 
   grid-area: date; 
-  align-self: end; /* Tvingar ner datumet till botten av kortet */
+  align-self: start; /* Tvingar upp datumet till toppen av kortet */
+  justify-self: end; /*trycker ut datumet till höger*/
   margin: 0;
 }
 
@@ -86,12 +109,19 @@ const props = defineProps(['report', 'session'])
   max-height: 150px;
 }
 
-.red-bg {
-  background-color: rgba(255, 0, 0, 0.4); 
+.report-footer {
+  grid-area: footer;
+  border-top: 1px solid black;
+  display: flex; /* så de hamnar brevid varandra och inte under*/
+  justify-content: space-between; /*de hamnar på varsin sida*/
+
+
 }
 
-.green-bg {
-  background-color: rgba(0, 255, 136, 0.4); 
+.report-location {
+  text-align: left;
+  align-self: center;
+  font-size: 11px;
 }
 
 .boost-action-btn {
@@ -102,8 +132,9 @@ const props = defineProps(['report', 'session'])
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 11px;
     transition: transform 0.2s;
+    height: 30px;
 }
 
 .boost-action-btn:hover {
@@ -114,6 +145,17 @@ const props = defineProps(['report', 'session'])
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+
+
+.red-bg {
+  background-color: rgba(235, 41, 41, 0.228); 
+}
+
+.green-bg {
+  background-color: rgba(15, 203, 115, 0.366); 
+}
+
 
 
 </style>
