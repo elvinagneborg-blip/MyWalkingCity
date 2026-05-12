@@ -17,6 +17,7 @@
 	"createAccount": "Skapa konto",
 
 	"describeYourProblem": "Beskriv ditt problem",
+	"describeYourHighlight": "Beskriv din höjdpunkt",
 	"description": "Beskrivning",
 	"done": "Klart",
 
@@ -28,6 +29,9 @@
 	"foodanddrink": "Mat och dryck",
 	"fourSteps": "4 steg",
 
+	"getMyLocation": "Hämta min plats",
+	"giveHighlightTitle": "Ge din höjdpunkt en rubrik",
+	"giveProblemTitle": "Ge din problemrapport en rubrik",
 
 	"highlight": "Höjdpunkt",
 	"highlights": "Höjdpunkter",
@@ -40,6 +44,9 @@
 	"lights": "Ljus",
 	"liveFeed": "Liveflöde",
 	"locationOfProblem": "Var är problemet?",
+	"locationOfHighlight": "Var finns höjdpunkten?",
+	"locationPermissionDenied": "Du har nekat platsåtkomst. För att använda denna funktion måste du tillåta platsinformation i din webbläsares inställningar (vid låsikonen i adressfältet).",
+	"locationError": "Kunde inte hämta din plats.",
 	"logIn": "Logga in",
 
 	"memberSince": "Medlem sedan:",
@@ -75,7 +82,8 @@
 	"searchForLocation": "Sök efter plats",
 	"selectedPhoto": "Vald bild:",
 	"sendInHighlight": "Skicka in din höjdpunkt!",
-	"sendInReport": "Skicka in din rapport!",
+	"sending": "Skickar...",
+	"sendInReport": "Skicka in din rapport!       +10p",
 	"sentReportInfo": "Din rapport skickas till Uppsala kommun som ser till att det fixas!",
 	"shapeUppsala": "Forma Uppsala",
 	"signUp": "Skapa konto",
@@ -85,6 +93,7 @@
 	"sidewalks_and_bike_lanes": "Trottoarer och cykelstigar",
 
 	"thankYouText": "Tack för att du bryr dig om vår stad!",
+	"title": "Rubrik",
 
 	"uploadPhoto": "Ladda upp eller ta en bild",
 
@@ -94,6 +103,7 @@
 
 	"whatHappensNow": "Vad händer nu?",
 	"whatYouWantReport": "Vad vill du rapportera?",
+	"whatYouWantHighlight": "Vad vill du lyfta fram?",
 	"withAPhoto": "med en bild"
 
 }

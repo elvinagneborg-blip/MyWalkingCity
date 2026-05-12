@@ -1,5 +1,5 @@
 <template>
-    <div ref="mapContainer" class="map-container"> </div> <!--ref för JS, class för CSS-->
+    <div ref="mapContainer" class="map-container" > </div> <!--ref för JS, class för CSS-->
 </template>
 
 <script setup>
@@ -7,13 +7,13 @@ import { onMounted, ref } from "vue"; /* onMounted kör kod när komponenten har
 import L from "leaflet"; /* importerar leaflet - biblioteket */
 import "leaflet/dist/leaflet.css";
 
-    const mapContainer = ref(null); /* div elementet --> är null i början för att kunna kopplas till HTML elementet  */
-    const emit = defineEmits(['location-changed']);
-    let map = null; /* variabel för själva kartan */
-    let marker = null; /* variabel för markören */
+const mapContainer = ref(null); /* div elementet --> är null i början för att kunna kopplas till HTML elementet  */
+const emit = defineEmits(['location-changed']);
+let map = null; /* variabel för själva kartan */
+let marker = null; /* variabel för markören */
 
-    onMounted(() => {
-  map = L.map(mapContainer.value).setView([59.8586, 17.6389], 13)
+onMounted(() => {
+  map = L.map(mapContainer.value).setView([59.8586, 17.6389], 13) /* skapar kartan och sätter startpositionen till centrala Uppsala, tar bort zoomkontrollerna */
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
