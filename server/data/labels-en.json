@@ -17,6 +17,7 @@
 	"createAccount": "Create account",
 
 	"describeYourProblem": "Describe your problem",
+	"describeYourHighlight": "Describe your highlight",
 	"description": "Description",
 	"done": "Done",
 	
@@ -26,6 +27,10 @@
 	"feedbackProblem": "Your report is sent to Uppsala municipality who will make sure it gets fixed! You can check the status of your report in your profile.",
 	"feedbackHighlight": "Your highlight is made visible to other residents who can enjoy it! You can see all your highlight in your profile.",
 	"foodanddrink": "Food and drinks",
+
+	"getMyLocation": "Get my location",
+	"giveHighlightTitle": "Give your highlight a title",
+	"giveProblemTitle": "Give your problem report a title",
 	
 	"highlight": "Highlight",
 	"highlights": "Highlights",
@@ -38,6 +43,9 @@
 	"lights": "Lights",
 	"liveFeed": "Live feed",
 	"locationOfProblem": "Where is the problem located?",
+	"locationOfHighlight": "Where is the highlight located?",
+	"locationPermissionDenied": "You have denied location access. To use this feature, you need to allow location information in your browser's settings (at the lock icon in the address bar).",
+	"locationError": "Could not retrieve your location.",
 	"logIn": "Log In",
 
 	"memberSince": "Member since:",
@@ -75,7 +83,8 @@
 	"searchForLocation": "Search for location",
 	"selectedPhoto": "Selected photo:",
 	"sendInHighlight": "Send in your highlight!",
-	"sendInReport": "Send in your report!",
+	"sending": "Sending...",
+	"sendInReport": "Send in your report!      +10p",
 	"sentReportInfo": "Your report is sent to Uppsala municipality who will make sure it gets fixed!",
 	"shapeUppsala": "Shape Uppsala",
 	"sidewalks_and_bike_lanes": "Sidewalks and bike lanes",
@@ -85,6 +94,7 @@
 	"startDescription": "Report problems and highlight good things in your city. Collect points, level up and make Uppsala greater together!",
 
 	"thankYouText": "Thank you for caring about our city!",
+	"title": "Title",
 
 	"uploadPhoto": "Upload or take a photo",
 
@@ -94,6 +104,7 @@
 
 	"whatHappensNow": "What happens now?",
 	"whatYouWantReport": "What do you want to report?",
+	"whatYouWantHighlight": "What do you want to highlight?",
 	"withAPhoto": "with a Photo",
 
 	"fourSteps": "4 steps"

@@ -26,8 +26,6 @@
 
             <!-- Recent reports i hörnet av kartan -->
 
-
-            
             <aside class="recent-report">
               <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
               <ul class="recent-reports-list" v-for="report in allUserReports">
@@ -47,6 +45,7 @@
           @key.enter.prevent="searchAddress" 
         />
         <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
+        <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
       </div>
       </div>
 
@@ -66,6 +65,17 @@
         </div>
 
         <div class="form-field">
+          <label for="title" class="form-label"> {{ uiLabels.title }} </label>
+          <input
+            id="title"
+            class="form-input"
+            :placeholder="uiLabels.giveProblemTitle"
+            v-model="formData.title"
+            required
+          />
+        </div>
+
+        <div class="form-field">
           <label for="description" class="form-label"> {{uiLabels.description}}</label>
           <textarea
             id="description"
@@ -77,31 +87,36 @@
           ></textarea>
         </div>
 
-        <div class="form-field">
-          <label for="photo" class="form-label">{{uiLabels.photo}}</label>
-          <label for="photo" class="form-control file-control">
-            <span class="file-control-text">{{uiLabels.photoPlaceholder}}</span>
-            <span class="file-control-icon">🖼️</span>
-            <input
-              id="photo"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              class="file-input"
-              @change="handlePhotoUpload"
-            />
-          </label>
+    <div class="form-field">
+      <label class="form-label">{{ uiLabels.photo }}</label>
+
+      <div v-if="!imagePreview">
+        <label for="photo" class="custom-file-upload-button">
+          <span>{{ uiLabels.photoPlaceholder }}</span>
+          <span class="file-control-icon">🖼️</span>
+          <input
+            id="photo"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            class="hidden-file-input"
+            @change="handlePhotoUpload"
+          />
+        </label>
+      </div>
+
+      <div v-else class="preview-container">
+        <div class="selected-file-info">
+          <span class="filename">📍 {{ selectedFileName }}</span>
         </div>
         
-        <div v-if="imagePreview" class="preview-container">
-      <p class="preview-text">{{uiLabels.selectedPhoto}}</p>
-      <img :src="imagePreview" class="image-preview" />
-      
-      <!-- En knapp för att ångra sig och ta bort bilden -->
-      <button type="button" @click="removeImage" class="remove-image-btn">
-        {{uiLabels.removeImage}}
-      </button>
-    </div>
+        <img :src="imagePreview" class="image-preview" />
+        
+        <button type="button" @click="removeImage" class="remove-image-btn">
+          🗑️ {{ uiLabels.removeImage }}
+        </button>
+      </div>
+  </div>
 
         <div class="form-field">
           <label for="email" class="form-label">{{uiLabels.email}}</label>
@@ -126,7 +141,7 @@
 
         <!-- 4. Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
         <button type="submit" class="submit-button" :disabled="isSubmitting">
-          {{ isSubmitting ? 'Sending...' : 'Send in your report!' }}
+          {{ isSubmitting ? uiLabels.sending : uiLabels.sendInReport }}
         </button>
       </form>
   </section>
@@ -165,53 +180,114 @@
   const isSubmitting = ref(false)
   const formData = ref({
   type: 'problem', // Förvalt värde
+  title: '',
   category: '',
   description: '',
   image_url: '',
   email: '',
-  latitude: 59.8586, // Förvalt till centrala Uppsala
-  longitude: 17.6389 // Förvalt till centrala Uppsala
+  latitude: null, // Förvalt till centrala Uppsala
+  longitude: null // Förvalt till centrala Uppsala
   })
 
   //Report Image
-  const selectedFile = ref(null)
-  const imagePreview = ref(null)
+  // --- Refs för bildhantering ---
+  const selectedFile = ref(null)        // Själva fil-objektet för Supabase
+  const selectedFileName = ref('')      // Textsträngen (namnet) för UI:t
+  const imagePreview = ref(null)        // Förhandsvisnings-URL:en
 
+  // --- Funktioner ---
+
+  // Körs när användaren valt en bild
   function handlePhotoUpload(event) {
     const file = event.target.files[0]
     if (!file) return
-    selectedFile.value = file
-    // Skapa en tillfällig länk som Vue kan visa i en <img>-tagg
-    imagePreview.value = URL.createObjectURL(file)
-  } 
 
-  function removeImage() {
-    selectedFile.value = null
-    imagePreview.value = null
-    // Tips: nollställ även själva input-fältet om du vill vara extra noga
-    document.getElementById('photo').value = ""
+    selectedFile.value = file
+    selectedFileName.value = file.name // Sparar namnet för att visa det i UI:t
+    
+    // Skapa förhandsvisning
+    imagePreview.value = URL.createObjectURL(file)
   }
 
+  // Körs när användaren ångrar sig och vill ta bort bilden
+  function removeImage() {
+    selectedFile.value = null
+    selectedFileName.value = ''
+    imagePreview.value = null
+    
+    // Nollställer det dolda input-fältet så att man kan välja samma bild igen om man vill
+    const fileInput = document.getElementById('photo')
+    if (fileInput) {
+      fileInput.value = ""
+    }
+  }
+
+  // Anropas inuti din handleSubmit när formuläret skickas
   async function uploadImage() {
     if (!selectedFile.value) return null
-    // Skapa ett unikt filnamn (t.ex. 171234567-mittfoto.jpg)
+
+    // Skapa ett unikt filnamn (tidsstämpel + originalnamn)
     const fileName = `${Date.now()}-${selectedFile.value.name}`
+
+    // 1. Ladda upp till Supabase Storage
     const { data, error } = await supabase.storage
-      .from('report-images') // Namnet på din bucket
+      .from('report-images')
       .upload(fileName, selectedFile.value)
+
     if (error) {
-      console.error("Storage error:", error)
+      console.error("Storage error:", error.message)
       return null
     }
+
+    // 2. Hämta den publika länken så vi kan spara URL:en i vår tabell
     const { data: publicUrlData } = supabase.storage
       .from('report-images')
       .getPublicUrl(fileName)
+
     return publicUrlData.publicUrl
   }
 
   //Map and adress search
   const reportMap = ref(null)
   const addressSearch = ref('')
+  const userLocation = ref(null);
+
+  function getLocation(isManual = false) {
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Här får vi koordinaterna!
+          userLocation.value = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          
+          updateCoords(userLocation.value) // Uppdatera kartan och adressen direkt när vi får platsen
+          
+          console.log("Plats hittad:", userLocation.value);
+
+          if (reportMap.value) {
+            reportMap.value.setLocation(userLocation.value.lat, userLocation.value.lng)
+          }
+        },
+        function(error) {
+      // Vi visar bara felmeddelanden om användaren aktivt tryckt på knappen
+            if (isManual) {
+              
+              if (error.code === 1) { // 1 = PERMISSION_DENIED
+                alert(uiLabels.value.locationPermissionDenied || "Platsåtkomst nekad. För att använda platsfunktionen, vänligen tillåt platsåtkomst i din webbläsare.");
+              } else {
+                alert(uiLabels.value.locationError || "Kunde inte hämta din plats: " + error.message);
+              }
+            }
+            // Om isManual är false (vid sidladdning) så händer ingenting
+          }
+      );
+    } else {
+      alert("Din webbläsare stöder inte platsinformation.");
+    }
+};
 
   async function updateCoords({ lat, lng }) {
     formData.value.latitude = lat
@@ -281,26 +357,65 @@
 
   //Submit
   async function handleSubmit() {
-    isSubmitting.value = true
-    if (props.session) {
-      formData.value.email = props.session.user.email
-    }
-    const imageUrl = await uploadImage() // 1. Ladda upp bilden först (om användaren valt en)
-    const reportData = { // 2. Förbered datan som ska till databasen
-      ...formData.value,
-      image_url: imageUrl, // Här lägger vi till länken vi just fick
-      user_id: props.session ? props.session.user.id : null //spara anv UUID
-    }
-    const { error } = await supabase // 3. Skicka till reports-tabellen
-      .from('reports')
-      .insert([reportData])
-    if (error) {
-      alert("Kunde inte skicka: " + error.message)
-    } else {
-      router.push('/feedback/')
-    }
-    isSubmitting.value = false
+  // 1. Inledande kontroller (Validering)
+  
+  // Kontrollera om användaren har valt en plats (inte bara kvar på Uppsala-default)
+  const defaultLat = 59.8586;
+  const defaultLng = 17.6389;
+  
+  if (!formData.value.latitude || 
+      (formData.value.latitude === defaultLat && formData.value.longitude === defaultLng)) {
+    alert(uiLabels.value.pleaseSelectLocation || "Vänligen välj en plats på kartan.");
+    return;
   }
+
+  // Kontrollera att kategori är vald
+  if (!formData.value.category) {
+    alert(uiLabels.value.pleaseSelectCategory || "Vänligen välj en kategori.");
+    return;
+  }
+
+  // Starta laddningsläget
+  isSubmitting.value = true;
+
+  try {
+    // 2. Förbered användardata
+    if (props.session) {
+      formData.value.email = props.session.user.email;
+    }
+
+    // 3. Bildhantering
+    // Vi väntar på att bilden laddas upp till Storage och får tillbaka URL:en
+    const imageUrl = await uploadImage();
+
+    // 4. Förbered det slutgiltiga objektet för databasen
+    const reportData = {
+      ...formData.value,
+      image_url: imageUrl, // URL från storage (eller null om ingen bild valdes)
+      user_id: props.session ? props.session.user.id : null,
+      created_at: new Date().toISOString() // Bra praxis att sätta tidstämpel explicit
+    };
+
+    // 5. Skicka till Supabase 'reports'-tabellen
+    const { error } = await supabase
+      .from('reports')
+      .insert([reportData]);
+
+    if (error) {
+      throw error; // Hoppa till catch-blocket om databasen nekar
+    }
+
+    // 6. Succé! Skicka användaren vidare
+    router.push('/feedback/');
+
+  } catch (error) {
+    console.error("Error submitting report:", error);
+    alert((uiLabels.value.errorSending || "Kunde inte skicka: ") + error.message);
+  } finally {
+    // Stäng alltid av laddningsläget, oavsett om det gick bra eller dåligt
+    isSubmitting.value = false;
+  }
+}
 
   //Livefeed
   const allUserReports = ref([])
@@ -323,333 +438,252 @@
   //Lifecycle hooks
   onMounted(() => { 
     fetchLatestReports()
+    setTimeout(() => {
+    getLocation();
+  }, 500);
   })
 </script>
 
 
-<!-- CSS-->
 <style scoped>
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+/* ===== Övergripande layout ===== */
+.report-page {
+  margin: 0 auto;
+  font-family: 'var(--inputFont)';
+  background-color: #f9fbfb; /* Ljus, fräsch bakgrund */
+  color: #2d3748;
+}
 
-.preview-container {
-  margin-top: 15px;
+input, 
+textarea, 
+select, 
+button, 
+label {
+  font-family: var(--inputFont) !important;
+}
+
+/* ===== Sidhuvud - Snyggare titel ===== */
+.report-header {
+  padding: 60px 20px 40px;
   text-align: center;
 }
 
-.image-preview {
-  max-width: 100%;
-  max-height: 200px;
-  border-radius: 8px;
-  border: 2px solid #ddd;
-  display: block;
-  margin: 10px auto;
-}
-
-.preview-text {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.remove-image-btn {
-  background: #ff4444;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-.report-page {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-/* Alla formulärelement ska använda samma font */
-input,
-textarea,
-select,
-button {
-  font-family: inherit;
-  font-size: 16px;
-}
-
-
-/* ===== Sidhuvud ===== */
-.report-header {
-  padding: 16px;
-}
-
 .report-title {
+  font-size: 2.2rem;
+  font-weight: 800; /* Extra tjock för titeln */
+  color: #1a202c;
   margin-bottom: 8px;
+  letter-spacing: -0.03em; /* Lite tightare bokstäver för modern look */
 }
 
 .report-subtitle {
-  margin: 0;
+  color: #718096;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-/* ===== Karta ===== */
-
-.map-section {
-  padding: 16px;
-  display: flex;
-  justify-content: center;
-}
-
-.map-container {
-  position: relative;
-  width: 100%;
-  max-width: 900px;   /* gör kartan mindre i bredd */
-  border: 2px solid #aaa;
-  border-radius: 12px;
-  padding: 12px;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.map-image {
-  display: block;
-  width: 100%;
-  height: 420px;      /* mindre höjd */
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-/* ===== Recent reports ===== */
-.recent-report {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 220px;
-  max-width: 45%;
-  background-color: rgba(255, 255, 255, 0.7);
-  border-radius: 10px;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  max-height: 180px;
-  overflow-y: auto;
-  box-sizing: border-box;
-  z-index:1000;
-}
-
-.recent-reports-title {
-  margin-top: 0;
-}
-
-.recent-reports-list {
-  margin: 0;
-  padding-left: 20px;
-}
-
-/* ===== Formulärsektion ===== */
-
+/* ===== Formulärsektion - Nu mycket bredare ===== */
 .form-section {
   display: flex;
   justify-content: center;
-  padding: 32px 16px 40px;
+  padding: 0 20px 60px;
 }
 
 .form-container {
   width: 100%;
-  max-width: 700px;
-  background-color: #c9e2df;
-  border-radius: 20px;
-  padding: 24px 20px;
+  /* Breddad max-width för att använda mer av skärmen */
+  max-width: 1100px; 
+  background-color: #cbe5e1;
+  border-radius: 24px;
+  padding: 40px;
   box-sizing: border-box;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Mjuk skugga istället för bara färg */
+  border: 1px solid #e2e8f0;
 }
 
-.form-field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 24px;
-}
-
-.form-label {
-  font-size: 18px;
-  margin-bottom: 8px;
-  color: #1e1e1e;
-}
-/* ===== Form controls ===== */
-
-.form-control,
-.form-input {
+/* ===== Karta - Maximerad bredd ===== */
+.map-container {
+  position: relative;
   width: 100%;
-  padding: 16px;
-  border: none;
+  height: 500px; /* Rejäl höjd för kartan */
   border-radius: 16px;
-  background-color: white;
-  box-sizing: border-box;
-  font-family: inherit;
-  font-size: 16px;
-}
-
-.form-input-locked {
-  width: 100%;
-  padding: 16px;
-  background-color: #edf2f7bc; /* Ljusgrå bakgrund */
-  color: #718096;           /* Lite blekare textfärg */
-  cursor: not-allowed;      /* Visar en "stopp"-symbol vid hovring */
+  margin-bottom: 30px;
+  overflow: hidden;
   border: 1px solid #cbd5e0;
-  border-radius: 16px;
-  box-sizing: border-box;
-  font-family: inherit;
-  font-size: 16px;
+  /* Förhindrar att kartan "stjäl" fokus direkt */
+  z-index: 1;
 }
 
-/* Select behöver extra reset */
-select.form-control {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-}
-
-/* Textarea */
-textarea.form-input {
-  resize: vertical;
-  min-height: 140px;
-}
-
-/* ===== Filuppladdning ===== */
-
-.file-control {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.file-control-text {
-  color: #777;
-}
-
-.file-control-icon {
-  font-size: 20px;
-}
-
-.file-input {
-  display: none;
-}
-
-/* ===== Knapp ===== */
-
-.submit-button {
-  width: 100%;
+/* ===== Recent reports - Moderniserad "Glassmorphism" ===== */
+.recent-report {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 260px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px); /* Snygg suddig bakgrund */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
   padding: 16px;
-  border: none;
-  border-radius: 16px;
-  background-color: #2f2f2f;
-  color: white;
-  cursor: pointer;
-}
-
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.35);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 250px;
+  overflow-y: auto;
   z-index: 1000;
 }
 
-.popup-box {
-  width: 90%;
-  max-width: 500px;
-  background-color: white;
-  border-radius: 20px;
-  padding: 24px;
-  box-sizing: border-box;
+.recent-reports-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
 }
 
-.popup-text {
-  font-size: 20px;
-  margin-bottom: 24px;
+/* ===== Form Controls - Renare och modernare ===== */
+.form-field {
+  margin-bottom: 28px;
 }
 
-.popup-title {
-  margin-bottom: 12px;
-}
-
-.popup-description {
-  margin-bottom: 24px;
-  line-height: 1.4;
-}
-
-.popup-button {
+.form-label {
+  font-weight: 600; /* Halvfet för labels */
+  font-size: 0.9rem;
+  text-transform: uppercase; /* Ger en ren, strukturerad känsla */
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  color: #718096; /* Lite mjukare färg på labels */
   display: block;
-  margin: 0 auto;
-  padding: 12px 28px;
+}
+
+.form-control,
+.form-input,
+.form-input-locked {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #edf2f7;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  font-size: 1rem;
+  color: #2d3748;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-input:focus {
+  outline: none;
+  border-color: #1ebc9c;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(30, 188, 156, 0.1);
+}
+
+.search-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== Knappar ===== */
+.btn-secondary, .btn-location {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover, .btn-location:hover {
+  background: #f7fafc;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 18px;
   border: none;
   border-radius: 12px;
-  background-color: #2f2f2f;
+  background-color: #1ebc9c; /* Använd er signaturfärg istället för mörkgrå */
   color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #17a68a;
+  transform: translateY(-1px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.custom-file-upload-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: 2px solid #edf2f7;
+  border-radius: 12px;
   cursor: pointer;
 }
 
-/* ===== Anpassad till telefon ===== */
+.remove-image-btn {
+  background-color: #ff5f5f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  width: auto; /* Gör den inte lika bred som send-knappen */
+}
 
+/* ===== Bilder & Preview ===== */
+.hidden-file-input {
+  display: none; 
+}
+
+.image-preview {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  background: #f0f9f7; /* Svag grön ton för att visa att något är valt */
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px dashed #1ebc9c;
+}
+
+/* ===== Mobilanpassning ===== */
 @media (max-width: 768px) {
-  .site-title {
-    font-size: 18px;
-  }
-
   .report-title {
-  margin-bottom: 8px;
-  font-size: clamp(28px, 4vw, 56px);
-  text-align: center;
+    font-size: 1.8rem;
   }
-
-.report-subtitle {
-  margin: 0;
-  font-size: clamp(16px, 2.2vw, 28px);
-  text-align: center;
+  
+  .form-container {
+    padding: 20px;
+    border-radius: 0; /* Fullbredd på mobil känns ofta bättre utan hörn */
   }
 
   .map-container {
-    max-width: 100%;
-    padding: 8px;
-  }
-
-  .map-image {
-    height: 260px;
+    height: 350px;
   }
 
   .recent-report {
-    width: 42%;
-    min-width: 140px;
-    max-width: 220px;
-    right: 12px;
-    bottom: 12px;
-    left: auto;         /* viktigt */
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  .form-container {
-    padding: 20px 16px;
-    border-radius: 16px;
-  }
-
-  .form-label {
-    font-size: 16px;
-  }
-
-  .form-control,
-  .form-input,
-  .submit-button {
-    font-size: 16px;
-    padding: 14px;
-  }
-
-  textarea.form-control,
-  textarea.form-input {
-    min-height: 120px;
+    display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
   }
 }
-
 </style>
