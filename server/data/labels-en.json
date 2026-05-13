@@ -1,4 +1,6 @@
 {
+	"loadPage": "Loading My Walking City..",
+	
 	"accessibility": "Accessibility",
 	"activeUsers": "Active users",
 	"addHighlight": "Add a highlight!",
@@ -22,6 +24,15 @@
 	"description": "Description",
 	"done": "Done",
 	
+	"fillInUsername": "Select a username", 
+	"fillInEmail": "Fill in your email address", 
+	"fillInPassword": "Select a password", 
+	"usernameSignUp": "Username",
+	"emailSignUp": "Your email", 
+	"passwordSignUp": "Password",
+	"chooseAvatar": "Choose an avatar", 
+
+
 	"event": "Event",
 	"email": "Email",
 

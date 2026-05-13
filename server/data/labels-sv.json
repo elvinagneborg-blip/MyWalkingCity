@@ -1,4 +1,6 @@
 {
+	"loadPage": "Laddar My Walking City..",
+	
 	"accessibility": "Tillgänglighet",
 	"activeUsers": "Aktiva användare",	
 	"addHighlight": "Lägg till en höjdpunkt!",
@@ -21,6 +23,14 @@
 	"describeYourHighlight": "Beskriv din höjdpunkt",
 	"description": "Beskrivning",
 	"done": "Klart",
+
+	"fillInUsername": "Fyll i ett användarnamn", 
+	"fillInEmail": "Fyll in din epost-adress", 
+	"fillInPassword": "Välj ett lösenord", 
+	"usernameSignUp": "Användarnamn",
+	"emailSignUp": "Din epost-address", 
+	"passwordSignUp": "Lösenord",
+	"chooseAvatar": "Välj en avatar", 
 
 	"event": "Evenemang",
 	"email": "Email",

@@ -1,21 +1,21 @@
 <template>
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar My Walking City...</p>
+    <p> {{ uiLabels.loadPage }} </p>
   </div>
   <main v-else>
   <section class="login-container">
 
     <div class="login-form">
-      <label class="signup-label"> Fill in username </label> <!-- Se till att ändra-->
-        <input type="text" v-model="username" placeholder="Username" class="login-input" /> 
+      <label class="signup-label"> {{ uiLabels.fillInUsername }} </label> <!-- Se till att ändra-->
+        <input type="text" v-model="username" :placeholder="uiLabels.usernameSignUp" class="login-input" /> 
       
-      <label class="signup-label"> Fill in email address </label> <!-- Se till att ändra-->
-        <input type="email" v-model="email" placeholder="Your email" class="login-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
+      <label class="signup-label"> {{ uiLabels.fillInEmail }}  </label> <!-- Se till att ändra-->
+        <input type="email" v-model="email" :placeholder="uiLabels.emailSignUp" class="login-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
       
-      <label class="signup-label"> Fill in password </label> <!-- Se till att ändra-->
-        <input type="password" v-model="password" placeholder="Your password" class="login-input" />
+      <label class="signup-label"> {{ uiLabels.fillInPassword }} </label> <!-- Se till att ändra-->
+        <input type="password" v-model="password" :placeholder= "uiLabels.passwordSignUp" class="login-input" />
       
-      <label class="signup-label"> Choose avatar </label> <!-- Se till att ändra-->
+      <label class="signup-label"> {{ uiLabels.chooseAvatar }}  </label> <!-- Se till att ändra-->
         <div class="avatar-options">
           <button
             v-for="avatar in avatars"
