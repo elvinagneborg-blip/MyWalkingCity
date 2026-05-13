@@ -11,16 +11,29 @@
         <p class="signUpDescription"> {{ uiLabels.signUpDescription }}</p>
       </div>
 
-      <label class="signup-label"> {{ uiLabels.fillInUsername }} </label> <!-- Se till att ändra-->
+      <label class="signup-label"> 
+        {{ uiLabels.fillInUsername }} 
+        <span v-if="usernameError" class="error-star">*</span>
+      </label> 
         <input type="text" v-model="username" :placeholder="uiLabels.usernameSignUp" class="login-input" /> 
       
-      <label class="signup-label"> {{ uiLabels.fillInEmail }}  </label> <!-- Se till att ändra-->
+      <label class="signup-label"> 
+        {{ uiLabels.fillInEmail }}  
+        <span v-if="emailError" class="error-star">*</span>
+      </label> 
         <input type="email" v-model="email" :placeholder="uiLabels.emailSignUp" class="login-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
       
-      <label class="signup-label"> {{ uiLabels.fillInPassword }} </label> <!-- Se till att ändra-->
+      <label class="signup-label"> 
+        {{ uiLabels.fillInPassword }} 
+        <span v-if="passwordError" class="error-star">*</span>
+      </label> 
         <input type="password" v-model="password" :placeholder= "uiLabels.passwordSignUp" class="login-input" />
       
-      <label class="signup-label"> {{ uiLabels.chooseAvatar }}  </label> <!-- Se till att ändra-->
+      <label class="signup-label"> 
+        {{ uiLabels.chooseAvatar }}  
+        <span v-if="avatarError" class="error-star">*</span>
+      </label> 
+
         <div class="avatar-options">
           <button
             v-for="avatar in avatars"
@@ -107,6 +120,11 @@
   const password = ref('')
   const avatarUrl = ref('')
 
+  const usernameError = ref(false)
+  const emailError = ref(false)
+  const passwordError = ref(false)
+  const avatarError = ref(false)
+
   const avatars = [
   'https://api.dicebear.com/9.x/personas/svg?seed=Anna',
   'https://api.dicebear.com/9.x/personas/svg?seed=Lucas',
@@ -119,14 +137,19 @@
     popupMessage.value = message
     showPopup.value = true
 }
-  async function handleSignUp() { //Async för att allt inte ska frysa medan vi pratar med databasen
-    if (!username.value || !email.value || !password.value || !avatarUrl.value) {
+  async function handleSignUp() {
+    usernameError.value = !username.value
+    emailError.value = !email.value
+    passwordError.value = !password.value 
+    avatarError.value = !avatarUrl.value
+
+    if (usernameError.value || emailError.value || passwordError.value || avatarError.value) {
       openPopup( 
         uiLabels.value.popupMissingFieldsTitle,
         uiLabels.value.popupMissingFieldsMessage
       )
-
-    return}
+    return
+  }
     
 //Skapar själva kontot i supabase
     const { data, error } = await supabase.auth.signUp({ //Await, koden väntar tills vi får svar
@@ -397,6 +420,12 @@ header div {
   color: #1EBC9C;
 
   margin-bottom: 14px;
+}
+
+.error-star {
+  color: red;
+  font-weight: bold;
+  margin-left: 4px;
 }
 
 @media (max-width: 768px) {
