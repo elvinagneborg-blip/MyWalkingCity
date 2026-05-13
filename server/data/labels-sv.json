@@ -10,6 +10,7 @@
 
 	"category": "Kategori",
 	"changeLanguage": "Ändra till engelska",
+	"changeInProfileHint": "Du kan ändra ditt publika användarnamn i din profil",
 	"chooseCategory": "Välj kategori",
 	"contactInfo": "Kontaktinformation",
 	"culture": "Kultur",
@@ -81,7 +82,7 @@
 	"search": "Sök",
 	"searchForLocation": "Sök efter plats",
 	"selectedPhoto": "Vald bild:",
-	"sendInHighlight": "Skicka in din höjdpunkt!",
+	"sendInHighlight": "Skicka in din höjdpunkt! +10p",
 	"sending": "Skickar...",
 	"sendInReport": "Skicka in din rapport!       +10p",
 	"sentReportInfo": "Din rapport skickas till Uppsala kommun som ser till att det fixas!",
@@ -96,6 +97,8 @@
 	"title": "Rubrik",
 
 	"uploadPhoto": "Ladda upp eller ta en bild",
+	"usernamePlaceholder": "Välj ett publikt namn",
+	"usernameLabel": "Användarnamn",
 
 	"vandalism": "Vandalism",
 	"viewReport": "Se dina rapporter på din profilsida!",

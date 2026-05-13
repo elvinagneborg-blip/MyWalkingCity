@@ -138,6 +138,21 @@
           />
         </div>
 
+        <div class="form-field">
+          <label class="form-label">{{ uiLabels.usernameLabel || 'Användarnamn' }}</label>
+          <input
+            type="text"
+            class="form-input"
+            :class="{ 'form-input-locked': !!usernameFromProfile }"
+            :placeholder="uiLabels.usernamePlaceholder || 'Välj ett publikt namn'"
+            v-model="formData.username"
+            :readonly="!!usernameFromProfile"
+          />
+          <p v-if="usernameFromProfile" class="helper-text">
+            {{ uiLabels.changeInProfileHint || 'Du kan ändra ditt namn på din profilsida.' }}
+          </p>
+        </div>
+
         <button type="submit" class="submit-button" :disabled="isSubmitting">
           {{ isSubmitting ? uiLabels.sending : uiLabels.sendInHighlight }}
         </button>
@@ -352,6 +367,24 @@ async function getAddressFromCoords(lat, lng) {
   }
 }
 
+  //Username
+const usernameFromProfile = ref(null);
+
+// Funktion för att hämta profilinformation
+async function fetchUserProfile() {
+  if (!props.session) return;
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('user_id', props.session.user.id)
+    .single();
+
+  if (data && data.username) {
+    usernameFromProfile.value = data.username;
+    formData.value.username = data.username; // Förifyll fältet
+  }
+}
   //Submit
   async function handleSubmit() {
   // 1. Inledande kontroller (Validering)
@@ -369,6 +402,11 @@ async function getAddressFromCoords(lat, lng) {
   // Kontrollera att kategori är vald
   if (!formData.value.category) {
     alert(uiLabels.value.pleaseSelectCategory || "Vänligen välj en kategori.");
+    return;
+  }
+
+  if (!formData.value.username) {
+    alert(uiLabels.value.pleaseEnterUsername || "Du måste fylla i ett användarnamn.");
     return;
   }
 
@@ -438,6 +476,7 @@ onMounted(() => {
     setTimeout(() => {
       getLocation() // Hämta användarens plats vid sidladdning
     }, 500)
+    fetchUserProfile()
   })
 </script>
 
@@ -570,12 +609,26 @@ label {
   transition: all 0.2s ease;
 }
 
+.form-input-locked {
+  background-color: #e1e6ec;
+  color: #718096;
+  cursor: not-allowed;
+  border-color: #cbd5e0;
+}
+
 .form-control:focus,
 .form-input:focus {
   outline: none;
   border-color: #1ebc9c;
   background-color: #ffffff;
   box-shadow: 0 0 0 4px rgba(30, 188, 156, 0.1);
+}
+
+.helper-text {
+  font-size: 0.8rem;
+  color: #718096;
+  margin-top: 5px;
+  font-style: italic;
 }
 
 .search-group {
