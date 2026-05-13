@@ -12,7 +12,7 @@
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
         <div class="allreports-map-container">
-            <MapComponent />
+            <MapComponent :reports="allMarkers"/>
 
         
             <!--Recent reports knapp -->            
@@ -106,6 +106,7 @@ async function getReports() {         //Ev. ändra och hämta
     //Lifecycle hooks
 onMounted(async () => {
   await getReports()
+  await getAllMarkers()
 })
 </script>
 
