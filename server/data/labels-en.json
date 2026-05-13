@@ -35,6 +35,16 @@
 	"chooseAvatar": "Choose an avatar", 
 	"alreadyHaveAccount": "Already have an account?",
 
+	"popupMissingFieldsTitle": "Opps!",
+	"popupMissingFieldsMessage": "You have to fill in a username, email, password and select an avatar",
+	"popupErrorTitle": "Error!", 
+	"popupSignUpError": "Problems with signing up :", 
+	"popupUserCreateFailed": "Could not create user", 
+	"popupProfileSaveFailed": "The account was created, but profile could not be saved", 
+
+	"popupSuccessTitle": "Almost done!", 
+	"popupConfirmEmail": "Go to you email to verify your account", 
+
 	"event": "Event",
 	"email": "Email",
 

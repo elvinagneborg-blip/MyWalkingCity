@@ -35,6 +35,17 @@
 	"chooseAvatar": "Välj en avatar", 
 	"alreadyHaveAccount": "Har du redan ett konto?",
 
+	"popupMissingFieldsTitle": "Hoppsan!",
+	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, email och lösenord samt välj avatar.",
+	"popupErrorTitle": "Error!", 
+	"popupSignUpError": "Problem med att skapa konto: ", 
+	"popupUserCreateFailed": "Kunde inte skapa användare", 
+	"popupProfileSaveFailed": "Kontot skapades, men profilen kunde inte sparas", 
+
+	"popupSuccessTitle": "Nästan klar!", 
+	"popupConfirmEmail": "Gå till din e-post för att verifiera ditt konto", 
+
+
 	"event": "Evenemang",
 	"email": "Email",
 
