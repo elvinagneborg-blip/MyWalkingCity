@@ -48,6 +48,23 @@
     </div>
     </div>
   </section>
+
+  <!--Popup-->
+  <div v-if="showPopup" class="popup-overlay">
+    <div class="popup-box">
+      <h2 class="popup-title">
+        {{ popupTitle }}
+      </h2>
+      <p class="popup-message">
+        {{ popupMessage }}
+      </p>
+
+      <button class="popup-button" @click="showPopup = false">
+        OK
+      </button>
+    </div>
+  </div>
+
   </main>
 </template>
 
@@ -62,6 +79,11 @@
   const props = defineProps(['backendURL', 'currentLang'])    //ta emot språkval från app.vue
   const socket = io(props.backendURL)
   const router = useRouter()
+
+  //Popup 
+  const showPopup = ref(false)
+  const popupMessage = ref('')
+  const popupTitle = ref('')
 
   //Byt till login
   const goToLogin = () => {
@@ -92,9 +114,18 @@
   'https://api.dicebear.com/9.x/personas/svg?seed=Felix'
   ]
 
+  function openPopup(title, message) {
+    popupTitle.value = title
+    popupMessage.value = message
+    showPopup.value = true
+}
   async function handleSignUp() { //Async för att allt inte ska frysa medan vi pratar med databasen
     if (!username.value || !email.value || !password.value || !avatarUrl.value) {
-      alert("Fyll i användarnamn, email och lösenord samt välj avatar")
+      openPopup( 
+        uiLabels.value.popupMissingFieldsTitle,
+        uiLabels.value.popupMissingFieldsMessage
+      )
+
     return}
     
 //Skapar själva kontot i supabase
@@ -103,7 +134,9 @@
     password: password.value,
   })
     if (error) {
-      alert("Problem with sign up: " + error.message)
+      openPopup(
+        uiLabels.value.popupErrorTitle,
+        uiLabels.value.popupSignUpError + error.message)
       return
     }
   
@@ -111,7 +144,10 @@
 const user = data.user
 
 if (!user) {
-  alert("Kunde inte skapa användare")
+  openPopup(
+    uiLabels.value.popupErrorTitle,
+    uiLabels.value.popupUserCreateFailed
+  )
   return
 }
 
@@ -125,11 +161,18 @@ const { error: profileError } = await supabase
   .eq('user_id', user.id)
 
 if (profileError) {
-  alert("Kontot skapades, men profilen kunde inte sparas: " + profileError.message)
+  openPopup(
+    uiLabels.value.popupErrorTitle,
+    uiLabels.value.popupProfileSaveFailed + profileError.message
+  )
   return
 }
 
-alert("Kolla din e-post för att bekräfta kontot!")
+  openPopup(
+    uiLabels.value.popupSuccessTitle,
+    uiLabels.value.popupConfirmEmail
+  )
+  
   }
 
 
@@ -294,6 +337,66 @@ header div {
   line-height: 1.5;
 
   margin: 0;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+.popup-box {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 18px;
+
+  width: 90%;
+  max-width: 360px;
+
+  text-align: center;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+  animation: popupFade 0.2s ease;
+}
+
+.popup-message {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.popup-button {
+  background-color: #1EBC9C;
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 12px 28px;
+
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.popup-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1EBC9C;
+
+  margin-bottom: 14px;
 }
 
 @media (max-width: 768px) {
