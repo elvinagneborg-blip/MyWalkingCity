@@ -2,7 +2,7 @@
     <div :class="['report-card', !report.image_url ? 'no-image' : '']">
         <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">{{ report.category }}</p>
         <div class="report-info">
-          <p class="report-title">Titel</p>
+          <p class="report-title"> {{ report.title }} </p>
           <p class="report-description">{{ report.description }}</p>
         </div>
         <small class="report-date">{{ new Date(report.created_at).toLocaleDateString() }}</small>

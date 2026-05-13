@@ -159,9 +159,9 @@
   import { supabase } from '@/utils/supabase'
 
   //Setup and Props (Input)
-  const socket = io("localhost:3000")
-  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
+  const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
   const router = useRouter()
+  const socket = io(props.backendURL)
 
   //UI and language
   const uiLabels = ref({})                      //Språkknappar/uiLabels

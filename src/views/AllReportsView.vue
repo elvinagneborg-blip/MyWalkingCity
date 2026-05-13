@@ -68,9 +68,9 @@
     import RecentReport from '@/components/RecentReport.vue'
 
 //Setup and Props (Input)
-  const socket = io("localhost:3000")
-  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
+  const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
   const { handleBoost, isBoosting } = useBoost()
+  const socket = io(props.backendURL)
 
 
    //UI and language
