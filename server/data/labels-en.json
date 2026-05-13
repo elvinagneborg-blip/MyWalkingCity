@@ -24,6 +24,8 @@
 	"description": "Description",
 	"done": "Done",
 	
+	"signUpTitle": "Create an account",
+	"signUpDescription": "Create an account to track your reports, earn points and level up as a top resident!",
 	"fillInUsername": "Select a username", 
 	"fillInEmail": "Fill in your email address", 
 	"fillInPassword": "Select a password", 
@@ -31,7 +33,7 @@
 	"emailSignUp": "Your email", 
 	"passwordSignUp": "Password",
 	"chooseAvatar": "Choose an avatar", 
-
+	"alreadyHaveAccount": "Already have an account?",
 
 	"event": "Event",
 	"email": "Email",
