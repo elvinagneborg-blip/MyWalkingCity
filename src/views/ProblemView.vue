@@ -1,40 +1,60 @@
 <template>
+  <!--Loading skärm-->
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar My Walking City...</p>
+    <p>Loading My Walking City...</p>
   </div>
 
+  <!--Main-->
   <main v-else class="report-page">
-  <section class="report-page">
     <!--Header specifik för sidan -->
     <section class="report-header">
-      <h2 class="report-title"> {{ uiLabels.reportAProblem }} </h2>
-      
+      <p class="report-title"> {{ uiLabels.reportAProblem }} </p>
     </section>
 
-   
-
-  <section class="form-section">
-
-  <!-- 1. Wrappa allt i en form-tagg -->
+    <!--Formuläret-->
+    <section class="form-section">
       <form @submit.prevent="handleSubmit" class="form-container">
 
-        <div class="map-container">
-          <MapComponent 
-          ref="reportMap" 
-    @location-changed="updateCoords"
-    />
+      <div class="map-container">
+        <MapComponent ref="reportMap" @location-changed="updateCoords"/>
+        <!-- Om nearby reports inte visas -->
+        <button 
+          v-if="!showRecentReports"
+          class="allreports-recent-report-button"
+          @click="showRecentReports = true">
+          Rapporter i närheten
+        </button>
+      </div>
 
-            <!-- Recent reports i hörnet av kartan -->
+      <!--Om nearby reports visas-->
+      <aside v-if="showRecentReports" class="allreports-recent-report-panel">
+      <div class="allreports-recent-report-header">
+        <p class="allreports-recent-report-title"> Rapporter i närheten </p>
+        <button
+          class="allreports-close-recent-report-panel"
+          @click="showRecentReports = false"
+          aria-label="Close recent report">
+               x
+        </button>
+      </div>
 
-            <aside class="recent-report">
-              <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
-              <ul class="recent-reports-list" v-for="report in allUserReports">
-                    <li> {{ report.category }} <br> {{ report.description }} </li>
-                </ul>
-            </aside>
-          </div>
-          <div class="form-field">
+      <div class="report-list">
+        <!-- Visas om det är tomt i sessionStorage -->
+        <div v-if="allUserReports.length === 0">
+            <p> {{ uiLabels.noReportsSubmitted }}</p>
+        </div>
+            <!-- Loopar igenom den hämtade datan -->
+          <RecentReport 
+            v-else
+            v-for="report in allUserReports" 
+            :key="report.id" 
+            :report="report"
+            :session="session"/>
+        </div>
+      </aside>
 
+      <!--Formuläret-->
+      <div class="form-field">
       <label class="form-label">{{ uiLabels.locationOfProblem }}</label>
       <div class="search-group">
         <input 
@@ -146,7 +166,7 @@
       </form>
   </section>
     
-  </section>
+
   </main>
 </template>
 
@@ -160,9 +180,9 @@
   import { supabase } from '@/utils/supabase'
 
   //Setup and Props (Input)
-  const socket = io("localhost:3000")
-  const props = defineProps(['currentLang', 'session']) //ta emot språkval från app.vue
+  const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
   const router = useRouter()
+  const socket = io(props.backendURL)
 
   //UI and language
   const uiLabels = ref({})                      //Språkknappar/uiLabels
@@ -417,8 +437,10 @@
   }
 }
 
-  //Livefeed
+  //Livefeed, recent report
   const allUserReports = ref([])
+  const isRecentReportsOpen = ref(false)
+  const showRecentReports = ref(window.innerWidth > 768)
 
   async function fetchLatestReports() {
     const { data, error } = await supabase
@@ -667,6 +689,66 @@ label {
   border: 1px dashed #1ebc9c;
 }
 
+
+/* Knappen som ligger ovanpå kartan */
+.allreports-recent-report-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  padding: 10px 16px;
+  background-color: #1ebc9c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Panelen som dyker upp */
+.allreports-recent-report-panel {
+  position: fixed; /* Gör att den lägger sig ovanpå allt */
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100%;
+  background: white;
+  z-index: 2000; /* Mycket högt så den täcker kartan */
+  box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.allreports-recent-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.allreports-recent-report-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.allreports-close-recent-report-panel {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #718096;
+}
+
+/* Scrollbar lista inuti panelen */
+.report-list {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
 /* ===== Mobilanpassning ===== */
 @media (max-width: 768px) {
   .report-title {
@@ -685,5 +767,32 @@ label {
   .recent-report {
     display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
   }
+
+  /* Nu visar vi knappen! */
+  .allreports-recent-report-button {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    /* ... din befintliga knapp-styling ... */
+  }
+
+  /* Panelen görs om till en "slide-out" meny som täcker allt */
+  .allreports-recent-report-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%; /* Eller t.ex. 300px */
+    height: 100%;
+    border-radius: 0;
+    z-index: 2000;
+  }
+
+  /* Visa krysset så man kan stänga på mobilen */
+  .allreports-close-recent-report-panel {
+    display: block;
+  }
 }
+
 </style>

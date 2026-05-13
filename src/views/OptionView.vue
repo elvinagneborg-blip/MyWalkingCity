@@ -43,9 +43,9 @@
     import io from 'socket.io-client' //kontakt med server
 
     //Setup and Props (Input)
-    const socket = io("localhost:3000")
     const router = useRouter()
-    const props = defineProps(['currentLang']) //ta emot språkval från app.vue    
+    const props = defineProps(['backendURL', 'currentLang']) //ta emot språkval från app.vue    
+  const socket = io(props.backendURL)
 
      //UI and language
     const uiLabels = ref({})                      //Språkknappar/uiLabels

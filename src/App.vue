@@ -4,7 +4,7 @@
 
  <template>
   <WebbHeader :session="session" :currentLang="lang" @toggle-lang="switchLanguage" />  <!--lyssnar på togglelang från knappen i headern-->
-  <RouterView :session="session" :currentLang="lang"/> <!--Skickar ner lang till sidan som syns just nu-->
+  <RouterView :backendURL="backendURL" :session="session" :currentLang="lang"/> <!--Skickar ner lang till sidan som syns just nu-->
  </template>
 
 
@@ -22,6 +22,8 @@
     lang.value = lang.value === "en" ? "sv" : "en";
   }
 
+  const backendURL = `${window.location.protocol}//${window.location.hostname}:3000`;
+
   onMounted(() => {
     // Kolla om det finns en användare sparad i webbläsaren sen innan
     supabase.auth.getSession().then(({ data }) => {
@@ -32,6 +34,8 @@
       session.value = _session
     })
   })
+
+ 
 
 </script>
 

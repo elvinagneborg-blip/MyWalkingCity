@@ -73,8 +73,8 @@
   import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
 
   //Setup and Props (Input)
-  const socket = io("localhost:3000")
-  const props = defineProps(['currentLang', 'session'])     //Ta emot språkval och inloggad/utloggad från app.vue
+  const props = defineProps(['backendURL', 'currentLang', 'session'])     //Ta emot språkval och inloggad/utloggad från app.vue
+  const socket = io(props.backendURL)
 
   //UI and language
   const uiLabels = ref({})                      //Språkknappar/uiLabels
