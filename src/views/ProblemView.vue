@@ -17,22 +17,22 @@
 
       <div class="map-container">
         <MapComponent ref="reportMap" @location-changed="updateCoords"/>
-        <!-- Om nearby reports inte visas -->
+        <!-- Nearby reports knapp -->
         <button 
-          v-if="!showRecentReports"
+          v-if="!showNearbyReports"
           class="allreports-recent-report-button"
-          @click="showRecentReports = true">
+          @click="showNearbyReports = true">
           Rapporter i närheten
         </button>
       </div>
 
-      <!--Om nearby reports visas-->
-      <aside v-if="showRecentReports" class="allreports-recent-report-panel">
+      <!--Nearby reports listan-->
+      <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
       <div class="allreports-recent-report-header">
         <p class="allreports-recent-report-title"> Rapporter i närheten </p>
         <button
           class="allreports-close-recent-report-panel"
-          @click="showRecentReports = false"
+          @click="showNearbyReports = false"
           aria-label="Close recent report">
                x
         </button>
@@ -40,13 +40,13 @@
 
       <div class="report-list">
         <!-- Visas om det är tomt i sessionStorage -->
-        <div v-if="allUserReports.length === 0">
+        <div v-if="nearbyReports.length === 0">
             <p> {{ uiLabels.noReportsSubmitted }}</p>
         </div>
             <!-- Loopar igenom den hämtade datan -->
           <RecentReport 
             v-else
-            v-for="report in allUserReports" 
+            v-for="report in nearbyReports" 
             :key="report.id" 
             :report="report"
             :session="session"/>
@@ -193,6 +193,7 @@
   import { useRouter } from 'vue-router'
   import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
+  import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
 
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
@@ -329,6 +330,7 @@
     formData.value.latitude = lat
     formData.value.longitude = lng
     console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
+    fetchNearbyReports(lat, lng)
     const address = await getAddressFromCoords(lat, lng)
     addressSearch.value = address;
   }
@@ -479,29 +481,30 @@ async function fetchUserProfile() {
   }
 }
 
-  //Livefeed, recent report
-  const allUserReports = ref([])
-  const isRecentReportsOpen = ref(false)
-  const showRecentReports = ref(window.innerWidth > 768)
+  //Livefeed, nearby report
+  const nearbyReports = ref([])
+  const showNearbyReports = ref(false)
 
-  async function fetchLatestReports() {
+  async function fetchNearbyReports(lat, lng) {
+    if (!lat || !lng) return   
     const { data, error } = await supabase
       .from('reports')
       .select('*')
-      .order('created_at', {ascending: false})
-      .limit(5) //hämtar 5 stycken rapporter
-
-    if (!error) {
-        allUserReports.value = data
-    }
-    else {
+      .limit(50) //hämtar 50 stycken rapporter
+    if (!error && data) {
+      const sortedByDistance = data.sort((a, b) => {
+        const distA = Math.pow(a.latitude - lat, 2) + Math.pow(a.longitude - lng, 2);
+        const distB = Math.pow(b.latitude - lat, 2) + Math.pow(b.longitude - lng, 2);
+        return distA - distB
+    })
+    nearbyReports.value = sortedByDistance.slice(0, 5);
+    }else {
       console.error("Kunde inte hämta live-feed:", error.message)
     }
   }
 
   //Lifecycle hooks
   onMounted(() => { 
-    fetchLatestReports()
     setTimeout(() => {
     getLocation();
   }, 500);

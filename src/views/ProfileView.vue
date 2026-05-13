@@ -181,8 +181,8 @@
 
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
-  const socket = io(props.backendURL)
-
+  const socket = io(props.backendUrl)
+  
   //UI and language
   const uiLabels = ref({})
 

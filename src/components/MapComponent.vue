@@ -3,9 +3,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"; /* onMounted kör kod när komponenten har laddats, ref används för referens */
-import L from "leaflet"; /* importerar leaflet - biblioteket */
-import "leaflet/dist/leaflet.css";
+import { onMounted, ref } from "vue" /* onMounted kör kod när komponenten har laddats, ref används för referens */
+import L from "leaflet" /* importerar leaflet - biblioteket */
+import "leaflet/dist/leaflet.css"
 
 const mapContainer = ref(null); /* div elementet --> är null i början för att kunna kopplas till HTML elementet  */
 const emit = defineEmits(['location-changed']);
@@ -38,6 +38,8 @@ const setLocation = (lat, lng) => {
 }
 
 defineExpose({ setLocation })
+
+
 </script>
 
 <style scoped>

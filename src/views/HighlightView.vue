@@ -25,14 +25,42 @@
     @location-changed="updateCoords"
     />
 
-            <!-- Recent reports i hörnet av kartan -->
-            <aside class="recent-report">
-              <h3 class="recent-reports-title"> {{ uiLabels.recentReports }} </h3>
-              <ul class="recent-reports-list" v-for="report in allUserReports">
-                    <li> {{ report.category }} <br> {{ report.description }} </li>
-                </ul>
-            </aside>
-          </div>
+       <!-- Nearby reports knapp -->
+        <button 
+          v-if="!showNearbyReports"
+          class="allreports-recent-report-button"
+          @click="showNearbyReports = true">
+          Rapporter i närheten
+        </button>
+      </div>
+
+      <!--Nearby reports listan-->
+      <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
+      <div class="allreports-recent-report-header">
+        <p class="allreports-recent-report-title"> Rapporter i närheten </p>
+        <button
+          class="allreports-close-recent-report-panel"
+          @click="showNearbyReports = false"
+          aria-label="Close recent report">
+               x
+        </button>
+      </div>
+
+      <div class="report-list">
+        <!-- Visas om det är tomt i sessionStorage -->
+        <div v-if="nearbyReports.length === 0">
+            <p> {{ uiLabels.noReportsSubmitted }}</p>
+        </div>
+            <!-- Loopar igenom den hämtade datan -->
+          <RecentReport 
+            v-else
+            v-for="report in nearbyReports" 
+            :key="report.id" 
+            :report="report"
+            :session="session"/>
+        </div>
+      </aside>
+
           <div class="form-field">
 
       <label class="form-label">{{ uiLabels.locationOfHighlight }}</label>
@@ -172,6 +200,8 @@
   import { useRouter } from 'vue-router'
   import MapComponent from "@/components/MapComponent.vue";
   import { supabase } from '@/utils/supabase'
+  import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
+
 
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
@@ -305,6 +335,7 @@
     formData.value.latitude = lat
     formData.value.longitude = lng
     console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
+    fetchNearbyReports(lat, lng)
     const address = await getAddressFromCoords(lat, lng)
     addressSearch.value = address;
   }
@@ -452,27 +483,30 @@ async function fetchUserProfile() {
   }
 }
 
-  //Latestreports
-  const allUserReports = ref({})
+  //Livefeed, nearby report
+  const nearbyReports = ref([])
+  const showNearbyReports = ref(false)
 
-  const fetchLatestReports = async () => {
+  async function fetchNearbyReports(lat, lng) {
+    if (!lat || !lng) return   
     const { data, error } = await supabase
       .from('reports')
       .select('*')
-      .order('created_at', {ascending: false})
-      .limit(5) //hämtar 5 stycken rapporter
-
-    if (!error) {
-        allUserReports.value = data
-    }
-    else {
+      .limit(50) //hämtar 50 stycken rapporter
+    if (!error && data) {
+      const sortedByDistance = data.sort((a, b) => {
+        const distA = Math.pow(a.latitude - lat, 2) + Math.pow(a.longitude - lng, 2);
+        const distB = Math.pow(b.latitude - lat, 2) + Math.pow(b.longitude - lng, 2);
+        return distA - distB
+    })
+    nearbyReports.value = sortedByDistance.slice(0, 5);
+    }else {
       console.error("Kunde inte hämta live-feed:", error.message)
     }
   }
 
   //Lifecycle hooks
 onMounted(() => { 
-    fetchLatestReports()
     setTimeout(() => {
       getLocation() // Hämta användarens plats vid sidladdning
     }, 500)
@@ -737,4 +771,74 @@ label {
     display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
   }
 }
+
+/* ===== TILLÄGG FÖR NEARBY REPORTS PANEL ===== */
+
+/* Knappen som ligger ovanpå kartan */
+.allreports-recent-report-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  padding: 10px 16px;
+  background-color: #1ebc9c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Panelen som dyker upp */
+.allreports-recent-report-panel {
+  position: fixed; 
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100%;
+  background: white;
+  z-index: 2000; 
+  box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.allreports-recent-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.allreports-recent-report-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.allreports-close-recent-report-panel {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #718096;
+}
+
+/* Scrollbar lista inuti panelen */
+.report-list {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* Mobilanpassning för panelen */
+@media (max-width: 768px) {
+  .allreports-recent-report-panel {
+    width: 100%;
+  }
+}
+
 </style>
