@@ -16,7 +16,7 @@
     <!--Personal developement information -->
     <section class="personal-dev-container">
         <div class="personal-dev-text">
-            <h2> {{ props.session.user.email }}</h2>
+            <h2 class="profile-username"> {{ profile?.username || props.session.user.email }} </h2>
 
             <dl class="personal-dev-info">
                 <div class="personal-dev-row"> 
@@ -33,13 +33,22 @@
                     <dt class="personal-dev-label"> {{uiLabels.highlights}} </dt>
                     <dd class="personal-dev-value"> {{ userReports.filter(r => r.type === 'highlight').length }} </dd>
                 </div>
+
+                <div class="personal-dev-row">
+                    <dt class="personal-dev-label">Poäng</dt>
+                    <dd class="personal-dev-value"> {{ profile?.total_points ?? 0 }} </dd>
+                </div>
+
             </dl>
         </div>
 
     <!-- Avatar (lägg till när vi har koll på vad vi gör med datastorage / val av avatar)-->
         <div class="avatar-wrapper">
             <img
+                v-if="profile?.avatar_url"
                 class="avatar-image"
+                :src="profile.avatar_url"
+                alt="Profile avatar"
             />
         </div>
     </section>
@@ -50,7 +59,7 @@
             <div class="current-level-top">
                 <div class="current-level-avatar"></div>
                 <div class="current-level-text">
-                    <h2>Level 7</h2>
+                    <h2> Level {{ currentLevel }}</h2>
                         <p>Star citizen ✨</p>
                 </div>
             </div>
@@ -58,12 +67,15 @@
 <!-- Progress bar som går fram med poäng -->
             <div class="progress-area">
                 <div class="progress-bar">
-                    <div class="progress-fill"></div>
+                    <div 
+                        class="progress-fill"
+                        :style="{ width: progressToNextLevel + '%' }">
+                    </div>
                 </div>
 
                 <div class="progress-labels">
-                    <span>Level 7</span>
-                    <span>Level 8</span>
+                    <span>Level {{ currentLevel }}</span>
+                    <span>Level {{ nextLevel }}</span>
                 </div>
             </div>
 
@@ -89,7 +101,7 @@
 <!-- Kommande level -->
         <div class="next-level-locked">
             <div class="locked-icon">🔒</div>
-                <h2>Level 8</h2>
+                <h2>Level {{ nextLevel }}</h2>
                     <p>Queen citizen</p>
 
             <div class="progress-area">
@@ -175,39 +187,75 @@
 
 <script setup>
   //Imports
-  import { ref, onMounted, watch, computed } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
-  import io from 'socket.io-client'                     //kontakt med server
-  import { supabase } from '@/utils/supabase' 
+    import { ref, onMounted, watch, computed } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+    import io from 'socket.io-client'                     //kontakt med server
+    import { supabase } from '@/utils/supabase' 
 
   //Setup and Props (Input)
-  const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
-  const socket = io(props.backendUrl)
+    const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
+    const socket = io(props.backendURL)
   
   //UI and language
-  const uiLabels = ref({})
+    const uiLabels = ref({})
 
-  socket.on("uiLabels", (labels) => {
-    uiLabels.value = labels
-  })
+    socket.on("uiLabels", (labels) => {
+        uiLabels.value = labels
+    })
 
-  watch(() => props.currentLang, (newLang) => { //vakta språket
+    watch(() => props.currentLang, (newLang) => { //vakta språket
     socket.emit("getUILabels", newLang || "en");
   }, { immediate: true });                      //Språket laddas direkt när sidan laddas
   
-  //User reports
-  const userReports = ref([])
-  const currentFilter = ref('all') // Standardvärde är att visa alla
+  //Profile
+    const profile = ref(null) //datan från profile tabellen 
+    
+    const fetchProfile = async () => {
+        if (!props.session) return //kollar att användaren är inloggad
 
-  const fetchUserReports = async () => {
-    if (!props.session) return //KOllar om man är inoggad
-    const { data, error } = await supabase
-        .from('reports')
-        .select('*')
-        .eq('user_id', props.session.user.id) //hämta mina rapporter
-        .order('created_at', {ascending: false})
-    if (!error) {
-        userReports.value = data
+        const { data, error } = await supabase
+            .from('profiles') //hämta från profil tabellen
+            .select('username, avatar_url, total_points')
+            .eq('user_id', props.session.user.id) //hämtar från den raden
+            .single() //vill ha exakt en rad och inte en array 
+
+       if (error) {
+        console.log('Kunde inte hämta profil:', error.message)
+    return
     }
+
+    profile.value = data
+    }
+
+    //Level system 
+    const points = computed(() => profile.value?.total_points ?? 0)
+
+    const currentLevel = computed(() => {
+        return Math.floor(points.value / 10) + 1
+    })
+
+    const nextLevel = computed(() => {
+        return currentLevel.value + 1
+    })
+
+    const progressToNextLevel = computed(() => {
+        return (points.value % 10) * 10
+    })
+
+
+  //User reports
+    const userReports = ref([])
+    const currentFilter = ref('all') // Standardvärde är att visa alla
+
+    const fetchUserReports = async () => {
+        if (!props.session) return //KOllar om man är inoggad
+            const { data, error } = await supabase
+                .from('reports')
+                .select('*')
+                .eq('user_id', props.session.user.id) //hämta mina rapporter
+                .order('created_at', {ascending: false})
+        if (!error) {
+        userReports.value = data
+        }
   }
 
   const filteredReports = computed(() => {
@@ -221,8 +269,10 @@
 
   //Lifecycle hooks
   onMounted(() => {
+    fetchProfile() //Tillagd för att ladda in det som står under profile tabellen 
     fetchUserReports()
   })
+
 </script>
 
 <!-- CSS basic -->
@@ -280,6 +330,12 @@
     gap: clamp(14px, 3vw, 32px);
 }
 
+.profile-username {
+    margin: 0 0 16px 0;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 700;
+}
+
 .personal-dev-info {
     margin: 0;
 }
@@ -311,6 +367,14 @@
     border-radius: 50%;
     background-color: #8bb8d9;
     flex-shrink: 0; /* nu inställd så att avataren inte krymper vid brist på utrymme*/
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
 }
 
 /* ===== Levels section ===== */
@@ -376,7 +440,6 @@
 }
 
 .progress-fill {
-    width: 45%;
     height: 100%;
     background-color: #63a89b;
     border-radius: 999px;
@@ -618,7 +681,7 @@
         gap: 14px;
     }
 
-    .personal-dev-text h2 {
+    .profile-username {
         margin-bottom: 14px;
     }
 
@@ -662,6 +725,7 @@
     .contact-value {
         text-align: left;
     }
+
 }
 </style>
 
