@@ -6,8 +6,31 @@
   <section class="login-container">
 
     <div class="login-form">
-      <input type="email" v-model="email" placeholder="Your email" class="login-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
-      <input type="password" v-model="password" placeholder="Your password" class="login-input" />
+      <label class="signup-label"> Fill in username </label> <!-- Se till att ändra-->
+        <input type="text" v-model="username" placeholder="Username" class="login-input" /> 
+      
+      <label class="signup-label"> Fill in email address </label> <!-- Se till att ändra-->
+        <input type="email" v-model="email" placeholder="Your email" class="login-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
+      
+      <label class="signup-label"> Fill in password </label> <!-- Se till att ändra-->
+        <input type="password" v-model="password" placeholder="Your password" class="login-input" />
+      
+      <label class="signup-label"> Choose avatar </label> <!-- Se till att ändra-->
+        <div class="avatar-options">
+          <button
+            v-for="avatar in avatars"
+            :key="avatar"
+            type="button"
+            class="avatarButton"
+            :class="{ selected: avatarUrl == avatar}"
+            @click="avatarUrl = avatar"
+            >
+            <img :src="avatar" alt="Avatar option" class="avatar-option-image" />
+          </button>
+        </div>
+
+
+      
       <button class="button-report" @click="handleSignUp"> {{ uiLabels.signUp }} </button>
     </div>
   </section>
@@ -36,19 +59,56 @@
   }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
 
   //Sign up
+  const username = ref('')
   const email = ref('')
   const password = ref('')
+  const avatarUrl = ref('')
+
+  const avatars = [
+  'https://api.dicebear.com/9.x/personas/svg?seed=Anna',
+  'https://api.dicebear.com/9.x/personas/svg?seed=Lucas',
+  'https://api.dicebear.com/9.x/personas/svg?seed=Sara',
+  'https://api.dicebear.com/9.x/personas/svg?seed=Felix'
+  ]
 
   async function handleSignUp() { //Async för att allt inte ska frysa medan vi pratar med databasen
+    if (!username.value || !email.value || !password.value || !avatarUrl.value) {
+      alert("Fyll i användarnamn, email och lösenord samt välj avatar")
+    return}
+    
+//Skapar själva kontot i supabase
     const { data, error } = await supabase.auth.signUp({ //Await, koden väntar tills vi får svar
     email: email.value,
     password: password.value,
   })
     if (error) {
       alert("Problem with sign up: " + error.message)
-    } else {
-      alert("Kolla din e-post för att bekräfta kontot!") //Ändra till UILAbel
+      return
     }
+  
+//Hämtar den nya användaren från supabase
+const user = data.user
+
+if (!user) {
+  alert("Kunde inte skapa användare")
+  return
+}
+
+const { error: profileError } = await supabase
+  .from('profiles')
+  .update({
+    username: username.value,
+    avatar_url: avatarUrl.value,
+    total_points: 0
+  })
+  .eq('user_id', user.id)
+
+if (profileError) {
+  alert("Kontot skapades, men profilen kunde inte sparas: " + profileError.message)
+  return
+}
+
+alert("Kolla din e-post för att bekräfta kontot!")
   }
 </script>
 
@@ -184,5 +244,36 @@ header div {
   .social-login {
     gap: 10px; 
   }
+
+  .avatar-options {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.avatarButton {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.avatarButton.selected {
+  border-color: #1EBC9C;
+}
+
+.avatar-option-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}  
+
+
 }
 </style>
