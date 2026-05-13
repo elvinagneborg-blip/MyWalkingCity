@@ -6,6 +6,11 @@
   <section class="login-container">
 
     <div class="login-form">
+      <div class="signUp-Text">
+        <h1 class="signUpTitle"> {{ uiLabels.signUpTitle }} </h1>
+        <p class="signUpDescription"> {{ uiLabels.signUpDescription }}</p>
+      </div>
+
       <label class="signup-label"> {{ uiLabels.fillInUsername }} </label> <!-- Se till att ändra-->
         <input type="text" v-model="username" :placeholder="uiLabels.usernameSignUp" class="login-input" /> 
       
@@ -32,6 +37,15 @@
 
       
       <button class="button-report" @click="handleSignUp"> {{ uiLabels.signUp }} </button>
+
+      <div class="login-switch-container">
+        <p class="switch-login-text">
+          {{ uiLabels.alreadyHaveAccount }}
+        </p>
+        <button class="login-button" @click="goToLogin">
+          {{ uiLabels.logIn }}
+        </button>
+    </div>
     </div>
   </section>
   </main>
@@ -40,12 +54,19 @@
 <script setup>
   //Imports
   import { ref, watch } from 'vue'              //för att kunna ha reaktiva variabler och övervaka dem
+  import { useRouter } from 'vue-router'
   import io from 'socket.io-client'             //kontakt med server
   import { supabase } from '@/utils/supabase' 
 
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang'])    //ta emot språkval från app.vue
   const socket = io(props.backendURL)
+  const router = useRouter()
+
+  //Byt till login
+  const goToLogin = () => {
+  router.push({ name: 'LogIn' })
+  }
 
   //UI and language
   const uiLabels = ref({})                      //Språkknappar/uiLabels
@@ -110,6 +131,8 @@ if (profileError) {
 
 alert("Kolla din e-post för att bekräfta kontot!")
   }
+
+
 </script>
 
 
@@ -214,6 +237,63 @@ header div {
   padding: 17px 80px;
   cursor: pointer;
   border-radius: 5px;
+}
+
+
+.login-switch-container {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.switch-login-text {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.login-button {
+  background-color: #1EBC9C;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: auto;
+  min-width: 180px;
+}
+
+.signUp-Text {
+  background: rgba(30, 188, 156, 0.12);
+  border: 1px solid rgba(30, 188, 156, 0.25);
+  backdrop-filter: blur(8px);
+
+  padding: 24px 20px;
+  border-radius: 18px;
+
+  margin-bottom: 30px;
+  text-align: center;
+
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.signup-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #111;
+
+  margin: 0 0 10px 0;
+}
+
+.signup-description {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.5;
+
+  margin: 0;
 }
 
 @media (max-width: 768px) {

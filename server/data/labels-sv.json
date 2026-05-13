@@ -24,6 +24,8 @@
 	"description": "Beskrivning",
 	"done": "Klart",
 
+	"signUpTitle": "Skapa ett konto",
+	"signUpDescription": "Skapa ett konto för att följa dina rapporter, samla poäng och levla upp som en toppmedborgare!", 
 	"fillInUsername": "Fyll i ett användarnamn", 
 	"fillInEmail": "Fyll in din epost-adress", 
 	"fillInPassword": "Välj ett lösenord", 
@@ -31,6 +33,7 @@
 	"emailSignUp": "Din epost-address", 
 	"passwordSignUp": "Lösenord",
 	"chooseAvatar": "Välj en avatar", 
+	"alreadyHaveAccount": "Har du redan ett konto?",
 
 	"event": "Evenemang",
 	"email": "Email",
