@@ -10,6 +10,7 @@
 
 	"category": "Category",
 	"changeLanguage": "Byt till svenska",
+	"changeInProfileHint": "You can change your public username in your profile",
 	"chooseCategory": "Choose category",
 	"contactInfo": "Contact information",
 	"culture": "Culture",
@@ -82,7 +83,7 @@
 	"search": "Search",
 	"searchForLocation": "Search for location",
 	"selectedPhoto": "Selected photo:",
-	"sendInHighlight": "Send in your highlight!",
+	"sendInHighlight": "Send in your highlight! +10p",
 	"sending": "Sending...",
 	"sendInReport": "Send in your report!      +10p",
 	"sentReportInfo": "Your report is sent to Uppsala municipality who will make sure it gets fixed!",
@@ -97,6 +98,8 @@
 	"title": "Title",
 
 	"uploadPhoto": "Upload or take a photo",
+	"usernamePlaceHolder": "Enter a public username",
+	"usernameLabel": "Username",
 
 	"vandalism": "Vandalism",
 	"viewReport": "View your reports on your profile page!",

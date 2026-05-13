@@ -1,5 +1,5 @@
 <template>
-    <div ref="mapContainer" class="map-container" > </div> <!--ref för JS, class för CSS-->
+    <div ref="mapContainer" class="map-container"> </div> <!--ref för JS, class för CSS-->
 </template>
 
 <script setup>
