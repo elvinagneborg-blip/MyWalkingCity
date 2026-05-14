@@ -24,10 +24,24 @@
 	"description": "Beskrivning",
 	"done": "Klart",
 
+	"logInTitle": "Logga in",
+	"logInDescription": "Logga in för att följa dina rapporter, spara dina poäng och levla upp till att bli en toppmedborgare",
+	"fillInEmailLogIn": "Skriv in din email-adress",
+	"fillInPasswordLogIn": "Skriv in ditt lösenord",
+	"dontHaveAnAccount": "Har du inget konto?",
+	
+	"popupMissingFieldLogIn": "Du måste fylla i din email och lösenord",
+	"popupLoginWrongCredentials": "Inloggningen misslyckades. Kontrollera emailadress och lösenord",
+	"forgotPassword": "Glömt lösenord?",
+	"sendVerification": "Skicka verifieringslänk",
+	"popupFillInEmailForReset": "Fyll i din emailadress först",
+
+
+
 	"signUpTitle": "Skapa ett konto",
 	"signUpDescription": "Skapa ett konto för att följa dina rapporter, samla poäng och levla upp som en toppmedborgare!", 
 	"fillInUsername": "Fyll i ett användarnamn", 
-	"fillInEmail": "Fyll in din epost-adress", 
+	"fillInEmail": "Fyll i din epost-adress", 
 	"fillInPassword": "Välj ett lösenord", 
 	"usernameSignUp": "Användarnamn",
 	"emailSignUp": "Din epost-address", 
