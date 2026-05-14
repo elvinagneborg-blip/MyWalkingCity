@@ -35,6 +35,12 @@
 	"forgotPassword": "Forgot password?",
 	"sendVerification": "Send verification link",
 	"popupFillInEmailForReset": "Please enter your email address first",
+	"popupResetPasswordError": "Could not send the verification link. Please try again.",
+	"popupResetPasswordSent": "We have sent a password reset link to your email.", 
+	"popupSuccessTitlePassword": "Sent!",
+
+
+
 
 	
 	"signUpTitle": "Create an account",
