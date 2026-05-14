@@ -55,6 +55,12 @@ const router = createRouter({
         path: '/feedback/',
         name: 'FeedbackView',
         component: () => import('../views/FeedbackView.vue')
+      },
+    
+      {
+        path: '/reset-password',
+        name: 'ResetPassword',
+        component: () => import('../views/ResetPasswordView.vue')
       }
   ]
 })

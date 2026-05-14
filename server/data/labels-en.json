@@ -23,6 +23,19 @@
 	"describeYourHighlight": "Describe your highlight",
 	"description": "Description",
 	"done": "Done",
+
+	"logInTitle": "Log in",
+	"logInDescription": "Log in to track your reports, save your points, and level up to become a top resident!",
+	"fillInEmailLogIn": "Fill in your email-address",
+	"fillInPasswordLogIn": "Fill in your password",
+	"dontHaveAnAccount": "Don't have an account?",
+
+	"popupMissingFieldLogIn": "You have to fill in your email and password",
+	"popupLoginWrongCredentials": "Login failed. Please check your email and password",
+	"forgotPassword": "Forgot password?",
+	"sendVerification": "Send verification link",
+	"popupFillInEmailForReset": "Please enter your email address first",
+
 	
 	"signUpTitle": "Create an account",
 	"signUpDescription": "Create an account to track your reports, earn points and level up as a top resident!",
