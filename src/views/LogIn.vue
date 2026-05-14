@@ -27,13 +27,13 @@
 
       <!--Log in button -->
       <button class="button-report" @click="handleLogin"> {{ uiLabels.logIn }} </button>
-    </div>
 
       <!-- Link to log in-->
     <div class="login-switch-container">
         <p class="switch-signup-text"> {{ uiLabels.dontHaveAnAccount }} </p>
         <button class="login-button" @click="goToSignUp"> {{ uiLabels.signUp }} </button>
     </div>
+  </div>
 
 
   </section>
@@ -137,7 +137,7 @@
     router.push({ name: 'StartMWC' }) 
   }}
 
-//Forgot password
+  //Forgot password
   async function handleForgotPassword() {
 
     //Check if email is missing
@@ -147,32 +147,50 @@
           uiLabels.value.popupMissingFieldsTitle,
           uiLabels.value.popupFillInEmailForReset
         )
+        return
+      }
+    
+    //Reset link to SupaBase
+    const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
+      redirectTo: window.location.origin + '/reset-password'
+    })
 
-  return
-}
-const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
-    redirectTo: window.location.origin + '/reset-password'
-  })
+      if (error) {
+        openPopup(
+          uiLabels.value.popupErrorTitle,
+          uiLabels.value.popupResetPasswordError
+        )
+      return
+      }
 
-  if (error) {
+    //Verficiations link successfully sent 
     openPopup(
-      uiLabels.value.popupErrorTitle,
-      uiLabels.value.popupResetPasswordError
-    )
-    return
-  }
-  openPopup(
-    uiLabels.value.popupSuccessTitle,
-    uiLabels.value.popupResetPasswordSent
-  )
+      uiLabels.value.popupSuccessTitlePassword,
+      uiLabels.value.popupResetPasswordSent
+      )
 }
-
 </script>
-
 
 <style scoped>
 
-/* == Log in- Intro text*/
+/*== Page - layout == */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  min-height: 80vh; 
+}
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* == Log in intro text =*/
 .logInText {
   background: rgba(30, 188, 156, 0.12);
   border: 1px solid rgba(30, 188, 156, 0.25);
@@ -201,7 +219,12 @@ const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
   margin: 0;
 }
 
-/* == Form field == */
+.login-label {
+  width: 85%;
+  text-align: center;
+}
+
+/* == Form field =*/
 .login-input {
   width: 85%;
   padding: 15px;
@@ -212,51 +235,46 @@ const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
   box-sizing: border-box; 
 }
 
-
-
-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px; 
-}
-header img {
-  height: auto; 
-  width: auto;
-}
-header div {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.error-star {
+  color: red;
+  font-weight: bold;
+  margin-left: 4px;
 }
 
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  min-height: 80vh; 
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 320px;
-}
-.login-input {
-  width: 100%;
-  padding: 15px;
+/* == Forgot password section == */
+.forgot-password-section {
+  width: 85%;
+  margin-top: -8px;
   margin-bottom: 20px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0; 
-  box-sizing: border-box; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
+.forgot-password-text {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #0e0000;
+}
+
+.forgot-password-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #1EBC9C;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.forgot-password-button:hover {
+  color: #169d82;
+  text-decoration: underline;
+}
+
+/* == Primary button ==*/
 .button-report {
   background-color: #1EBC9C;
   color: white;
@@ -267,56 +285,33 @@ header div {
   font-size: 1rem;
 }
 
-.button-how-it-works {
-  background-color: #CBE6E1;
-  color: white;
-  border: none;
-  padding: 17px 80px; 
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-.separator-text {
-  margin: 30px 0;
-  color: #333;
-  font-size: 1.1rem;
-}
-
-.social-login {
+/* == switch to Sign up button == */
+.login-switch-container {
+  margin-top: 25px;
   display: flex;
-  justify-content: center;
-  gap: 15px; 
-  margin-bottom: 30px;
-  width: 100%;
-  max-width: 400px; 
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
-.social-button {
-  flex: 1; 
-  text-align: center;
+
+.switch-signup-text {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.login-button {
   background-color: #1EBC9C;
   color: white;
   border: none;
-  padding: 17px 20px; 
-  cursor: pointer;
+  padding: 12px 40px;
   border-radius: 5px;
-}
-
-.signup-section {
-  width: 100%;
-  text-align: center;
-}
-.signup-button {
-  background-color: #1ebc9c85;
-  color: white;
-  border: none;
-  padding: 17px 80px;
   cursor: pointer;
-  border-radius: 5px;
+  font-size: 1rem;
+  width: auto;
+  min-width: 180px;
 }
 
-/* == Popup == */
-
+/* == Popup ==*/
 .popup-overlay { /*mörka lagret som täcker hela sidan */
   position: fixed;
   top: 0;
@@ -377,34 +372,44 @@ header div {
   margin-bottom: 14px;
 }
 
+/* === Anpassad skärmbred === */
+
+/*Webbläsare / större skärm än movbil*/
+@media (min-width: 769px) {
+  .button-report {
+    width: 100%;
+  }
+}
+
+/* Mobiltelefon*/
+
 @media (max-width: 768px) {
   .login-container {
-    padding: 20px;
+    padding: 40px;
+    min-height: auto;
   }
-  
-  .login-form, 
-  .social-login {
-    width: 100%; 
-    max-width: none;
-    padding: 0;
-  }
-  
-  .button-report, .button-how-it-works {
+
+  .login-form {
     width: 100%;
-    padding: 15px 0;
-    margin-bottom: 10px; 
   }
-  
+
   .login-input {
     padding: 15px;
   }
 
-  .separator-text {
-    margin: 20px 0;
+  .button-report {
+    width: 100%;
+    padding: 15px 0;
   }
-  
-  .social-login {
-    gap: 10px; 
+
+  .login-button {
+    width: auto;
+    min-width: 180px;
+    padding: 12px 40px;
+  }
+
+  .login-switch-container {
+    width: 100%;
   }
 }
 </style>

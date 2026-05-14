@@ -35,6 +35,8 @@
 	"forgotPassword": "Glömt lösenord?",
 	"sendVerification": "Skicka verifieringslänk",
 	"popupFillInEmailForReset": "Fyll i din emailadress först",
+	"popupResetPasswordError": "Kunde inte skicka verifieringslänk. Försökt igen",
+	"popupResetPasswordSent": "Vi har skickat en verifieringslänk till din email.",
 
 
 
@@ -60,6 +62,7 @@
 
 	"popupSuccessTitle": "Nästan klar!", 
 	"popupConfirmEmail": "Gå till din e-post för att verifiera ditt konto", 
+	"popupSuccessTitlePassword": "Skickat!",
 
 
 	"event": "Evenemang",

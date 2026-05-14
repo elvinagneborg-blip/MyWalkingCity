@@ -220,6 +220,7 @@ return
 
 
 <style scoped>
+
 /* == Page layout == */
 .login-container {
   display: flex;
@@ -396,12 +397,9 @@ return
 .popup-button {
   background-color: #1EBC9C;
   color: white;
-
   border: none;
   border-radius: 8px;
-
   padding: 12px 28px;
-
   cursor: pointer;
   font-size: 1rem;
 }
@@ -432,35 +430,32 @@ return
 
 /* Mobilskärm*/
 @media (max-width: 768px) {
-
   .login-container {
     padding: 40px;
     min-height: auto;
   }
-  
-  .login-form,
-  .social-login {
-    width: 100%; 
-  }
-  
-  .button-report,
-  .button-how-it-works {
+
+  .login-form {
     width: 100%;
-    padding: 15px 0;
-    margin-bottom: 10px; 
   }
-  
+
   .login-input {
     padding: 15px;
   }
-  
-  .separator-text {
-    margin: 20px 0;
-  }
-  
-  .social-login {
-    gap: 10px; 
+
+  .button-report {
+    width: 100%;
+    padding: 15px 0;
   }
 
+  .login-button {
+    width: auto;
+    min-width: 180px;
+    padding: 12px 40px;
+  }
+
+  .login-switch-container {
+    width: 100%;
+  }
 }
 </style>
