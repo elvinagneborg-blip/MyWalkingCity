@@ -39,9 +39,13 @@
 	"popupResetPasswordSent": "We have sent a password reset link to your email.", 
 	"popupSuccessTitlePassword": "Sent!",
 
-
-
-
+	"resetPasswordTitle":"Reset password",
+	"resetPasswordDescription": "Enter a new password for your account.",
+	"newPasswordPlaceholder": "New password",
+	"saveNewPassword": "Save new password",
+	"popupFillInNewPassword": "You need to enter a new password.",
+	"popupPasswordUpdated": "Your password has been updated",
+	"popupSuccessTitleReset": "Horray!",
 	
 	"signUpTitle": "Create an account",
 	"signUpDescription": "Create an account to track your reports, earn points and level up as a top resident!",

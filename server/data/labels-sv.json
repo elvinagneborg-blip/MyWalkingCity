@@ -64,6 +64,14 @@
 	"popupConfirmEmail": "Gå till din e-post för att verifiera ditt konto", 
 	"popupSuccessTitlePassword": "Skickat!",
 
+	"resetPasswordTitle":"Återställ lösenord",
+	"resetPasswordDescription": "Ange ett nytt lösenord för ditt konto.",
+	"newPasswordPlaceholder": "Nytt lösenord",
+	"saveNewPassword": "Spara nytt lösenord",
+	"popupFillInNewPassword": "Du måste fylla i ett nytt lösenord.",
+	"popupPasswordUpdated": "Lösenordet har uppdaterats",
+	"popupSuccessTitleReset": "Hurra!",
+
 
 	"event": "Evenemang",
 	"email": "Email",
