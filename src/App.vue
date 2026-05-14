@@ -3,7 +3,12 @@
   <!--Routerview är all våra views-->
 
  <template>
-  <WebbHeader :session="session" :currentLang="lang" @toggle-lang="switchLanguage" />  <!--lyssnar på togglelang från knappen i headern-->
+<WebbHeader
+    :session="session"
+    :currentLang="lang"
+    :backendURL="backendURL"
+    @toggle-lang="switchLanguage"
+  />
   <RouterView :backendURL="backendURL" :session="session" :currentLang="lang"/> <!--Skickar ner lang till sidan som syns just nu-->
  </template>
 

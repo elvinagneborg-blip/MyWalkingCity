@@ -1,4 +1,14 @@
 {
+	"logInHeader": "Log in",
+	"signUpHeader": "Sign up",
+	"logOutHeader": "Log out",
+	"routeHome": "Homepage",
+	"routeProfile":"My profile",
+	"routeReport": "Report",
+	"routeAllReport": "All reports",
+	"routeRecentReport": "Recent reports --> kopplas nu till all reports",
+	"routeHowTo": "How does it work? --> kopplas nu till homepage",
+
 	"loadPage": "Loading My Walking City..",
 	
 	"accessibility": "Accessibility",
