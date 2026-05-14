@@ -34,6 +34,8 @@
 	"passwordSignUp": "Password",
 	"chooseAvatar": "Choose an avatar", 
 	"alreadyHaveAccount": "Already have an account?",
+	"usernameAlreadyExists": "This username is taken, choose another one", 
+
 
 	"popupMissingFieldsTitle": "Opps!",
 	"popupMissingFieldsMessage": "You have to fill in a username, email, password and select an avatar",
