@@ -72,7 +72,7 @@
         {{ popupMessage }}
       </p>
 
-      <button class="popup-button" @click="showPopup = false">
+      <button class="popup-button" @click="goToHome">
         OK
       </button>
     </div>
@@ -100,7 +100,15 @@
 
   //Byt till login
   const goToLogin = () => {
-  router.push({ name: 'LogIn' })
+    router.push({ name: 'LogIn' })
+  }
+
+  //Byt till home
+  const goToHome = () => {
+    showPopup.value = false
+    if (popupTitle.value == uiLabels.value.popupSuccessTitle) {
+      router.push({name: 'StartMWC'})
+    }
   }
 
   //UI and language
