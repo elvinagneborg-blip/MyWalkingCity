@@ -1,10 +1,12 @@
 <template> <!-- Main ska inte finnas med i komponent då den ska importeras och det bara får finnas en main per view-->
-    <header class="web-header">
+     <header class="web-header">
         <div class="web-header-layout">
+
+            <!--Left side of header-->
             <div class="web-header-left">
-                <h1 class="web-header-title"> My Walking City</h1>
+                <h1 class="web-header-title"> My Walking City </h1>
             
-            <!--Koppla loggan till homepage -->    
+            <!--Logo as route to homepage-->    
                 <RouterLink :to="{ name: 'StartMWC' }" class="web-header-logo-link">
                     <img
                         src="/img/cropped-SIC-2.png"
@@ -12,59 +14,70 @@
                 </RouterLink>
             </div>
 
+            <!--Right side of hedaer-->
             <div class="web-header-right">
+
+                <!--Language button-->
                 <button @click="$emit('toggle-lang')"> <!--Säger till app.vue att knappen är tryckt-->
                         {{ currentLang === 'sv' ? 'English' : 'Svenska' }} <!--Det som står på knappen, info fås från app.vue-->
                 </button>
                 
-                <div >
+                <div>
+                <!--If user is not logged in-->
                     <div v-if="!session">
                         <button  @click="router.push('/login')"> <!--KOllar om man är inloggad-->
-                            Logga in
+                            {{uiLabels.logInHeader}}
                         </button>
                         <button  @click="router.push('/signup')"> <!--KOllar om man är inloggad-->
-                            Skapa Konto
+                            {{uiLabels.signUpHeader}}
                         </button>
                     </div>
 
+                <!--If user is logged in-->
                     <div v-else>
                         <button @click="handleLogout"> 
-                        Logga ut
+                        {{uiLabels.logOutHeader}}
                         </button>
                         <div class="web-header-avatar" aria-label="User avatar"></div>
                     </div>
                 </div>
 
-            <!--Öppna meny knappen-->
+            <!--Open Menu -->
                 <button 
                     class="web-header-menu-button" @click="toggleMenu" aria-label="Open menu"> 
                 ☰
                 </button>
             </div>
 
+            <!--MENY -->
+
             <!-- Nedan kopplar vi ihop navkomponenten med headern-->
-             <!-- Allt mellan  <ResponsiveNav> och </ResponsiveNav> hamnar i slot i navkomponenten-->
+            
+            <!-- Allt mellan  <ResponsiveNav> och </ResponsiveNav> hamnar i slot i navkomponenten-->
             <ResponsiveNav :hideNav="!menuOpen"> <!-- Ifall menyn ska va gömd eller ej-->
                 <button class="menu-popup-close" @click="closeMenu"> x </button> <!-- kryss för att stänga menyn-->
 
                 <div class="menu-popup-nav">
-                    <RouterLink :to="{ name: 'StartMWC' }" class="menu-popup-link" @click="closeMenu">Home</RouterLink> <!-- Tar oss till homepage och stänger ner menyn-->
-                    <template v-if="session"> <!--Ifall vi är inloggade-->
-                        <RouterLink :to="{ name: 'ProfileView' }" class="menu-popup-link" @click="closeMenu">My profile</RouterLink>
+                    <RouterLink :to="{ name: 'StartMWC' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.routeHome}}</RouterLink> <!-- Tar oss till homepage och stänger ner menyn-->
+                    
+                    <!--If user is not logged in-->
+                    <template v-if="session">
+                        <RouterLink :to="{ name: 'ProfileView' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.routeProfile}}</RouterLink>
                     </template>
 
-                    <template v-else> <!--ifall vi inte är inloggade-->
-                        <RouterLink :to="{ name: 'LogIn' }" class="menu-popup-link" @click="closeMenu">Log in</RouterLink>
-                        <RouterLink :to="{ name: 'SignUp' }" class="menu-popup-link" @click="closeMenu">Sign Up</RouterLink>
+                    <!--If user is not logged in-->
+                    <template v-else> 
+                        <RouterLink :to="{ name: 'LogIn' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.logInHeader}}</RouterLink>
+                        <RouterLink :to="{ name: 'SignUp' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.signUpHeader}}</RouterLink>
                     </template>
-                    <RouterLink :to="{ name: 'OptionView' }" class="menu-popup-link" @click="closeMenu">Report</RouterLink>
-                    <RouterLink :to="{ name: 'AllReportsView' }" class="menu-popup-link" @click="closeMenu">All reports</RouterLink>
+                    <RouterLink :to="{ name: 'OptionView' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.routeReport}}</RouterLink>
+                    <RouterLink :to="{ name: 'AllReportsView' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.routeAllReport}}</RouterLink>
                     
                     <RouterLink :to="{ name: 'AllReportsView' }" class="menu-popup-link" @click="closeMenu">
-                        Recent reports (kopplas nu till allreports)
+                        {{uiLabels.routeRecentReport}}
                     </RouterLink>
                     <RouterLink :to="{ name: 'StartMWC' }" class="menu-popup-link" @click="closeMenu">
-                        How does it work? (kopplas nu homepage)
+                        {{uiLabels.routeHowTo}}
                     </RouterLink>
                 </div>
             </ResponsiveNav>
@@ -72,31 +85,41 @@
     </header>
 </template>
 
+
+
+
 <script setup>
-//Imports
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, watch } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
+import io from 'socket.io-client'
 import ResponsiveNav from './ResponsiveNav.vue'
 import { supabase } from '@/utils/supabase'
-import { useRouter } from 'vue-router'
 
-//Data
-const menuOpen = ref(false)
+const props = defineProps(['session', 'currentLang', 'backendURL'])
+defineEmits(['toggle-lang'])
+
 const router = useRouter()
+const menuOpen = ref(false)
+const uiLabels = ref({})
 
-//Emits (Output)
-const emit = defineEmits(['toggle-lang']) //Så att knappen får skicka info till app.vue
+const socket = io(props.backendURL)
 
-//Props (Input)
-const props = defineProps(['session', 'currentLang']) // Ta emot sessionen från App.vue
+socket.on('uiLabels', (labels) => {
+  uiLabels.value = labels
+})
 
-//Methods
-const toggleMenu = () => { /* Utgår från att den är stängd, men sedan växlar den värde */
-    menuOpen.value = !menuOpen.value
+watch(() => props.currentLang, (newLang) => {
+  socket.emit('getUILabels', newLang || 'en')
+}, { immediate: true })
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
 }
+
 const closeMenu = () => {
-    menuOpen.value = false
+  menuOpen.value = false
 }
+
 const handleLogout = async () => {
   await supabase.auth.signOut()
   router.push('/')
