@@ -182,15 +182,47 @@
     return
   }
 
+  const userId = user.id;
+  const newUsername = username.value;
+
+  //uppdatera all gamla rapporrer som matcher eposten
+  await supabase
+    .from('reports')
+    .update({
+      user_id: userId,
+      username: newUsername 
+    })
+    .eq('email', email.value)
+
+  //samma med boosts
+  await supabase
+    .from('boosts')
+    .update({ 
+      user_id: userId
+    })
+    .eq('email', email.value)
+
+  const { data: allReports } = await supabase  
+    .from('reports')
+    .select('report_id')
+    .eq('user_id', userId) // hämtar alla rapporter
+
+  const { data: allBoosts } = await supabase  
+    .from('boosts')
+    .select('boost_id')
+    .eq('user_id', userId) //samma här
+  
+  const initialPoints = (allReports?.length || 0) * 10 + (allBoosts?.length || 0) * 5;
+
   //Update SuperBase profile-table
   const { error: profileError } = await supabase
     .from('profiles')
     .update({
-      username: username.value,
+      username: newUsername,
       avatar_url: avatarUrl.value,
-      total_points: 0
+      total_points: initialPoints //om man har gjort rapporter eller boost vill jag att man ska få poängen när man skapar konto
     })
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
 
     if (profileError) {
   // Username already exists
