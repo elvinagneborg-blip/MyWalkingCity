@@ -192,8 +192,8 @@
   import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
   import MapComponent from "@/components/MapComponent.vue";
-  import { supabase } from '@/utils/supabase'
   import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
+  import {supabase, addPoints } from '@/utils/supabase' //funktionen för att få och spara poäng
 
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
@@ -467,6 +467,11 @@ async function fetchUserProfile() {
 
     if (error) {
       throw error; // Hoppa till catch-blocket om databasen nekar
+    }
+
+    // Ge 10 poäng om användaren är inloggad
+    if (props.session) {
+      await addPoints(props.session.user.id, 10);
     }
 
     // 6. Succé! Skicka användaren vidare

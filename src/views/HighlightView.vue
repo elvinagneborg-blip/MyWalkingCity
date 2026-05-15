@@ -199,8 +199,8 @@
   import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
   import MapComponent from "@/components/MapComponent.vue";
-  import { supabase } from '@/utils/supabase'
   import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
+  import { supabase, addPoints } from '@/utils/supabase' //funktionen för att få och spara poäng
 
 
   //Setup and Props (Input)
@@ -469,6 +469,11 @@ async function fetchUserProfile() {
 
     if (error) {
       throw error; // Hoppa till catch-blocket om databasen nekar
+    }
+
+    // 10 poäng vid highligt sparas hos användaren
+    if (props.session) {
+      await addPoints(props.session.user.id, 10);
     }
 
     // 6. Succé! Skicka användaren vidare

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
-import { supabase } from '@/utils/supabase'
 import { useRouter } from 'vue-router'
+import { supabase, addPoints } from '@/utils/supabase' //funktionen för att få och spara poäng
 
 export function useBoost() {
   const isBoosting = ref(false)
@@ -50,6 +50,11 @@ export function useBoost() {
           throw error
         }
         return
+      }
+
+      //ge 5 poäng för boosten om användaren är inloggad
+      if (session && session.user) {
+        await addPoints(session.user.id, 5);
       }
 
       // 4. Skicka till feedbacksidan vid framgång
