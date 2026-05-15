@@ -60,7 +60,7 @@
                 <div class="current-level-avatar"></div>
                 <div class="current-level-text">
                     <h2> Level {{ currentLevel }}</h2>
-                        <p>Star citizen ✨</p>
+                        <p>{{ currentTitle }}</p>
                 </div>
             </div>
 
@@ -102,13 +102,13 @@
         <div class="next-level-locked">
             <div class="locked-icon">🔒</div>
                 <h2>Level {{ nextLevel }}</h2>
-                    <p>Queen citizen</p>
+                    <p>{{ nextLevelTitle }}</p>
 
             <div class="progress-area">
                 <div class="progress-bar empty"></div>
                     <div class="progress-labels">
-                        <span>Level 8</span>
-                        <span>Level 9</span>
+                        <span>{{ nextLevel }}</span>
+                        <span>{{ levelAfterNext }}</span>
                     </div>
              </div>
         </div>
@@ -229,14 +229,36 @@
     //Level system 
     const points = computed(() => profile.value?.total_points ?? 0)
 
+    //Namnger lite levlar här
+    const levelTitles = {
+        1: 'Resident',
+        2: 'Super Resident',
+        3: 'Legendary Resident',
+        4: 'City Hero',
+    }
+
     const currentLevel = computed(() => {
         if (points.value >= 25) return 3; //vi kör detta som max i prototypen
         if (points.value >= 10) return 2;
         return 1; //startar alltid på level 1
     })
 
+    //bara för att ta ut namnet ur levelTitles
+    const currentTitle = computed(() => {
+        return levelTitles[currentLevel.value]
+    })
+
+    //nästa level också
+    const nextLevelTitle = computed(() => {
+        return levelTitles[currentLevel.value + 1]
+    })
+
     const nextLevel = computed(() => {
         return currentLevel.value + 1
+    })
+
+    const levelAfterNext = computed(() => {
+        return nextLevel.value + 1
     })
 
     const progressToNextLevel = computed(() => {
@@ -247,8 +269,6 @@
             //jag tänker 15 för level 3 så vi tar bort de för första leveln
             const pointsInCurrentLevel = points.value - 10;
             return ((points.value - 10) / 15) * 100; //10-25 poäng för level 2
-        } else {
-            return 100; //max level nådd vi fyller bara baren
         }
     })
 
