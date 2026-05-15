@@ -230,7 +230,9 @@
     const points = computed(() => profile.value?.total_points ?? 0)
 
     const currentLevel = computed(() => {
-        return Math.floor(points.value / 10) + 1
+        if (points.value >= 25) return 3; //vi kör detta som max i prototypen
+        if (points.value >= 10) return 2;
+        return 1; //startar alltid på level 1
     })
 
     const nextLevel = computed(() => {
@@ -238,7 +240,16 @@
     })
 
     const progressToNextLevel = computed(() => {
-        return (points.value % 10) * 10
+        if (currentLevel.value === 1) {
+            //10 poäng för level 2
+            return (points.value / 10) * 100;
+        } else if (currentLevel.value === 2) {
+            //jag tänker 15 för level 3 så vi tar bort de för första leveln
+            const pointsInCurrentLevel = points.value - 10;
+            return ((points.value - 10) / 15) * 100; //10-25 poäng för level 2
+        } else {
+            return 100; //max level nådd vi fyller bara baren
+        }
     })
 
 
