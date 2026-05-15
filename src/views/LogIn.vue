@@ -131,11 +131,46 @@
       uiLabels.value.popupErrorTitle,
       uiLabels.value.popupLoginWrongCredentials
     )
-    } else {
+    return
+    } 
+    
+    const user = data.user
+
+    if (user) {
+      await supabase
+        .from('reports')
+        .update({ user_id: user.id })
+        .eq('email', email.value)
+        .is('user_id', null)
+
+    await supabase
+      .from('boosts')
+      .update({ user_id: user.id })
+      .eq('email', email.value)
+      .is('user_id', null)
+
+    const { data: myReports } = await supabase
+      .from('reports')
+      .select('report_id')
+      .eq('user_id', user.id)
+
+    const { data: myBoosts } = await supabase
+      .from('boosts')
+      .select('boost_id')
+      .eq('user_id', user.id)
+
+    const totalPoints = (myReports?.length || 0) * 10 + (myBoosts?.length || 0) * 5
+
+    // 4. Uppdatera profilen med korrekt totalpoäng
+    await supabase
+      .from('profiles')
+      .update({ total_points: totalPoints })
+      .eq('user_id', user.id)
+    }
 
     // Log in success 
     router.push({ name: 'StartMWC' }) 
-  }}
+  }
 
   //Forgot password
   async function handleForgotPassword() {

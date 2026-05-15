@@ -82,17 +82,17 @@
 <!-- Statistiken som står under leveln -->
             <div class="stats-row">
                 <div class="mini-stat">
-                    <span class="stat-number">??</span>
+                    <span class="stat-number">{{ userReports.filter(r => r.type === 'problem').length }}</span>
                     <span class="stat-label">{{uiLabels.reports}}</span>
                 </div>
             
                 <div class="mini-stat">
-                    <span class="stat-number">??</span>
+                    <span class="stat-number">0</span>
                     <span class="stat-label">{{uiLabels.done}}</span>
                 </div>
 
                 <div class="mini-stat">
-                    <span class="stat-number">??</span>
+                    <span class="stat-number">{{ userReports.filter(r => r.type === 'highlight').length }}</span>
                     <span class="stat-label">{{uiLabels.highlights}}</span>
                 </div>
             </div>
@@ -252,7 +252,6 @@
         }
     })
 
-
   //User reports
     const userReports = ref([])
     const currentFilter = ref('all') // Standardvärde är att visa alla
@@ -263,7 +262,7 @@
                 .from('reports')
                 .select('*')
                 .eq('user_id', props.session.user.id) //hämta mina rapporter
-                .order('created_at', {ascending: false})
+                .order('created_at', {ascending: false});
         if (!error) {
         userReports.value = data
         }
