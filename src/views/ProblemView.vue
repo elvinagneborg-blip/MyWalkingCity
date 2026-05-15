@@ -194,6 +194,7 @@
   import MapComponent from "@/components/MapComponent.vue";
   import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
   import {supabase, addPoints } from '@/utils/supabase' //funktionen för att få och spara poäng
+  import { useImageUpload } from '@/composables/useImageUpload'
 
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
@@ -211,7 +212,6 @@
     socket.emit("getUILabels", newLang || "en");        //Hämtar uiLabels enl. valt språk
   }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
 
-
   //Data
   const isSubmitting = ref(false)
   const formData = ref({
@@ -226,63 +226,16 @@
   longitude: null 
   })
 
-  //Report Image
-  // --- Refs för bildhantering ---
-  const selectedFile = ref(null)        // Själva fil-objektet för Supabase
-  const selectedFileName = ref('')      // Textsträngen (namnet) för UI:t
-  const imagePreview = ref(null)        // Förhandsvisnings-URL:en
-
   // --- Funktioner ---
 
   // Körs när användaren valt en bild
-  function handlePhotoUpload(event) {
-    const file = event.target.files[0]
-    if (!file) return
-
-    selectedFile.value = file
-    selectedFileName.value = file.name // Sparar namnet för att visa det i UI:t
-    
-    // Skapa förhandsvisning
-    imagePreview.value = URL.createObjectURL(file)
-  }
-
-  // Körs när användaren ångrar sig och vill ta bort bilden
-  function removeImage() {
-    selectedFile.value = null
-    selectedFileName.value = ''
-    imagePreview.value = null
-    
-    // Nollställer det dolda input-fältet så att man kan välja samma bild igen om man vill
-    const fileInput = document.getElementById('photo')
-    if (fileInput) {
-      fileInput.value = ""
-    }
-  }
-
-  // Anropas inuti din handleSubmit när formuläret skickas
-  async function uploadImage() {
-    if (!selectedFile.value) return null
-
-    // Skapa ett unikt filnamn (tidsstämpel + originalnamn)
-    const fileName = `${Date.now()}-${selectedFile.value.name}`
-
-    // 1. Ladda upp till Supabase Storage
-    const { data, error } = await supabase.storage
-      .from('report-images')
-      .upload(fileName, selectedFile.value)
-
-    if (error) {
-      console.error("Storage error:", error.message)
-      return null
-    }
-
-    // 2. Hämta den publika länken så vi kan spara URL:en i vår tabell
-    const { data: publicUrlData } = supabase.storage
-      .from('report-images')
-      .getPublicUrl(fileName)
-
-    return publicUrlData.publicUrl
-  }
+  const { 
+    selectedFileName, 
+    imagePreview, 
+    handlePhotoUpload, 
+    removeImage, 
+    uploadImage 
+  } = useImageUpload()
 
   //Map and adress search
   const reportMap = ref(null)
@@ -411,8 +364,6 @@ async function fetchUserProfile() {
     formData.value.username = data.username; // Förifyll fältet
   }
 }
-
-
 
   //Submit
   async function handleSubmit() {
