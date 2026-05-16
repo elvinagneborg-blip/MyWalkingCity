@@ -66,7 +66,19 @@
     <div v-if="showLevelUpPopup" class="level-up-fullscreen-overlay">
       <div class="level-up-special-box">
         <h2 class="level-up-title">🎉 {{ uiLabels.congrats }} 🎉</h2>
-        <p class="level-up-message">{{ uiLabels.levelUpMessage }} {{ newLevel }}!</p>
+        <p class="level-up-message">{{ uiLabels.levelUpMessage }} {{ newLevel }}! <br />
+          
+          <span v-if="newLevel == 2" class="hat-alert">
+            {{ uiLabels.unlockedHat2 }}<br />
+            <small>{{ uiLabels.seeHatOnProfile }}</small>
+          </span>
+
+          <span v-if="newLevel == 3" class="hat-alert">
+            {{ uiLabels.unlockedHat3 }}<br />
+            <small>{{ uiLabels.seeHatOnProfile }}</small>
+          </span>
+
+        </p>
       
         <button class="btn closeLevelUp" @click="closeLevelUp">{{ uiLabels.closeLevelUp }}</button>
       </div>
@@ -456,5 +468,25 @@
   0% { transform: scale(0.8); opacity: 0; }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* Rutan som lyfter fram att man fått en hatt */
+.hat-alert {
+  display: block;
+  margin-top: 20px;
+  background-color: #f7fafc;
+  border: 2px dashed #cbd5e0;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: 800;
+  color: #2d3748;
+}
+
+.hat-alert small {
+  display: block;
+  margin-top: 5px;
+  font-weight: 600;
+  color: #718096;
+  font-size: 0.9rem;
 }
 </style>

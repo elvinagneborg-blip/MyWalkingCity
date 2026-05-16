@@ -143,6 +143,7 @@
 
 	"search": "Search",
 	"searchForLocation": "Search for location",
+	"seeHatOnProfile": "You can see it on your profile page!",
 	"selectedPhoto": "Selected photo:",
 	"sendInHighlight": "Send in your highlight! +10p",
 	"sending": "Sending...",
@@ -159,6 +160,8 @@
 	"title": "Title",
 	"total": "Total",
 
+	"unlockedHat2": "You have unlocked a new hat: Top hat! 🎩",
+	"unlockedHat3": "You have unlocked a new hat: Crown! 👑",
 	"uploadPhoto": "Upload or take a photo",
 	"usernamePlaceHolder": "Enter a public username",
 	"usernameLabel": "Username",

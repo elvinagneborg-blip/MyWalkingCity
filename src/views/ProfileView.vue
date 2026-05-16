@@ -102,16 +102,26 @@
         </div>
 
 <!-- Kommande level -->
-        <div class="next-level-locked">
-            <div class="locked-icon">🔒</div>
-                <h2>Level {{ nextLevel }}</h2>
+        <div v-if="nextLevel" class="next-level-locked">
+            <div class="next-level-top">
+                <div class="next-level-text">
+                    <h2>Level {{ nextLevel }}</h2>
                     <p>{{ nextLevelTitle }}</p>
+                </div>
+                
+                <div class="preview-hat-wrapper">
+                    <span v-if="nextLevel === 2" class="preview-hat">🎩</span>
+                    <span v-if="nextLevel === 3" class="preview-hat">👑</span>
+                    <span v-if="nextLevel === 4" class="preview-hat">⌘</span>
+                    <span class="locked-badge">🔒</span>
+                </div>
+            </div>
 
             <div class="progress-area">
                 <div class="progress-bar empty"></div>
                     <div class="progress-labels">
-                        <span>{{ nextLevel }}</span>
-                        <span>{{ levelAfterNext }}</span>
+                        <span>Level {{ nextLevel }}</span>
+                        <span v-if="levelAfterNext">Level {{ levelAfterNext }}</span>
                     </div>
              </div>
         </div>
@@ -786,6 +796,51 @@
 @keyframes dropHat {
   0% { transform: translateX(-50%) translateY(-40px); opacity: 0; }
   100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+/* ===== Layout för kommande level ===== */
+.next-level-top {
+  display: flex;
+  justify-content: space-between; /* Trycker isär texten (vänster) och hatten (höger) */
+  align-items: center;
+  margin-bottom: 20px;
+  text-align: left; /* Tvingar texten till vänster */
+}
+
+.next-level-text h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #2d3748;
+  margin: 0 0 5px 0;
+}
+
+.next-level-text p {
+  color: #525963db;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Behållare för hatten och hänglåset */
+.preview-hat-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px; /* Lite luft mot kanten */
+}
+
+/* Den gråa, låsta hatten */
+.preview-hat {
+  font-size: 4rem;
+  display: block;
+  filter: grayscale(100%) opacity(80%); /* Tar bort färg och gör den halvt genomskinlig */
+}
+
+/* Hänglåset i hörnet på hatten */
+.locked-badge {
+  position: absolute;
+  bottom: -8px;
+  right: -10px;
+  font-size: 2rem;
+  z-index: 2;
 }
 </style>
 
