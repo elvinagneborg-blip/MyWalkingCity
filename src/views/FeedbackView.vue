@@ -54,14 +54,16 @@
 
   </main>
 
-  <div v-if="showLevelUpPopup" class="popup-overlay">
-    <div class="popup-box level-up-box">
-      <h2 class="popup-title">🎉 {{ uiLabels.congrats }} 🎉</h2>
-      <p class="popup-message">{{ uiLabels.levelUpMessage }} {{ newLevel }}!</p>
+  <teleport to="body">
+    <div v-if="showLevelUpPopup" class="level-up-fullscreen-overlay">
+      <div class="level-up-special-box">
+        <h2 class="level-up-title">🎉 {{ uiLabels.congrats }} 🎉</h2>
+        <p class="level-up-message">{{ uiLabels.levelUpMessage }} {{ newLevel }}!</p>
       
-      <button class="popup-button" @click="closeLevelUp">{{ uiLabels.closeLevelUp }}</button>
+        <button class="btn closeLevelUp" @click="closeLevelUp">{{ uiLabels.closeLevelUp }}</button>
+      </div>
     </div>
-  </div>
+   </teleport> 
 
 </template>
 
@@ -212,6 +214,9 @@
   font-weight: 700;
   font-size: 16px;
   transition: all 0.2s ease;
+  border: none; /* denna kod är bara för att vanliga knappar också ska se likadan ut */
+  cursor: pointer;
+  font-family: inherits;
 }
 
 .btn:active {
@@ -245,17 +250,16 @@
   margin-top: 20px;
 }
 
-.backToHome, .allReports {
+.backToHome, .allReports, .closeLevelUp {
   background-color: #cbd5e0;
   color: #2d3748;
-  margin-top: 20px;
   font-size: 12px;
   padding: 12px 16px;
   width: fit-content;
-  margin: 0 auto; /* Centrera knappen */
+  margin: 5px auto 0 auto; /* Centrera knappen */
 }
 
-.backToHome:hover, .allReports:hover {
+.backToHome:hover, .allReports:hover, .closeLevelUp:hover {
   background-color: #a0aec0;
   color: white;
 }
@@ -323,5 +327,40 @@
   font-size: clamp(16px, 2.2vw, 28px);
   text-align: center;
   }
+}
+
+/* ===== Level Up Popup ===== */
+
+.level-up-fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.5); /* Halvtransparent svart bakgrund */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 100% framför allt */
+}
+
+.level-up-special-box {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.5); /* Starkare skugga för 3D-känsla */
+  text-align: center;
+  z-index: 10000;
+}
+
+.level-up-title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #059600; 
+}
+
+.level-up-message {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
 }
 </style>
