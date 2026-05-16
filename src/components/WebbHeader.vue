@@ -38,7 +38,13 @@
                         <button @click="handleLogout"> 
                         {{uiLabels.logOutHeader}}
                         </button>
-                        <div class="web-header-avatar" aria-label="User avatar"></div>
+                        
+                        <img
+                            v-if="avatarUrl"
+                            :src="avatarUrl"
+                            class="web-header-avatar"
+                            alt="User avatar"
+                        >
                     </div>
                 </div>
 
@@ -88,29 +94,44 @@
 
 
 
-<script setup>
+<script setup>  
+
+//Imports 
 import { ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import io from 'socket.io-client'
 import ResponsiveNav from './ResponsiveNav.vue'
 import { supabase } from '@/utils/supabase'
 
-const props = defineProps(['session', 'currentLang', 'backendURL'])
+//Propos and emitts 
+const props = defineProps([
+  'session',
+  'currentLang',
+  'backendURL'
+])
+
 defineEmits(['toggle-lang'])
 
+//Setup
 const router = useRouter()
-const menuOpen = ref(false)
-const uiLabels = ref({})
-
 const socket = io(props.backendURL)
 
+//Ui language
+const uiLabels = ref({})
 socket.on('uiLabels', (labels) => {
   uiLabels.value = labels
 })
 
-watch(() => props.currentLang, (newLang) => {
-  socket.emit('getUILabels', newLang || 'en')
-}, { immediate: true })
+watch(
+  () => props.currentLang,
+  (newLang) => {
+    socket.emit('getUILabels', newLang || 'en')
+  },
+  { immediate: true }
+)
+
+//Menu
+const menuOpen = ref(false)
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
@@ -120,11 +141,47 @@ const closeMenu = () => {
   menuOpen.value = false
 }
 
+//Avatar
+const avatarUrl = ref(null)
+
+    //Hämta avataren
+const getAvatar = async () => {
+    avatarUrl.value = null
+
+    if (!props.session?.user?.id) return
+    
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('user_id', props.session.user.id)
+        .single()
+
+    if (error) {
+        console.log('Kunde inte hämta avatar:', error.message)
+    return
+    }
+    
+    avatarUrl.value = data?.avatar_url || null
+    }
+
+        //Om användaren är inloggad --> hämta avatar
+    watch(
+        () => props.session,
+            () => {
+            getAvatar()
+            },
+        { immediate: true }
+        )
+
+//Authentication
 const handleLogout = async () => {
-  await supabase.auth.signOut()
-  router.push('/')
+    await supabase.auth.signOut()
+    router.push('/')
 }
+
 </script>
+
+
 
 
 <style scoped>
