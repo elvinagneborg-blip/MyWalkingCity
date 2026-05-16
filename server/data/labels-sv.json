@@ -148,6 +148,7 @@
 
 	"search": "Sök",
 	"searchForLocation": "Sök efter plats",
+	"seeHatOnProfile": "Du kan se den på din profilsida!",
 	"selectedPhoto": "Vald bild:",
 	"sendInHighlight": "Skicka in din höjdpunkt! +10p",
 	"sending": "Skickar...",
@@ -164,6 +165,8 @@
 	"title": "Rubrik",
 	"total": "Totalt",
 
+	"unlockedHat2": "Du har låst upp en ny hatt: Hög hatt! 🎩",
+	"unlockedHat3": "Du har låst upp en ny hatt: Kungakrona! 👑",
 	"uploadPhoto": "Ladda upp eller ta en bild",
 	"usernamePlaceholder": "Välj ett publikt namn",
 	"usernameLabel": "Användarnamn",
