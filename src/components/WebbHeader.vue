@@ -3,16 +3,12 @@
         <div class="web-header-layout">
 
             <!--Left side of header-->
-            <div class="web-header-left">
+            <RouterLink :to="{ name: 'StartMWC' }" class="web-header-left">
                 <h1 class="web-header-title"> My Walking City </h1>
-            
-            <!--Logo as route to homepage-->    
-                <RouterLink :to="{ name: 'StartMWC' }" class="web-header-logo-link">
-                    <img
-                        src="/img/cropped-SIC-2.png"
-                        class="web-header-logo">
-                </RouterLink>
-            </div>
+                <img
+                src="/img/cropped-SIC-2.png"
+                class="web-header-logo" >
+            </RouterLink>
 
             <!--Right side of hedaer-->
             <div class="web-header-right">
@@ -207,29 +203,34 @@ const handleLogout = async () => {
 .web-header {
   width: 100%;
   background-color: #27c4b5;
-  border-bottom: 2px solid #000;
+  border-bottom: 2px #0a8276;
   position: relative;
 }
 
 .web-header-layout {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding: clamp(12px, 3vw, 24px) clamp(16px, 5vw, 40px);
+  align-items: center;
+
+  padding: 1px clamp(6px, 2vw, 10px);
+min-height: 110px;
 }
 
 .web-header-left {
   display: flex;
-  align-items: flex-start;
   flex-direction: column;
-  gap: 4px;
-}
+  align-items: flex-start;
+  gap: 2px;
 
+  text-decoration: none;
+}
 .web-header-title {
   margin: 0;
-  font-size: clamp(1.4rem, 5vw, 2.8rem);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1;
+  font-family: 'Poppins', sans-serif;
+  color: #0b3733;
 }
 
 .web-header-logo-link {
@@ -239,7 +240,7 @@ const handleLogout = async () => {
 
 .web-header-logo {
   display: block;
-  width: clamp(90px, 22vw, 150px);
+  width: clamp(100px, 12vw, 140px);
   height: auto;
 }
 
@@ -252,23 +253,21 @@ const handleLogout = async () => {
 /* Utloggad layout */
 .header-logged-out {
   display: flex;
-  align-items: flex-end;
-  gap: 28px;
+  align-items: center;
+  gap: 24px;
 }
 
 .header-auth-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  margin-bottom: 6px;
+  gap: 10px;
 }
 
 /* Inloggad layout */
 .header-logged-in {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
 }
 
 /* English + meny */
@@ -276,7 +275,7 @@ const handleLogout = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 
   min-width: 90px;
 }
@@ -303,7 +302,7 @@ const handleLogout = async () => {
 
 /* Menyknappen */
 .web-header-menu-button {
-  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  font-size: 2rem;
 
   background: none;
   border: none;
