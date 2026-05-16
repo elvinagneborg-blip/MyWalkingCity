@@ -27,6 +27,8 @@
 	"changeLanguage": "Ändra till engelska",
 	"changeInProfileHint": "Du kan ändra ditt publika användarnamn i din profil",
 	"chooseCategory": "Välj kategori",
+	"closeLevelUp": "Grymt!",
+	"congrats": "Grattis!",
 	"contactInfo": "Kontaktinformation",
 	"culture": "Kultur",
 	"currentLocation": "Nuvarande plats",
@@ -37,6 +39,7 @@
 	"description": "Beskrivning",
 	"done": "Klart",
 
+	"levelUpMessage": "Du har precis nått Level",
 	"logInTitle": "Logga in",
 	"logInDescription": "Logga in för att följa dina rapporter, spara dina poäng och levla upp till att bli en toppmedborgare",
 	"fillInEmailLogIn": "Skriv in din email-adress",

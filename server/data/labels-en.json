@@ -24,6 +24,8 @@
 	"changeLanguage": "Byt till svenska",
 	"changeInProfileHint": "You can change your public username in your profile",
 	"chooseCategory": "Choose category",
+	"closeLevelUp": "Awesome!",
+	"congrats": "Congratulations!",
 	"contactInfo": "Contact information",
 	"culture": "Culture",
 	"currentLocation": "Current Location",
@@ -34,6 +36,7 @@
 	"description": "Description",
 	"done": "Done",
 
+	"levelUpMessage": "You have just reached level",
 	"logInTitle": "Log in",
 	"logInDescription": "Log in to track your reports, save your points, and level up to become a top resident!",
 	"fillInEmailLogIn": "Fill in your email-address",
