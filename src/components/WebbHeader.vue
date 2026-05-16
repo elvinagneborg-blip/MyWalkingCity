@@ -17,50 +17,69 @@
             <!--Right side of hedaer-->
             <div class="web-header-right">
 
-                <!--Language button-->
-                <button @click="$emit('toggle-lang')"> <!--Säger till app.vue att knappen är tryckt-->
-                        {{ currentLang === 'sv' ? 'English' : 'Svenska' }} <!--Det som står på knappen, info fås från app.vue-->
-                </button>
-                
-                <div>
-                <!--If user is not logged in-->
-                    <div v-if="!session">
-                        <button  @click="router.push('/login')"> <!--KOllar om man är inloggad-->
-                            {{uiLabels.logInHeader}}
+                <!--Utloggad layout-->
+                <div v-if="!session" class="header-logged-out">
+                    <div class="header-auth-buttons">
+
+                        <!--Log in / skapa konto knapp -->
+                        <button class="header-button" @click="router.push('/login')">
+                            {{ uiLabels.logInHeader }}
                         </button>
-                        <button  @click="router.push('/signup')"> <!--KOllar om man är inloggad-->
-                            {{uiLabels.signUpHeader}}
+
+                        <button class="header-button" @click="router.push('/signup')">
+                            {{ uiLabels.signUpHeader }}
                         </button>
                     </div>
 
-                <!--If user is logged in-->
-                    <div v-else>
-                        <button @click="handleLogout"> 
-                        {{uiLabels.logOutHeader}}
-                        </button>
-                        
-                        <img
-                            v-if="avatarUrl"
-                            :src="avatarUrl"
-                            class="web-header-avatar"
-                            alt="User avatar"
-                        >
-                    </div>
+                    <!--Språk och meny knapp-->
+                <div class="header-tools">
+                    <button class="header-button" @click="$emit('toggle-lang')">
+                        {{ currentLang === 'sv' ? 'English' : 'Svenska' }}
+                    </button>
+
+                    <button
+                        class="web-header-menu-button"
+                        @click="toggleMenu"
+                        aria-label="Open menu"
+                    >
+                        ☰
+                    </button>
                 </div>
-
-            <!--Open Menu -->
-                <button 
-                    class="web-header-menu-button" @click="toggleMenu" aria-label="Open menu"> 
-                ☰
-                </button>
             </div>
 
-            <!--MENY -->
+            <!-- Inloggad layout -->
+            <div v-else class="header-logged-in">
+          
+                <!--Logga ut knapp -->
+                <button class="header-button" @click="handleLogout">
+                    {{ uiLabels.logOutHeader }}
+                </button>
 
-            <!-- Nedan kopplar vi ihop navkomponenten med headern-->
-            
-            <!-- Allt mellan  <ResponsiveNav> och </ResponsiveNav> hamnar i slot i navkomponenten-->
-            <ResponsiveNav :hideNav="!menuOpen"> <!-- Ifall menyn ska va gömd eller ej-->
+                <img
+                    v-if="avatarUrl"
+                    :src="avatarUrl"
+                    class="web-header-avatar"
+                    alt="User avatar"
+                >
+
+                <!-- Meny knapp och språkknapp-->
+                <div class="header-tools">
+                        <button class="header-button" @click="$emit('toggle-lang')">
+                            {{ currentLang === 'sv' ? 'English' : 'Svenska' }}
+                        </button>
+
+                        <button
+                            class="web-header-menu-button"
+                            @click="toggleMenu"
+                            aria-label="Open menu"
+                        >
+                        ☰
+                        </button>
+                </div>
+            </div>
+        </div>
+        
+        <ResponsiveNav :hideNav="!menuOpen"> <!-- Ifall menyn ska va gömd eller ej-->
                 <button class="menu-popup-close" @click="closeMenu"> x </button> <!-- kryss för att stänga menyn-->
 
                 <div class="menu-popup-nav">
@@ -185,72 +204,125 @@ const handleLogout = async () => {
 
 
 <style scoped>
-
-.web-header{
-    width: 100%;
-    background-color: #27c4b5;
-    border-bottom: 2px solid #000; 
-    position: relative;
+.web-header {
+  width: 100%;
+  background-color: #27c4b5;
+  border-bottom: 2px solid #000;
+  position: relative;
 }
 
 .web-header-layout {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: clamp(12px, 3vw, 24px) clamp(16px, 5vw, 40px);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: clamp(12px, 3vw, 24px) clamp(16px, 5vw, 40px);
 }
 
-
-/*== Vänstra sidan av headern =*/
-.web-header-left{
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 4px;
+.web-header-left {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .web-header-title {
-    margin: 0;
-    font-size: clamp(1.4rem, 5vw, 2.8rem);
-    font-weight: 700;
-    line-height: 1.1;
+  margin: 0;
+  font-size: clamp(1.4rem, 5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.1;
 }
 
-.web-header-logo-link{
-    display: inline-block;
-    width: fit-content;
+.web-header-logo-link {
+  display: inline-block;
+  width: fit-content;
 }
 
 .web-header-logo {
-    display: block;
-    width: clamp(90px, 22vw, 150px);
-    height: auto;
+  display: block;
+  width: clamp(90px, 22vw, 150px);
+  height: auto;
 }
 
-/* === Högra sidan av headern === */
+/* === Right side === */
 
 .web-header-right {
-    display: flex;
-    align-items: center;
-    gap: clamp(10px, 3vw, 24px);
+  margin-left: auto;
 }
 
-.web-header-avatar {
-    width: clamp(44px, 12vw, 84px);
-    height: clamp(44px, 12vw, 84px);
-    background-color: #9ed8ff;
-    border-radius: 50%;
+/* Utloggad layout */
+.header-logged-out {
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
 }
 
-/*== Meny knappen ==*/
+.header-auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
+  margin-bottom: 6px;
+}
+
+/* Inloggad layout */
+.header-logged-in {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* English + meny */
+.header-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 90px;
+}
+
+/* Alla små header-knappar */
+.header-button {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+
+  background-color: rgba(255, 255, 255, 0.75);
+  color: #111;
+
+  padding: 6px 14px;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.header-button:hover {
+  background-color: white;
+}
+
+/* Menyknappen */
 .web-header-menu-button {
-    font-size: clamp(1.6rem, 6vw, 2.6rem);
-    background: none;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+
+  background: none;
+  border: none;
+
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
 }
 
+/* Avatar */
+.web-header-avatar {
+  width: 72px;
+  height: 72px;
+
+  border-radius: 50%;
+  object-fit: cover;
+
+  background-color: #9ed8ff;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 </style>
