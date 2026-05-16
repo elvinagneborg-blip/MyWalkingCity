@@ -72,7 +72,7 @@
 	"alreadyHaveAccount": "Already have an account?",
 	"usernameAlreadyExists": "This username is taken, choose another one", 
 
-
+	"points": "points",
 	"popupMissingFieldsTitle": "Opps!",
 	"popupMissingFieldsMessage": "You have to fill in a username, email, password and select an avatar",
 	"popupErrorTitle": "Error!", 
@@ -157,6 +157,7 @@
 
 	"thankYouText": "Thank you for caring about our city!",
 	"title": "Title",
+	"total": "Total",
 
 	"uploadPhoto": "Upload or take a photo",
 	"usernamePlaceHolder": "Enter a public username",

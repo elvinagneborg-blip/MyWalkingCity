@@ -68,7 +68,7 @@
 	"alreadyHaveAccount": "Har du redan ett konto?",
 	"usernameAlreadyExists": "Detta användarnamn existerar redan, välj ett annat",
 
-
+	"points": "poäng",
 	"popupMissingFieldsTitle": "Hoppsan!",
 	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, email och lösenord samt välj avatar.",
 	"popupErrorTitle": "Error!", 
@@ -162,6 +162,7 @@
 
 	"thankYouText": "Tack för att du bryr dig om vår stad!",
 	"title": "Rubrik",
+	"total": "Totalt",
 
 	"uploadPhoto": "Ladda upp eller ta en bild",
 	"usernamePlaceholder": "Välj ett publikt namn",

@@ -10,6 +10,14 @@
         <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
         <p class="feedback-text"> {{ reportType === 'highlight' ? uiLabels.feedbackHighlight : uiLabels.feedbackProblem }} </p>
 
+        <div v-if="showProgressBar" class="points-progress-container">
+          <p class="points-anim-text">+{{ animationPointsGained }} {{uiLabels.points}}!</p>
+          <div class="points-bar-bg">
+            <div class="points-bar-fill" :style="{ width: progressBarWidth + '%' }"></div>
+          </div>
+          <p class="points-total-text">{{uiLabels.total}}: {{ animationNewPoints }}p (Level {{ animationLevel }})</p>
+        </div>
+
         <div class="visit-profile-container" >
         <h4 class="view-report-title"> {{uiLabels.viewReport}} </h4>
 
@@ -54,14 +62,16 @@
 
   </main>
 
-  <div v-if="showLevelUpPopup" class="popup-overlay">
-    <div class="popup-box level-up-box">
-      <h2 class="popup-title">🎉 {{ uiLabels.congrats }} 🎉</h2>
-      <p class="popup-message">{{ uiLabels.levelUpMessage }} {{ newLevel }}!</p>
+  <teleport to="body">
+    <div v-if="showLevelUpPopup" class="level-up-fullscreen-overlay">
+      <div class="level-up-special-box">
+        <h2 class="level-up-title">🎉 {{ uiLabels.congrats }} 🎉</h2>
+        <p class="level-up-message">{{ uiLabels.levelUpMessage }} {{ newLevel }}!</p>
       
-      <button class="popup-button" @click="closeLevelUp">{{ uiLabels.closeLevelUp }}</button>
+        <button class="btn closeLevelUp" @click="closeLevelUp">{{ uiLabels.closeLevelUp }}</button>
+      </div>
     </div>
-  </div>
+   </teleport> 
 
 </template>
 
@@ -96,10 +106,48 @@
   //popupen för level up
   const showLevelUpPopup = ref(false)
   const newLevel = ref(1)
+  const showProgressBar = ref(false)
+  const progressBarWidth = ref(0)
+  const animationPointsGained = ref(0)
+  const animationNewPoints = ref(0)
+  const animationLevel = ref(1)
 
   //onMounted för att kolla när sidan laddas om använderen just levlat up
   onMounted(() => {
     const leveledUp = sessionStorage.getItem('leveledUp')
+    const oldPointsStr = sessionStorage.getItem('oldPoints')
+    const newPointsStr = sessionStorage.getItem('newPoints')
+    const pointsAddedStr = sessionStorage.getItem('pointsAdded')
+
+    if (oldPointsStr && newPointsStr && props.session) {
+      showProgressBar.value = true
+      const oldPoints = parseInt(oldPointsStr)
+      const newPoints = parseInt(newPointsStr)
+      animationPointsGained.value = parseInt(pointsAddedStr || '0')
+      animationNewPoints.value = newPoints
+
+      const getLevelProgress = (pts) => {
+        if (pts >= 25) return { lvl: 3, pct: ((pts - 25) / 20) * 100 }; // Behöver 20p totalt för nästa
+        if (pts >= 10) return { lvl: 2, pct: ((pts - 10) / 15) * 100 }; // Behöver 15p totalt för nästa
+        return { lvl: 1, pct: (pts / 10) * 100 }; // Behöver 10p totalt för nästa
+      }
+
+      const oldInfo = getLevelProgress(oldPoints) //gammla värdet, där vi startar
+      const newInfo = getLevelProgress(newPoints) //nya värdet, dit animationen ska sträcka sig
+
+      animationLevel.value = newInfo.lvl
+      progressBarWidth.value = oldInfo.pct
+
+      //trigga animationen efter en kort delay
+      setTimeout(() => {
+        progressBarWidth.value = newInfo.pct
+      }, 200)
+
+      // städa bort från minnet så det inte animeras igen om man uppdaterar sidan
+      sessionStorage.removeItem('oldPoints')
+      sessionStorage.removeItem('newPoints')
+      sessionStorage.removeItem('pointsAdded')
+    }
 
     if (leveledUp) {
       newLevel.value = leveledUp //spara leveln vi nådde
@@ -212,6 +260,9 @@
   font-weight: 700;
   font-size: 16px;
   transition: all 0.2s ease;
+  border: none; /* denna kod är bara för att vanliga knappar också ska se likadan ut */
+  cursor: pointer;
+  font-family: inherits;
 }
 
 .btn:active {
@@ -245,17 +296,16 @@
   margin-top: 20px;
 }
 
-.backToHome, .allReports {
+.backToHome, .allReports, .closeLevelUp {
   background-color: #cbd5e0;
   color: #2d3748;
-  margin-top: 20px;
   font-size: 12px;
   padding: 12px 16px;
   width: fit-content;
-  margin: 0 auto; /* Centrera knappen */
+  margin: 5px auto 0 auto; /* Centrera knappen */
 }
 
-.backToHome:hover, .allReports:hover {
+.backToHome:hover, .allReports:hover, .closeLevelUp:hover {
   background-color: #a0aec0;
   color: white;
 }
@@ -323,5 +373,88 @@
   font-size: clamp(16px, 2.2vw, 28px);
   text-align: center;
   }
+}
+
+/* ===== Level Up Popup ===== */
+
+.level-up-fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.5); /* Halvtransparent svart bakgrund */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 100% framför allt */
+}
+
+.level-up-special-box {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.5); /* Starkare skugga för 3D-känsla */
+  text-align: center;
+  z-index: 10000;
+}
+
+.level-up-title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #059600; 
+}
+
+.level-up-message {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+}
+
+/* ===== Poägnmätare i Feedback ===== */
+.points-progress-container {
+  margin: 24px 0;
+  background: #f7fafc;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.points-anim-text {
+  font-weight: 800;
+  color: #23a88c;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  /* pulseffekt */
+  animation: pulsePop 0.4s ease-out;
+}
+
+.points-bar-bg {
+  background-color: #e2e8f0;
+  height: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.points-bar-fill {
+  background-color: #23a88c;
+  height: 100%;
+  border-radius: 7px;
+  width: 0%;
+  /* cubic-bezier ger en lyxig "snabb i starten, mjuk i slutet"-effekt */
+  transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.points-total-text {
+  font-size: 13px;
+  color: #718096;
+  margin: 0;
+  font-weight: 600;
+}
+
+@keyframes pulsePop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
 }
 </style>
