@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="personal-dev-row">
-                    <dt class="personal-dev-label">Poäng</dt>
+                    <dt class="personal-dev-label">{{ uiLabels.points }}</dt>
                     <dd class="personal-dev-value"> {{ profile?.total_points ?? 0 }} </dd>
                 </div>
 
@@ -50,14 +50,17 @@
                 :src="profile.avatar_url"
                 alt="Profile avatar"
             />
+            
+            <div v-if="profile?.avatar_url && currentLevel === 2" class="avatar-hat level-2-hat">🎩</div>
+            <div v-if="profile?.avatar_url && currentLevel === 3" class="avatar-hat level-3-hat">👑</div>
         </div>
     </section>
 
     <!-- Level section -->
     <section class="levels-section">
+        
         <div class="current-level">
             <div class="current-level-top">
-                <div class="current-level-avatar"></div>
                 <div class="current-level-text">
                     <h2> Level {{ currentLevel }}</h2>
                         <p>{{ currentTitle }}</p>
@@ -756,6 +759,33 @@
         text-align: left;
     }
 
+}
+
+/* Gör avatar-wrapper "relativ" så hatten kan fästas inuti den */
+.avatar-wrapper {
+  position: relative;
+  display: inline-block; 
+}
+
+/* Koden för själva hatten */
+.avatar-hat {
+  position: absolute;
+  font-size: 3rem;
+  
+  /* Centrera hatten i sidled över bilden */
+  left: 50%;
+  transform: translateX(-50%);
+  
+  /* Flytta hatten uppåt så den sitter på huvudet */
+  top: -25px; 
+  z-index: 10;
+  animation: dropHat 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Animationen som släpper ner hatten på huvudet */
+@keyframes dropHat {
+  0% { transform: translateX(-50%) translateY(-40px); opacity: 0; }
+  100% { transform: translateX(-50%) translateY(0); opacity: 1; }
 }
 </style>
 

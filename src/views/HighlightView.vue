@@ -232,11 +232,10 @@
     longitude: null // Förvalt till centrala Uppsala
   })
 
-  //Images
-    //Report Image
-
   // --- Funktioner ---
 
+   //Images
+    //Report Image
   const { 
     selectedFileName, 
     imagePreview, 
