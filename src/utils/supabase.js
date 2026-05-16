@@ -34,6 +34,9 @@ export const addPoints = async (userId, pointsToAdd) => {
 
         //använder session storage för så webbläsaren minns till animationerna
         sessionStorage.setItem('pointsAdded', pointsToAdd.toString());
+        sessionStorage.setItem('oldPoints', currentPoints.toString()); //dessa två är till progress baren
+        sessionStorage.setItem('newPoints', newPoints.toString());
+        
         if (newLevel > oldLevel) {
             sessionStorage.setItem('leveledUp', newLevel.toString());
         }
