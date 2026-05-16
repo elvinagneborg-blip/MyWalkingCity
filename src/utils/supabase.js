@@ -23,6 +23,21 @@ export const addPoints = async (userId, pointsToAdd) => {
         const currentPoints = data.total_points || 0;
         const newPoints = currentPoints + pointsToAdd;
 
+        const getLevel = (pts) => {
+            if (pts >= 25) return 3;
+            if (pts >= 10) return 2;
+            return 1;
+        };
+
+        const oldLevel = getLevel(currentPoints);
+        const newLevel = getLevel(newPoints);
+
+        //använder session storage för så webbläsaren minns till animationerna
+        sessionStorage.setItem('pointsAdded', pointsToAdd.toString());
+        if (newLevel > oldLevel) {
+            sessionStorage.setItem('leveledUp', newLevel.toString());
+        }
+
         // Spara den nya summan i databasen
         const { error: updateError } = await supabase
             .from('profiles')

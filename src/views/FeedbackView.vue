@@ -1,6 +1,5 @@
 <template>
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar My Walking City...</p>
   </div>
 
   <main v-else class="feedback-page">
@@ -54,15 +53,26 @@
     </section>
 
   </main>
+
+  <div v-if="showLevelUpPopup" class="popup-overlay">
+    <div class="popup-box level-up-box">
+      <h2 class="popup-title">🎉 {{ uiLabels.congrats }} 🎉</h2>
+      <p class="popup-message">{{ uiLabels.levelUpMessage }} {{ newLevel }}!</p>
+      
+      <button class="popup-button" @click="closeLevelUp">{{ uiLabels.closeLevelUp }}</button>
+    </div>
+  </div>
+
 </template>
 
 
 <script setup>
 //Imports
-  import { ref, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
+  import { ref, watch, onMounted } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client' //kontakt med server
   import { useRoute } from 'vue-router'
   import { computed } from 'vue'
+  import confetti from 'canvas-confetti' //konfettiverktyg, används vid level up
 
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval och session§ från app.vue
@@ -82,6 +92,60 @@
 
   //Feedback
   const reportType = computed(() => route.query.type || 'problem')
+
+  //popupen för level up
+  const showLevelUpPopup = ref(false)
+  const newLevel = ref(1)
+
+  //onMounted för att kolla när sidan laddas om använderen just levlat up
+  onMounted(() => {
+    const leveledUp = sessionStorage.getItem('leveledUp')
+
+    if (leveledUp) {
+      newLevel.value = leveledUp //spara leveln vi nådde
+      showLevelUpPopup.value = true
+
+      fireConfetti() //mycket dramatiskt
+
+      sessionStorage.removeItem('leveledUp') //tar bort så att det inte visas igen när sidan laddas om
+    }
+  })
+
+  //funktionen som bestämmer hur konfettit ska se ut
+  function fireConfetti() {
+    const duration = 3 * 1000; //tre sekunder?
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      //vill skjuta från två håll
+      confetti({
+        ...defaults, particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      });
+      confetti({
+        ...defaults, particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      });
+    }, 250);
+  }
+
+  //stäng grejen
+  function closeLevelUp () {
+    showLevelUpPopup.value = false
+  }
+
 </script>
 
 <!-- CSS-->
