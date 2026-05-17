@@ -55,12 +55,15 @@
                 </button>
 
                 <!--Avatar-->
-                <img
-                    v-if="avatarUrl"
-                    :src="avatarUrl"
-                    class="web-header-avatar"
-                    alt="User avatar"
-                >
+                <RouterLink v-if="avatarUrl" :to="{ name: 'ProfileView' }" class="header-avatar-container">
+                    <img
+                        :src="avatarUrl"
+                        class="web-header-avatar"
+                        alt="User avatar"
+                    >
+                    <span v-if="currentLevel === 2" class="header-hat">🎩</span>
+                    <span v-if="currentLevel === 3" class="header-hat crown">👑</span>
+                </RouterLink>
 
                 <!-- Meny knapp och språkknapp-->
                 <div class="header-tools">
@@ -128,7 +131,7 @@
 <script setup>  
 
 //Imports 
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import io from 'socket.io-client'
 import ResponsiveNav from './ResponsiveNav.vue'
@@ -179,16 +182,18 @@ watch(menuOpen, (isOpen) => {
 
 //Avatar
 const avatarUrl = ref(null) //sparar URL till profilbild
+const totalPoints = ref(0)
 
-    //Hämta avataren
+    //Hämta avataren och poäng
 const getAvatar = async () => {
     avatarUrl.value = null
+    totalPoints.value = 0
 
     if (!props.session?.user?.id) return
     
     const { data, error } = await supabase
         .from('profiles')
-        .select('avatar_url')
+        .select('avatar_url, total_points')
         .eq('user_id', props.session.user.id)
         .single()
 
@@ -198,6 +203,8 @@ const getAvatar = async () => {
     }
     
     avatarUrl.value = data?.avatar_url || null
+    totalPoints.value = data?.total_points || 0
+
     }
 
         //Om användaren är inloggad --> hämta avatar
@@ -214,6 +221,14 @@ const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push('/')
 }
+
+const currentLevel = computed(() => {
+  const pts = totalPoints.value
+  if (pts >= 25) return 3
+  if (pts >= 10) return 2
+  return 1
+})
+
 </script>
 
 <style scoped>
@@ -372,7 +387,6 @@ const handleLogout = async () => {
     gap: 2px;
 }
 
-
 .web-header-title {
     font-size: 1.6rem;
     line-height: 1;
@@ -396,17 +410,19 @@ const handleLogout = async () => {
     flex-direction: row;
     gap: 8px;
     transform: translateY(22px);
+    font-size: 0.3rem;
 }
 
 .header-button {
-    padding: 8px 14px;
+    padding: 6px 14px;
     min-width: 92px;
-    font-size: 0.75rem;
+    font-size: 0.5rem;
 }
 
 .header-logged-in > 
 .header-button {
     transform: translateY(22px);
+    font-size: 0.5rem;
   }
 
 /* Språk + meny */
@@ -416,6 +432,7 @@ const handleLogout = async () => {
 
 .web-header-menu-button {
     font-size: 1.8rem;
+    right: 25px;
 }
 
 .web-header-avatar {
@@ -423,5 +440,28 @@ const handleLogout = async () => {
     height: 54px;
     transform: translateY(15px);
 }
+.header-hat {
+    font-size: 1rem !important;
+    top: 4.5px !important; 
 }
+
+}
+
+/* ===== Profilhatt i Headern ===== */
+.header-avatar-container {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.header-hat {
+  position: absolute;
+  font-size: 1.3rem; 
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px; 
+  z-index: 10;
+  pointer-events: none; 
+}
+
 </style>
