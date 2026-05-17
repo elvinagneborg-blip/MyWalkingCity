@@ -11,6 +11,7 @@
 
 <script>
 
+
 export default {
   name: 'ResponsiveNav',
   props: {
@@ -44,13 +45,12 @@ nav {
     visibility: hidden;
   }
 
-.menu-popup-top {
+
+.menu-popup-close {
     position: absolute;
     top: 16px;
     right: 20px;
-}
 
-.menu-popup-close {
     border: none;
     background: transparent;
     color: white;
