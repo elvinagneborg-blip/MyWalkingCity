@@ -37,7 +37,7 @@
       </div>
     </section>
 
-  <section class="body-latest-reports">
+  <section class="body-latest-reports" id="latestReports-section">
     <h6> {{ uiLabels.liveFeed }} </h6>
     <h2> {{ uiLabels.latestReports }} </h2>
     <h5> {{ uiLabels.latestReportsDescription }} </h5>

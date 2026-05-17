@@ -62,7 +62,22 @@ const router = createRouter({
         name: 'ResetPassword',
         component: () => import('../views/ResetPasswordView.vue')
       }
-  ]
+  ],
+  scrollBehavior(to) {
+    if (to.hash) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            el: to.hash,
+            behavior: 'smooth'
+          })
+        }, 100)
+      })
+    }
+  
+    return { top: 0 }
+  }
 })
+
 
 export default router
