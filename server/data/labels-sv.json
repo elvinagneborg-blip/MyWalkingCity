@@ -68,7 +68,7 @@
 	"alreadyHaveAccount": "Har du redan ett konto?",
 	"usernameAlreadyExists": "Detta användarnamn existerar redan, välj ett annat",
 
-	"points": "poäng",
+	"points": "Poäng",
 	"popupMissingFieldsTitle": "Hoppsan!",
 	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, email och lösenord samt välj avatar.",
 	"popupErrorTitle": "Error!", 

@@ -375,6 +375,7 @@
 
 .profile-username {
     margin: 0 0 16px 0;
+    text-align: left;
     font-size: clamp(1.8rem, 4vw, 2.4rem);
     font-weight: 700;
 }
@@ -387,6 +388,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: baseline;
+    text-align: left;
     gap: 8px;
     margin: 16px 0;
 }
@@ -715,7 +717,7 @@
 }
 
 /* ===== Telefon - evenutellt anpassa till flera olika skärmar ===== */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .profile-header {
         padding: 24px 16px 20px;
     }
@@ -769,6 +771,15 @@
         text-align: left;
     }
 
+    .avatar-hat {
+        font-size: 2.5rem !important;
+        top: -17px !important; /* Flytta hatten lite mindre på mindre skärmar */
+    }
+
+    .personal-dev-row {
+        align-items: baseline;
+        display: flex;
+    }
 }
 
 /* Gör avatar-wrapper "relativ" så hatten kan fästas inuti den */
@@ -787,9 +798,9 @@
   transform: translateX(-50%);
   
   /* Flytta hatten uppåt så den sitter på huvudet */
-  top: -25px; 
+  top: -12px; 
   z-index: 10;
-  animation: dropHat 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: dropHat 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 /* Animationen som släpper ner hatten på huvudet */
