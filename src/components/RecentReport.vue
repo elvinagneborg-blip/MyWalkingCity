@@ -43,9 +43,9 @@ const props = defineProps(['report', 'session'])
     "footer      footer";
    gap: 10px;
   width: 100%; /* Ändrat från 20% så den syns ordentligt */
+  height: 205px;
   max-width: 600px;
-  min-height: 180px; /* Använd min-height istället för height */
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding: 20px;
   border-radius: 12px;
   align-items: start;
@@ -57,7 +57,7 @@ const props = defineProps(['report', 'session'])
   grid-template-columns: 2fr 1fr;
   grid-template-areas: 
     "category    date"
-    "info       image"
+    "info       info"
     "footer      footer";
 }
 
@@ -83,7 +83,7 @@ const props = defineProps(['report', 'session'])
   font-size: 20px;
   margin: 0;
   text-align: left;
-  margin-top: -5px;
+  margin-top: -15px;
 }
 
 .report-description { 
@@ -92,7 +92,12 @@ const props = defineProps(['report', 'session'])
   padding-top: 5px; /* Lägg till lite padding om det blir för trångt */
   align-self: start; /* Tvingar elementet till toppen av sin cell */
   line-height: 1.4;
-  font-size: 16px;
+  font-size: 14px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* Här kan du ändra till 2 eller 4 rader om du vill */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 
@@ -105,23 +110,26 @@ const props = defineProps(['report', 'session'])
 
 .report-image {
  grid-area: image;
-  max-width: 200px;
-  max-height: 150px;
+ max-width: 150px; 
+ max-height: 110px;
+ object-fit: contain;
+ align-self: center;
+ justify-self: end;
 }
 
 .report-footer {
   grid-area: footer;
-  border-top: 1px solid black;
+  border-top: 1px dashed black;
   display: flex; /* så de hamnar brevid varandra och inte under*/
   justify-content: space-between; /*de hamnar på varsin sida*/
-
-
+  margin-bottom: -10px;
 }
 
 .report-location {
   text-align: left;
   align-self: center;
   font-size: 11px;
+  margin-top: 20px;
 }
 
 .boost-action-btn {
