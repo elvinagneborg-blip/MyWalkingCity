@@ -22,35 +22,36 @@ export default {
 
 <style>
 
-nav {
-    position: absolute;
-    top: calc(100% + clamp(12px, 2vw, 24px));
-    left: clamp(16px, 5vw, 48px);
-    right: clamp(16px, 5vw, 48px);
+/*Viss dubbelogik men fick det inte att funka*/
 
+/*Layout för menyn*/
+nav {
+    position: fixed;
+    top: 95px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 980px);
+    max-width: 980px;
+    min-height: 420px;
+    max-height: 78vh;
     background-color: #0c7f6d;
     z-index: 2000;
-
-    border-radius: 16px 16px 0 0;
-    padding: clamp(56px, 10vw, 90px) clamp(16px, 4vw, 32px) clamp(24px, 5vw, 40px);
-
-    max-height: 75vh;
-    overflow-y: auto;
-
+    border-radius: 16px;
+    padding: 40px 32px 78px;
+    box-sizing: border-box;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
-
 .hide {
     visibility: hidden;
   }
 
-
+  /* x button*/
 .menu-popup-close {
     position: absolute;
-    top: 16px;
+    top: 10px;
     right: 20px;
-
     border: none;
     background: transparent;
     color: white;
@@ -58,49 +59,55 @@ nav {
     cursor: pointer;
 }
 
+/* Routerlink - buttons */
 .menu-popup-nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(22px, 5vw, 42px);
+    gap: clamp(18px, 4vh, 42px);
 }
-
 .menu-popup-link {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    width: min(70vw, 380px);
-    min-height: clamp(58px, 10vw, 86px);
-
+    width: min(68vw, 420px);
+    min-height: clamp(52px, 8vh, 76px);
     background-color: #1da892;
     border-radius: 12px;
     border: 2px solid rgba(0,0,0,0.45);
-
     color: white;
     text-decoration: none;
-    font-size: clamp(1.1rem, 4vw, 1.8rem);
+    font-size: clamp(1.1rem, 3vw, 1.7rem);
     text-align: center;
+    line-height: 1.1;
+    padding: 6px 12px;
+    box-sizing: border-box;
 }
 
-/* == Telefon ==*/
-@media (max-width: 600px) {
+/*Dubbellogik men datorskärm */
+@media (min-width: 601px) {
     nav {
-        left: 16px;
-        right: 16px;
-        padding: 70px 16px 32px;
-        min-height: calc(100vh - 150px);
+        top: 90px;
+        width: min(52vw, 680px);
+        max-height: calc(100vh - 120px);
+        padding: 34px 32px 110px;
     }
 
     .menu-popup-nav {
-        gap: 32px;
+        gap: 28px;
     }
 
     .menu-popup-link {
-        width: 75%;
-        min-height: 70px;
-        font-size: 1.4rem;
-        text-align: center;
-    }}
-   
+        width: min(42vw, 500px);
+        min-height: 64px;
+        font-size: 1.45rem;
+    }
+}
+
+/* Telefonskärm */
+@media (max-width: 600px) {
+    nav {
+        top: 100px;
+    }
+}
 </style>

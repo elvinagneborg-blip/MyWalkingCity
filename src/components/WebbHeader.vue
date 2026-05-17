@@ -172,6 +172,11 @@ const closeMenu = () => {
   menuOpen.value = false
 }
 
+//Ser till så att man inte kan scrolla i bakgrunden när menyn är utfälld
+watch(menuOpen, (isOpen) => {
+  document.body.style.overflow = isOpen ? 'hidden' : ''
+})
+
 //Avatar
 const avatarUrl = ref(null) //sparar URL till profilbild
 
@@ -339,7 +344,8 @@ const handleLogout = async () => {
 .menu-backdrop {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.32);
+    background-color: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(5px);
     z-index: 1500;
 }
 </style>
