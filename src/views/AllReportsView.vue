@@ -12,7 +12,7 @@
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
         <div class="allreports-map-container">
-            <MapComponent :reports="allMarkers"/>
+            <MapComponent :allReports="allReportMarkers"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
 
         
             <!--Recent reports knapp -->            
@@ -63,11 +63,11 @@
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import { useBoost } from '@/composables/useBoost' //för att kunna använda boost funktionen
   import io from 'socket.io-client' //kontakt med server
-    import MapComponent from "@/components/MapComponent.vue";
-    import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
-    import RecentReport from '@/components/RecentReport.vue'
-
-//Setup and Props (Input)
+  import MapComponent from "@/components/MapComponent.vue"
+  import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
+  import RecentReport from '@/components/RecentReport.vue'
+  
+  //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
   const { handleBoost, isBoosting } = useBoost()
   const socket = io(props.backendURL)
@@ -85,28 +85,44 @@
   }, { immediate: true })                       //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
 
 
-  //Reports
-  const showRecentReports = ref(false)
-  const allUserReports = ref([])
+  //All reports
+  const allReportMarkers = ref([])
 
-async function getReports() {         //Ev. ändra och hämta 
-  const { data, error } = await supabase
+  async function getAllReportMarkers() {
+    const { data, error } = await supabase
+        .from('reports')
+        .select('*')
+    if (!error) {
+        console.log("Hämtade markörer från Supabase:", data)
+      allReportMarkers.value = data
+    } else {
+      console.error("Kunde inte hämta alla rapporter till kartan:", error.message)
+    }
+  }
+
+
+  //Recent reports
+  const showRecentReports = ref(false)
+  const allUserReports = ref([]) //byta namn?
+  
+  async function getReports() {         //Ev. ändra och hämta 
+    const { data, error } = await supabase
       .from('reports')
       .select('*')
       .order('created_at', {ascending: false})
       .limit(5) //hämtar 5 stycken rapporter
     if (!error) {
-  allUserReports.value = data
+        allUserReports.value = data
     }
     else {
       console.error("Could not fetch latest reports:", error.message) 
     }
-}
+    }
 
-    //Lifecycle hooks
-onMounted(async () => {
-  await getReports()
-  await getAllMarkers()
+//Lifecycle hooks
+  onMounted(async () => {
+    await getReports()
+    await getAllReportMarkers() 
 })
 </script>
 
