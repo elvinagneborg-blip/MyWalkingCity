@@ -111,11 +111,11 @@
                     <RouterLink :to="{ name: 'AllReportsView' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.routeAllReport}}</RouterLink>
                 
                 <!--Övriga länkar/ knappar -->    
-                <RouterLink :to="{ name: 'AllReportsView' }" class="menu-popup-link" @click="closeMenu">
+                <RouterLink :to="{ name: 'StartMWC', hash: '#latestReports-section' }" class="menu-popup-link" @click="closeMenu">
                     {{uiLabels.routeRecentReport}}
                 </RouterLink>
 
-                <RouterLink :to="{ name: 'StartMWC' }" class="menu-popup-link" @click="closeMenu">
+                <RouterLink :to="{ name: 'StartMWC', hash: '#howItWorks-section' }" class="menu-popup-link" @click="closeMenu">
                     {{uiLabels.routeHowTo}}
                 </RouterLink>
                 </div>
