@@ -278,6 +278,7 @@ const handleLogout = async () => {
     display: flex;
     align-items: center;
     gap: 10px;
+    transform: translateY(22px);
 }
 
 /* == Inloggad layout == */
@@ -295,6 +296,11 @@ const handleLogout = async () => {
   gap: 14px;
   min-width: 90px;
 }
+
+.header-logged-in > 
+.header-button {
+    transform: translateY(22px);
+  }
 
 /* == Header buttons == */
 .header-button {
@@ -338,6 +344,7 @@ const handleLogout = async () => {
     object-fit: cover;
     background-color: #9ed8ff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(15px);
 }
 
 /* ==  Menu backdrop == */
@@ -347,5 +354,74 @@ const handleLogout = async () => {
     background-color: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(5px);
     z-index: 1500;
+}
+
+/* == Telefonskärm ==*/
+@media (max-width: 768px) {
+
+.web-header-layout {
+    min-height: 88px;
+    padding: 6px 10px;
+    align-items: center;
+}
+
+/* Vänster sida får större plats */
+.web-header-left {
+    flex: 1;
+    min-width: 170px;
+    gap: 2px;
+}
+
+
+.web-header-title {
+    font-size: 1.6rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.web-header-logo {
+    width: 80px;
+}
+
+/* Högerdel */
+.header-logged-out,
+.header-logged-in {
+    gap: 10px;
+    align-items: center;
+}
+
+/* Knappar */
+.header-auth-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    transform: translateY(22px);
+}
+
+.header-button {
+    padding: 8px 14px;
+    min-width: 92px;
+    font-size: 0.75rem;
+}
+
+.header-logged-in > 
+.header-button {
+    transform: translateY(22px);
+  }
+
+/* Språk + meny */
+.header-tools {
+    gap: 8px;
+}
+
+.web-header-menu-button {
+    font-size: 1.8rem;
+}
+
+.web-header-avatar {
+    width: 54px;
+    height: 54px;
+    transform: translateY(15px);
+}
 }
 </style>
