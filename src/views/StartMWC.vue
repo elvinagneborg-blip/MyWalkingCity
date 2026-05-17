@@ -295,6 +295,9 @@ html {
     font-size: 13px;
   }
 
+  .top-buttons {
+    margin-left: 0px;
+  }
     /* Fixar så att knapparna inte trycker ut skärmen på bredden */
   .report, .how-it-works {
     padding: 15px 0 !important;
@@ -307,6 +310,7 @@ html {
     gap: 15px; 
     font-size: 0.9rem; 
     margin-bottom: 60px;
+    margin-left: 0px;
   }
 
   .report-card {
