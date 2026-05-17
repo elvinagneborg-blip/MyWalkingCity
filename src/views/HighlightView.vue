@@ -229,7 +229,8 @@
     image_url: '',
     email: '',
     latitude: null, // Förvalt till centrala Uppsala
-    longitude: null // Förvalt till centrala Uppsala
+    longitude: null, // Förvalt till centrala Uppsala
+    address: ''
   })
 
   // --- Funktioner ---
@@ -291,7 +292,8 @@
     console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
     fetchNearbyReports(lat, lng)
     const address = await getAddressFromCoords(lat, lng)
-    addressSearch.value = address;
+    addressSearch.value = address
+    formData.value.address = address
   }
 
   async function searchAddress() {
@@ -320,6 +322,8 @@
       // 4. Uppdatera din formData så att rätt koordinater skickas till databasen
       formData.value.latitude = newLat
       formData.value.longitude = newLon
+
+      formData.value.address = query
       
       console.log("Hittade adressen:", data[0].display_name)
     } else {

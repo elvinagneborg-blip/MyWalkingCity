@@ -13,7 +13,7 @@
                     alt="Rapportbild"
                 />
         <div class="report-footer">
-          <p class="report-location">Location</p>
+          <p class="report-location">📍 {{ report.address || 'Okänd adress' }}</p>
           <button class="boost-action-btn" @click="handleBoost(report.report_id, props.session)" :disabled="isBoosting">
               {{ isBoosting ? '...' : '🚀 Boosta' }}
           </button>
