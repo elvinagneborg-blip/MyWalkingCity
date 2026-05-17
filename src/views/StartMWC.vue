@@ -8,7 +8,7 @@
     <h2 class="section-title"> {{ uiLabels.shapeUppsala }} <br> {{ uiLabels.withAPhoto }} </h2>
     <h6> {{ uiLabels.startDescription}}</h6>
     
-    <div>
+    <div class="top-buttons">
       <p><RouterLink to="/option/" class="report"> {{ uiLabels.report }} </RouterLink></p>
       <p><a href="#howItWorks-section" class="how-it-works"> 
     {{ uiLabels.howDoesItWork }} 
@@ -21,6 +21,21 @@
       <div>??<br> {{ uiLabels.solved }} </div>
     </div>
   </section>
+
+  <section id="howItWorks-section" class="body-how-it-works">
+      <h6> {{ uiLabels.howItWorks }} </h6>
+      <h2> {{ uiLabels.fourSteps }}
+      </h2>
+      <div class="how-it-works-container">
+        <div class="step-item" v-for="step in steps" :key="step.id">
+          <div class="step-number">{{ step.id }}</div>
+            <div class="step-text">
+              <h4>{{ step.title }}</h4>
+              <p>{{ step.description }}</p>
+            </div>
+        </div>
+      </div>
+    </section>
 
   <section class="body-latest-reports" id="latestReports-section">
     <h6> {{ uiLabels.liveFeed }} </h6>
@@ -48,20 +63,7 @@
     <p><RouterLink to="/allreports/" class="report"> {{ uiLabels.allReportsOnMap }} </RouterLink></p>
     </section>
 
-    <section id="howItWorks-section" class="body-how-it-works">
-      <h6> {{ uiLabels.howItWorks }} </h6>
-      <h2> {{ uiLabels.fourSteps }}
-      </h2>
-      <div class="how-it-works-container">
-        <div class="step-item" v-for="step in steps" :key="step.id">
-          <div class="step-number">{{ step.id }}</div>
-            <div class="step-text">
-              <h4>{{ step.title }}</h4>
-              <p>{{ step.description }}</p>
-            </div>
-        </div>
-      </div>
-    </section>
+    
     </main>
 </template>
 
@@ -136,8 +138,19 @@ html {
   background-position: center;
   justify-content: center;
   align-self: center;
-  width: 50%;
+  width: 100%;
+  height: calc(100vh - 100px);
+  align-items: start;
   }
+
+.body-top h2 {
+  font-size: 50px;
+  margin-bottom: -5px;
+}
+
+.body-top h6 {
+  font-size: 16px;
+}
 
 .report-list {
   display: flex;
@@ -155,6 +168,7 @@ html {
   gap: 50px;
   margin-top: 40px;
   color: white;
+  margin-left: 90px;
 }
 
 .how-it-works-container {
@@ -195,22 +209,34 @@ html {
   color: #333;
 }
 
+.top-buttons {
+  margin-left: 90px;
+}
+
 .report {
   background-color: #1EBC9C;
   color: white;
   border: none;
-  padding: 17px 110px;
   cursor: pointer;
   border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  width: 280px;
+  padding: 15px 0;
+
 }
 
 .how-it-works {
  background-color: #1ebc9c85;
   color: white;
   border: none;
-  padding: 17px 80px;
   cursor: pointer;
   border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  width: 280px;
+  padding: 15px 0;
+
 }
 
 .section-title {
@@ -218,6 +244,7 @@ html {
   width: 100%;
   text-align: left;
   margin-left: 50px;
+
 }
 
 .body-top h6 {
@@ -251,14 +278,29 @@ html {
   
   .body-top {
     width: 100%;
-    min-height: 400px; 
+    height: calc(100vh - 100px);
     padding-top: 30px;
+    align-items: center;
   }
 
+  .body-top h2 {
+  font-size: 36px;
+  }
+
+    /* Centrerar h6-texten och tar bort krocken på mobil */
+  .body-top h6 {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center;
+    font-size: 13px;
+  }
+
+    /* Fixar så att knapparna inte trycker ut skärmen på bredden */
   .report, .how-it-works {
-    width: 88%; 
-    padding: 15px 0; 
-    margin-bottom: 10px; 
+    padding: 15px 0 !important;
+    width: 280px !important;
+    text-align: center;
+    display: inline-block;
   }
 
   .stats-container {
@@ -268,12 +310,18 @@ html {
   }
 
   .report-card {
-    width: 90%; 
+    width: 83%; 
   }
 
   .how-it-works-container {
     padding: 0 15px; 
   }
+  /* Centrerar titeln och tar bort krocken på mobil */
+  .section-title {
+    margin-left: 0 !important;
+    text-align: center;
+  }
+
 }
   
 </style>
