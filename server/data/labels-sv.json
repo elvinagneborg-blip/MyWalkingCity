@@ -42,27 +42,27 @@
 	"levelUpMessage": "Du har precis nått Level",
 	"logInTitle": "Logga in",
 	"logInDescription": "Logga in för att följa dina rapporter, spara dina poäng och levla upp till att bli en toppmedborgare",
-	"fillInEmailLogIn": "Skriv in din email-adress",
+	"fillInEmailLogIn": "Skriv in din e-postadress",
 	"fillInPasswordLogIn": "Skriv in ditt lösenord",
 	"dontHaveAnAccount": "Har du inget konto?",
 	
-	"popupMissingFieldLogIn": "Du måste fylla i din email och lösenord",
-	"popupLoginWrongCredentials": "Inloggningen misslyckades. Kontrollera emailadress och lösenord",
+	"popupMissingFieldLogIn": "Du måste fylla i din e-postadress och lösenord",
+	"popupLoginWrongCredentials": "Inloggningen misslyckades. Kontrollera e-postadress och lösenord",
 	"forgotPassword": "Glömt lösenord?",
 	"sendVerification": "Skicka verifieringslänk",
-	"popupFillInEmailForReset": "Fyll i din emailadress först",
+	"popupFillInEmailForReset": "Fyll i din e-postadress först",
 	"popupResetPasswordError": "Kunde inte skicka verifieringslänk. Försökt igen",
-	"popupResetPasswordSent": "Vi har skickat en verifieringslänk till din email.",
+	"popupResetPasswordSent": "Vi har skickat en verifieringslänk till din e-post.",
 
 
 
 	"signUpTitle": "Skapa ett konto",
 	"signUpDescription": "Skapa ett konto för att följa dina rapporter, samla poäng och levla upp som en toppmedborgare!", 
 	"fillInUsername": "Fyll i ett användarnamn", 
-	"fillInEmail": "Fyll i din epost-adress", 
+	"fillInEmail": "Fyll i din e-postadress", 
 	"fillInPassword": "Välj ett lösenord", 
 	"usernameSignUp": "Användarnamn",
-	"emailSignUp": "Din epost-address", 
+	"emailSignUp": "Din e-postadress", 
 	"passwordSignUp": "Lösenord",
 	"chooseAvatar": "Välj en avatar", 
 	"alreadyHaveAccount": "Har du redan ett konto?",
@@ -70,7 +70,7 @@
 
 	"points": "Poäng",
 	"popupMissingFieldsTitle": "Hoppsan!",
-	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, email och lösenord samt välj avatar.",
+	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, e-post och lösenord samt välj avatar.",
 	"popupErrorTitle": "Error!", 
 	"popupSignUpError": "Problem med att skapa konto: ", 
 	"popupUserCreateFailed": "Kunde inte skapa användare", 
@@ -90,7 +90,7 @@
 
 
 	"event": "Evenemang",
-	"email": "Email",
+	"email": "E-post",
 
 	"feedbackProblem": "Din rapport skickas till Uppsala kommun som ser till att det fixas! Du kan kolla statusen på din rapport i din profil.",
 	"feedbackHighlight": "Din höjdpunkt görs synlig för andra invånare som kan njuta av den! Du kan se alla dina höjdpunkter i din profil.",
