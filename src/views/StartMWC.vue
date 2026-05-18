@@ -1,6 +1,6 @@
 <template>
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar My Walking City...</p>
+    <p>{{ uiLabels.loadingMWC }}</p>
   </div>
 
   <main v-else>
@@ -16,9 +16,9 @@
     </div>
 
     <div class="stats-container">
-      <div>??<br> {{ uiLabels.reports }} </div>
-      <div>??<br> {{ uiLabels.activeUsers }} </div>
-      <div>??<br> {{ uiLabels.solved }} </div>
+      <div>45<br> {{ uiLabels.reports }} </div>
+      <div>89<br> {{ uiLabels.activeUsers }} </div>
+      <div>10<br> {{ uiLabels.solved }} </div>
     </div>
   </section>
 
@@ -69,7 +69,7 @@
 
 <script setup>
   //Imports
-  import { ref, onMounted, watch } from 'vue'               //för att kunna ha reaktiva variabler och övervaka dem
+  import { ref, onMounted, watch, computed } from 'vue'               //för att kunna ha reaktiva variabler och övervaka dem
   import io from 'socket.io-client'                         //kontakt med server
   import { supabase } from '@/utils/supabase'               //Databasen
   import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
@@ -107,11 +107,11 @@
   }
 
   //
-  const steps = ref([                           // Steg för "How it works", ska detta vara kvar?
-    { id: 1, title: 'Identify', description: 'Identify problems or good things in the city.' },
-    { id: 2, title: 'Report', description: 'Set location, describe, add photo, submit.' },
-    { id: 3, title: 'Wait for feedback', description: 'Your report will be handled by policy makers. You will get notification when the problem is solved' },
-    { id: 4, title: 'Level up and compete with your friends', description: 'Collect points by writing and boosting reports, leveling up and becoming a helping citizen.' }
+  const steps = computed(() => [                           // Steg för "How it works"
+    { id: 1, title: uiLabels.value.identify, description: uiLabels.value.identifyDescription },
+    { id: 2, title: uiLabels.value.report, description: uiLabels.value.reportDescription },
+    { id: 3, title: uiLabels.value.waitFeedback, description: uiLabels.value.waitFeedbackDescription },
+    { id: 4, title: uiLabels.value.levelUp, description: uiLabels.value.levelUpDescription }
   ])
 
   //Lifecycle hooks

@@ -24,6 +24,7 @@
 	"changeLanguage": "Byt till svenska",
 	"changeInProfileHint": "You can change your public username in your profile",
 	"chooseCategory": "Choose category",
+	"city": "City",
 	"closeLevelUp": "Awesome!",
 	"congrats": "Congratulations!",
 	"contactInfo": "Contact information",
@@ -35,6 +36,10 @@
 	"describeYourHighlight": "Describe your highlight",
 	"description": "Description",
 	"done": "Done",
+
+	"emailPlaceholder": "Your email address",
+	"event": "Event",
+	"email": "Email",
 
 	"levelUpMessage": "You have just reached level",
 	"logInTitle": "Log in",
@@ -66,7 +71,6 @@
 	"fillInEmail": "Fill in your email address", 
 	"fillInPassword": "Select a password", 
 	"usernameSignUp": "Username",
-	"emailSignUp": "Your email", 
 	"passwordSignUp": "Password",
 	"chooseAvatar": "Choose an avatar", 
 	"alreadyHaveAccount": "Already have an account?",
@@ -83,8 +87,7 @@
 	"popupSuccessTitle": "Almost done!", 
 	"popupConfirmEmail": "Go to you email to verify your account", 
 
-	"event": "Event",
-	"email": "Email",
+	
 
 	"feedbackProblem": "Your report is sent to Uppsala municipality who will make sure it gets fixed! You can check the status of your report in your profile.",
 	"feedbackHighlight": "Your highlight is made visible to other residents who can enjoy it! You can see all your highlight in your profile.",
@@ -99,11 +102,19 @@
 	"howDoesItWork": "How does it Work?",
 	"howItWorks": "How it works",
 
+	"identify": "Identify",
+	"identifyDescription": "Identify problems or good things in the city.",
+	"reportDescription": "Set location, describe, add photo, submit.",
+	"waitFeedback": "Wait for feedback",
+	"waitFeedbackDescription": "Your report will be handled by policy makers. You will get notification when the problem is solved",
+	"levelUpDescription": "Collect points by writing and boosting reports, leveling up and becoming a helping resident.",
+
 	"latestReports": "Latest reports",
 	"latestReportsDescription": "See the latest reports of citizens in Uppsala, both improvement and positive observations",
-	"levelUp": "Level up your citizenship",
+	"levelUp": "Level up",
 	"lights": "Lights",
 	"liveFeed": "Live feed",
+	"loadingMWC": "Loading My Walking City...",
 	"locationOfProblem": "Where is the problem located?",
 	"locationOfHighlight": "Where is the highlight located?",
 	"locationPermissionDenied": "You have denied location access. To use this feature, you need to allow location information in your browser's settings (at the lock icon in the address bar).",
@@ -114,7 +125,9 @@
 	"mustsee": "Must see",
 	"myReports": "My reports",
 
+	"name": "Name",
 	"nature": "Nature",
+	"nearbyReports": "Nearby reports",
 	"noBackToHome": "No thanks, back to home",
 	"noReportsSubmitted": "No reports or highlights submitted yet.",
 
@@ -126,6 +139,7 @@
 	"perk1": "✅ View previous reports and highlights you have submitted",
 	"perk2": "✅ Get updated about the status of your reports",
 	"perk3": "✅ Collect points, level up and become a super resident!",
+	"phone": "Phone",
 	"photo": "Photo",
 	"photoPlaceholder": "Upload or take a photo",
 	"problem": "Problem",

@@ -1,9 +1,22 @@
 <template>
-    <div :class="['report-card', !report.image_url ? 'no-image' : '']">
-        <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">{{ report.category }}</p>
+    <div :class="['report-card', !report.image_url ? 'no-image' : '', isExpanded ? 'card-expanded' : '']">
+      <div class="category-container">
+        <span v-if="report.type === 'problem'" class="report-icon problem-icon">⚠️</span>
+        <span v-else class="report-icon highlight-icon">👍</span>
+
+        <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">
+          {{ report.category }}
+        </p>
+      </div>
+
         <div class="report-info">
           <p class="report-title"> {{ report.title }} </p>
-          <p class="report-description">{{ report.description }}</p>
+          <p ref="descriptionRef" :class="['report-description', isExpanded ? 'expanded' : '']">
+            {{ report.description }}</p>
+
+          <button v-if="hasOverflowingText" class="toggle-description-btn" @click="isExpanded = !isExpanded">
+            {{ isExpanded ? 'Visa mindre ▲' : 'Visa mer ▼' }}
+          </button>
         </div>
         <small class="report-date">{{ new Date(report.created_at).toLocaleDateString() }}</small>
         <img 
@@ -23,11 +36,29 @@
 
 
 <script setup>
+import { ref, onMounted, nextTick } from 'vue'
 import { useBoost } from '@/composables/useBoost' //för att kunna använda boost funktionen
 
 const { handleBoost, isBoosting } = useBoost()
-
 const props = defineProps(['report', 'session'])
+
+const isExpanded = ref(false) //ifall beskrivningen är öppen eller ej
+const hasOverflowingText = ref(false) // NYTT: Håller koll på om texten faktiskt klipper av
+const descriptionRef = ref(null)      // NYTT: En referens till själva <p>-taggen i HTML
+
+// NYTT: Funktion som kollar om texten är längre än vad som får plats på 4 rader
+const checkOverflow = () => {
+  if (descriptionRef.value) {
+    const el = descriptionRef.value
+    // Om textens verkliga höjd är större än den synliga höjden klipper den av!
+    hasOverflowingText.value = el.scrollHeight > el.clientHeight
+  }
+}
+
+onMounted(async () => {
+  await nextTick() // Vänta tills Vue har ritat ut texten på skärmen, ta bort???
+  checkOverflow()
+})
 
 </script>
 
@@ -49,8 +80,13 @@ const props = defineProps(['report', 'session'])
   padding: 20px;
   border-radius: 12px;
   align-items: start;
-  border: 1px solid;
+  border: 1.5px solid #5e716f5d;
   background-color: #c8efeb5d;
+}
+
+.report-card.card-expanded {
+  height: auto;
+  min-height: 205px;
 }
 
 .no-image {
@@ -61,8 +97,20 @@ const props = defineProps(['report', 'session'])
     "footer      footer";
 }
 
-.report-category { 
-  grid-area: category; 
+.category-container {
+  grid-area: category;     /* Gör att hela paketet hamnar i "category"-rutan i ditt grid */
+  display: flex;           /* Lägger ikonen och textbubblan bredvid varandra */
+  align-items: center;     /* Centrerar dem perfekt i höjdled */
+  gap: 8px;                /* Ger ett litet avstånd (8 pixlar) mellan ikonen och bubblan */
+  justify-self: start;     /* Håller paketet till vänster */
+}
+
+.report-icon {
+  font-size: 1rem;       /* Gör emojin lite större och tydligare */
+  line-height: 1;
+}
+
+.report-category {  
   margin: 0;
   font-size: 0.8rem;
   justify-self: start;
@@ -95,7 +143,7 @@ const props = defineProps(['report', 'session'])
   font-size: 14px;
 
   display: -webkit-box;
-  -webkit-line-clamp: 4; /* Här kan du ändra till 2 eller 4 rader om du vill */
+  -webkit-line-clamp: 3; /* Här kan du ändra till 2 eller 4 rader om du vill */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -164,6 +212,28 @@ const props = defineProps(['report', 'session'])
   background-color: rgba(15, 203, 115, 0.366); 
 }
 
+/* Ser till att texten visar alla rader och inte klipps av vid expansion */
+.report-description.expanded {
+  -webkit-line-clamp: unset; 
+  display: block; 
+}
+
+/* Valfritt: Styla "Visa mer/mindre"-knappen så den ser ut som en snygg länk */
+.toggle-description-btn {
+  background: none;
+  border: none;
+  color: #27c4b4; /* Snygg färg som passar appens tema */
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 5px;
+  display: block;
+}
+
+.toggle-description-btn:hover {
+  text-decoration: underline;
+}
 
 
 </style>

@@ -12,8 +12,7 @@
 
 
 
-	"loadPage": "Laddar My Walking City..",
-	
+	"loadingMWC": "Laddar My Walking City...",
 	"accessibility": "Tillgänglighet",
 	"activeUsers": "Aktiva användare",	
 	"addHighlight": "Lägg till en höjdpunkt!",
@@ -23,10 +22,12 @@
 
 	"backToHome": "Gå tillbaka till startsidan",
 
+
 	"category": "Kategori",
 	"changeLanguage": "Ändra till engelska",
 	"changeInProfileHint": "Du kan ändra ditt publika användarnamn i din profil",
 	"chooseCategory": "Välj kategori",
+	"city": "Stad",
 	"closeLevelUp": "Grymt!",
 	"congrats": "Grattis!",
 	"contactInfo": "Kontaktinformation",
@@ -39,38 +40,43 @@
 	"description": "Beskrivning",
 	"done": "Klart",
 
+	"emailPlaceholder": "Din e-postadress",
+	"event": "Evenemang",
+	"email": "E-post",
+	
+
 	"levelUpMessage": "Du har precis nått Level",
 	"logInTitle": "Logga in",
 	"logInDescription": "Logga in för att följa dina rapporter, spara dina poäng och levla upp till att bli en toppmedborgare",
-	"fillInEmailLogIn": "Skriv in din email-adress",
+	"fillInEmailLogIn": "Skriv in din e-postadress",
 	"fillInPasswordLogIn": "Skriv in ditt lösenord",
 	"dontHaveAnAccount": "Har du inget konto?",
 	
-	"popupMissingFieldLogIn": "Du måste fylla i din email och lösenord",
-	"popupLoginWrongCredentials": "Inloggningen misslyckades. Kontrollera emailadress och lösenord",
+	"popupMissingFieldLogIn": "Du måste fylla i din e-postadress och lösenord",
+	"popupLoginWrongCredentials": "Inloggningen misslyckades. Kontrollera e-postadress och lösenord",
 	"forgotPassword": "Glömt lösenord?",
 	"sendVerification": "Skicka verifieringslänk",
-	"popupFillInEmailForReset": "Fyll i din emailadress först",
+	"popupFillInEmailForReset": "Fyll i din e-postadress först",
 	"popupResetPasswordError": "Kunde inte skicka verifieringslänk. Försökt igen",
-	"popupResetPasswordSent": "Vi har skickat en verifieringslänk till din email.",
+	"popupResetPasswordSent": "Vi har skickat en verifieringslänk till din e-post.",
 
 
 
 	"signUpTitle": "Skapa ett konto",
 	"signUpDescription": "Skapa ett konto för att följa dina rapporter, samla poäng och levla upp som en toppmedborgare!", 
 	"fillInUsername": "Fyll i ett användarnamn", 
-	"fillInEmail": "Fyll i din epost-adress", 
+	"fillInEmail": "Fyll i din e-postadress", 
 	"fillInPassword": "Välj ett lösenord", 
 	"usernameSignUp": "Användarnamn",
-	"emailSignUp": "Din epost-address", 
 	"passwordSignUp": "Lösenord",
 	"chooseAvatar": "Välj en avatar", 
 	"alreadyHaveAccount": "Har du redan ett konto?",
 	"usernameAlreadyExists": "Detta användarnamn existerar redan, välj ett annat",
 
+	"phone": "Telefon",
 	"points": "Poäng",
 	"popupMissingFieldsTitle": "Hoppsan!",
-	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, email och lösenord samt välj avatar.",
+	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, e-post och lösenord samt välj avatar.",
 	"popupErrorTitle": "Error!", 
 	"popupSignUpError": "Problem med att skapa konto: ", 
 	"popupUserCreateFailed": "Kunde inte skapa användare", 
@@ -89,9 +95,6 @@
 	"popupSuccessTitleReset": "Hurra!",
 
 
-	"event": "Evenemang",
-	"email": "Email",
-
 	"feedbackProblem": "Din rapport skickas till Uppsala kommun som ser till att det fixas! Du kan kolla statusen på din rapport i din profil.",
 	"feedbackHighlight": "Din höjdpunkt görs synlig för andra invånare som kan njuta av den! Du kan se alla dina höjdpunkter i din profil.",
 	"foodanddrink": "Mat och dryck",
@@ -105,6 +108,13 @@
 	"highlights": "Höjdpunkter",
 	"howDoesItWork": "Hur fungerar det?",
 	"howItWorks": "Hur det fungerar",
+
+	"identify": "Identifiera",
+	"identifyDescription": "Identifiera problem eller bra saker i staden.",
+	"reportDescription": "Sätt plats, beskriv, lägg till bild, skicka in.",
+	"waitFeedback": "Vänta på feedback",
+	"waitFeedbackDescription": "Din rapport kommer att hanteras av beslutsfattare. Du får en notis när problemet är löst",
+	"levelUpDescription": "Samla poäng genom att skriva och boosta rapporter, levla upp och bli en hjälpsam medborgare.",
 	
 	"latestReports": "Senaste rapporter",
 	"latestReportsDescription": "Se senaste rapporter från invånvare i Uppsala, både förbättringsförslag och positiva observationer",
@@ -121,7 +131,9 @@
 	"myReports": "My reports",
 	"mustsee": "Sevärdhet",
 
+	"name": "Namn",
 	"nature": "Natur",
+	"nearbyReports": "Rapporter i närheten",
 	"noBackToHome": "Nej tack, tillbaka till startsidan",
 	"noReportsSubmitted": "Inga rapporter eller highlights inskickade ännu.",
 

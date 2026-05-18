@@ -1,6 +1,6 @@
 <template>
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar My Walking City...</p>
+    <p>{{ uiLabels.loadingMWC }}</p>
   </div>
 
   <main v-else class="report-page">
@@ -30,19 +30,19 @@
           v-if="!showNearbyReports"
           class="allreports-recent-report-button"
           @click="showNearbyReports = true">
-          Rapporter i närheten
+          {{uiLabels.nearbyReports}}
         </button>
       </div>
 
       <!--Nearby reports listan-->
       <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
       <div class="allreports-recent-report-header">
-        <p class="allreports-recent-report-title"> Rapporter i närheten </p>
+        <p class="allreports-recent-report-title"> {{uiLabels.nearbyReports}} </p>
         <button
           class="allreports-close-recent-report-panel"
           @click="showNearbyReports = false"
           aria-label="Close recent report">
-               x
+               ✖️
         </button>
       </div>
 
@@ -158,7 +158,7 @@
   </div>
 
         <div class="form-field">
-          <label for="email" class="form-label">Email</label>
+          <label for="email" class="form-label">{{ uiLabels.email }}</label>
           <input
             v-if="props.session"
             id="email"
@@ -173,23 +173,23 @@
             id="email"
             type="email"
             class="form-input"
-            placeholder="Your email"
+            :placeholder="uiLabels.emailPlaceholder"
             v-model="formData.email"
           />
         </div>
 
         <div class="form-field">
-          <label class="form-label">{{ uiLabels.usernameLabel || 'Användarnamn' }}</label>
+          <label class="form-label">{{ uiLabels.usernameLabel }}</label>
           <input
             type="text"
             class="form-input"
             :class="{ 'form-input-locked': !!usernameFromProfile }"
-            :placeholder="uiLabels.usernamePlaceholder || 'Välj ett publikt namn'"
+            :placeholder="uiLabels.usernamePlaceholder"
             v-model="formData.username"
             :readonly="!!usernameFromProfile"
           />
           <p v-if="usernameFromProfile" class="helper-text">
-            {{ uiLabels.changeInProfileHint || 'Du kan ändra ditt namn på din profilsida.' }}
+            {{ uiLabels.changeInProfileHint }}
           </p>
         </div>
 
