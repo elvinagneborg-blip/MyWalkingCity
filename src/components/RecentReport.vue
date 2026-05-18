@@ -1,6 +1,14 @@
 <template>
     <div :class="['report-card', !report.image_url ? 'no-image' : '']">
-        <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">{{ report.category }}</p>
+      <div class="category-container">
+        <span v-if="report.type === 'problem'" class="report-icon problem-icon">⚠️</span>
+        <span v-else class="report-icon highlight-icon">👍</span>
+
+        <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">
+          {{ report.category }}
+        </p>
+      </div>
+
         <div class="report-info">
           <p class="report-title"> {{ report.title }} </p>
           <p class="report-description">{{ report.description }}</p>
@@ -49,7 +57,7 @@ const props = defineProps(['report', 'session'])
   padding: 20px;
   border-radius: 12px;
   align-items: start;
-  border: 1px solid;
+  border: 1px solid #5e716f5d;
   background-color: #c8efeb5d;
 }
 
@@ -61,8 +69,20 @@ const props = defineProps(['report', 'session'])
     "footer      footer";
 }
 
-.report-category { 
-  grid-area: category; 
+.category-container {
+  grid-area: category;     /* Gör att hela paketet hamnar i "category"-rutan i ditt grid */
+  display: flex;           /* Lägger ikonen och textbubblan bredvid varandra */
+  align-items: center;     /* Centrerar dem perfekt i höjdled */
+  gap: 8px;                /* Ger ett litet avstånd (8 pixlar) mellan ikonen och bubblan */
+  justify-self: start;     /* Håller paketet till vänster */
+}
+
+.report-icon {
+  font-size: 1rem;       /* Gör emojin lite större och tydligare */
+  line-height: 1;
+}
+
+.report-category {  
   margin: 0;
   font-size: 0.8rem;
   justify-self: start;
