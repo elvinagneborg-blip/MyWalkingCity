@@ -61,21 +61,33 @@
         </div>
       </aside>
 
-          <div class="form-field">
+      <div class="form-field">
+          <label class="form-label">{{ uiLabels.searchBar }}</label>
+          
+          <div class="search-group">
+            <input 
+              type="text" 
+              v-model="addressSearch"
+              :placeholder="uiLabels.searchForLocation"
+              class="form-control"
+              @keydown.enter.prevent="searchAddress" 
+            />
+            <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
+            <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
+          </div>
 
-      <label class="form-label">{{ uiLabels.locationOfHighlight }}</label>
-      <div class="search-group">
-        <input 
-          type="text" 
-          v-model="addressSearch" 
-          :placeholder="uiLabels.searchForLocation" 
-          class="form-control"
-          @keydown.enter.prevent="searchAddress" 
-        />
-        <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
-        <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
-      </div>
-      </div>
+          <div v-if="selectedAddress" class="selected-address-display" style="margin-top: 12px;">
+            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">
+              {{ uiLabels.selectedAddress || 'Vald adress' }}
+            </label>
+            <input 
+              type="text" 
+              class="form-input-locked" 
+              :value="selectedAddress" 
+              readonly 
+            />
+          </div>
+        </div>
 
         <div class="form-field">
           <label for="category" class="form-label"> {{ uiLabels.category }} </label>
@@ -246,9 +258,10 @@
   } = useImageUpload()
 
   //Map and adress search
-  const reportMap = ref(null)
-  const addressSearch = ref('')
-  const userLocation = ref(null)
+  const reportMap = ref(null);
+  const addressSearch = ref('');
+  const userLocation = ref(null);
+  const selectedAddress = ref(null);
 
   function getLocation(isManual = false) {
 
@@ -292,42 +305,43 @@
     console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
     fetchNearbyReports(lat, lng)
     const address = await getAddressFromCoords(lat, lng)
-    addressSearch.value = address
-    formData.value.address = address
+    addressSearch.value = ''
+    selectedAddress.value = address
   }
 
-  async function searchAddress() {
+    async function searchAddress() {
   const query = addressSearch.value
   if (!query) return // Sök inte om fältet är tomt
 
   try {
-    // 1. Vi skickar adressen till Nominatim. 
-    // encodeURIComponent ser till att mellanslag och ÅÄÖ fungerar i webbadressen.
     const response = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
     )
     const data = await response.json()
 
     if (data.length > 0) {
-      // 2. Vi tar det första resultatet (oftast det mest relevanta)
       const { lat, lon } = data[0]
       const newLat = parseFloat(lat)
       const newLon = parseFloat(lon)
 
-      // 3. Flytta kartan och markören via din MapComponent
+      // Flytta kartan
       if (reportMap.value) {
         reportMap.value.setLocation(newLat, newLon)
       }
 
-      // 4. Uppdatera din formData så att rätt koordinater skickas till databasen
+      // Spara koordinaterna i formuläret
       formData.value.latitude = newLat
       formData.value.longitude = newLon
-
-      formData.value.address = query
       
-      console.log("Hittade adressen:", data[0].display_name)
+      // Hämta en ren och snygg gatuadress och sätt den i det låsta fältet
+      const cleanAddress = await getAddressFromCoords(newLat, newLon)
+      selectedAddress.value = cleanAddress
+      
+      // ===== HÄR TÖMMER VI SÖKFÄLTET =====
+      addressSearch.value = '' 
+      
     } else {
-      alert("Kunde inte hitta adressen. Prova att vara mer specifik (t.ex. lägg till 'Uppsala').")
+      alert("Kunde inte hitta adressen.")
     }
   } catch (error) {
     console.error("Sökfel:", error)
