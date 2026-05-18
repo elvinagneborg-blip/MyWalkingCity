@@ -146,8 +146,14 @@
 
             <article v-else v-for="report in filteredReports" :key="report.id" class="report-container"> <!--beroende på "filter" så loopar den igenom en specifik lista av rapporter-->
                 <div class="report-header">
-                    <span class="report-tag"> {{ report.category }} </span>
-                    <small>{{ new Date(report.created_at).toLocaleDateString() }}</small>
+                    <div class="report-header-info">
+                        <span class="report-tag"> {{ report.category }} </span>
+                        <small>{{ new Date(report.created_at).toLocaleDateString() }}</small>
+                    </div>
+
+                    <button class="delete-report-btn" @click="confirmDelete(report.report_id)">
+                        {{ uiLabels.deleteReport }}
+                    </button>
                 </div>
 
                 <h3 class="report-text"> {{ report.description }} </h3>
@@ -160,6 +166,23 @@
             </article>
         </div>
     </section>
+
+    <!-- Popup för att bekräfta borttagning av rapport -->
+    <div v-if="showDeletePopup" class="popup-overlay">
+        <div class="popup-box">
+            <h2 class="popup-title">{{ uiLabels.confirmDeleteTitle }}</h2>
+            <p class="popup-message">{{ uiLabels.confirmDeleteText }}</p>
+            
+            <div class="popup-buttons">
+                <button class="popup-button cancel-btn" @click="cancelDelete">
+                    {{ uiLabels.cancel }}
+                </button>
+                <button class="popup-button delete-btn" @click="executeDelete">
+                    {{ uiLabels.deleteReport }}
+                </button>
+            </div>
+        </div>
+    </div>
 
 <!-- Contact information -->
     <section class="contact-section">
@@ -284,11 +307,53 @@
             const { data, error } = await supabase
                 .from('reports')
                 .select('*')
-                .eq('user_id', props.session.user.id) //hämta mina rapporter
+                .eq('email', props.session.user.email) //hämta mina rapporter
                 .order('created_at', {ascending: false});
         if (!error) {
         userReports.value = data
         }
+  }
+
+  // --- för att redera repport ---
+  const showDeletePopup = ref(false)
+  const reportToDelete = ref(null)
+
+  // Öppna popup och spara vilket ID som ska tas bort
+  const confirmDelete = (id) => {
+      reportToDelete.value = id
+      showDeletePopup.value = true
+  }
+
+  // Stäng popup utan att göra något
+  const cancelDelete = () => {
+      showDeletePopup.value = false
+      reportToDelete.value = null
+  }
+
+  // Utför själva borttagningen i databasen
+  const executeDelete = async () => {
+      if (!reportToDelete.value) return
+
+      try {
+          // Ta bort från Supabase
+          const { error } = await supabase
+              .from('reports')
+              .delete()
+              .eq('report_id', reportToDelete.value) // Kontrollera att kolumnen heter report_id i databas
+
+          if (error) throw error
+
+          //försvinner direkt från sidan, behöver ej ladda om
+          userReports.value = userReports.value.filter(
+              report => report.report_id !== reportToDelete.value
+          )
+          
+      } catch (error) {
+          console.error("Kunde inte ta bort rapporten:", error.message)
+      } finally {
+          // Stäng alltid popupen oavsett om det gick bra eller dåligt
+          cancelDelete()
+      }
   }
 
   const filteredReports = computed(() => {
@@ -644,7 +709,7 @@
 .report-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 12px;
 }
 
@@ -763,8 +828,8 @@
     }
 
     .avatar-hat {
-        font-size: 2.5rem !important;
-        top: -17px !important; /* Flytta hatten lite mindre på mindre skärmar */
+        font-size: 2rem !important;
+        top: -8px !important; /* Flytta hatten lite mindre på mindre skärmar */
     }
 
     .personal-dev-row {
@@ -843,6 +908,96 @@
   right: -10px;
   font-size: 2rem;
   z-index: 2;
+}
+
+/* ===== Delete Button i Rapportkortet ===== */
+.report-header-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.delete-report-btn {
+    display: inline-block;
+    background-color: #ff1c11b7;
+    color: white;
+    border-radius: 999px;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+.delete-report-btn:hover {
+    transform: scale(1.05);
+    text-decoration: underline;
+}
+
+/* ===== Popup Styling ===== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000; /* Så den hamnar överst */
+}
+
+.popup-box {
+    background: white;
+    padding: 30px 25px;
+    border-radius: 18px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: popupFade 0.2s ease;
+}
+
+.popup-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.popup-message {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.popup-button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+}
+
+.popup-button:hover {
+    opacity: 0.8;
+}
+
+.cancel-btn {
+    background-color: #cbd5e0;
+    color: #2d3748;
+}
+
+.delete-btn {
+    background-color: #ff5f5f;
+    color: white;
 }
 </style>
 

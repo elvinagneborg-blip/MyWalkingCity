@@ -109,6 +109,11 @@
 	"howDoesItWork": "Hur fungerar det?",
 	"howItWorks": "Hur det fungerar",
 
+	"deleteReport": "Ta bort",
+	"confirmDeleteTitle": "Är du säker?",
+	"confirmDeleteText": "Vill du verkligen ta bort den här rapporten? Detta går inte att ångra.",
+	"cancel": "Avbryt",
+
 	"identify": "Identifiera",
 	"identifyDescription": "Identifiera problem eller bra saker i staden.",
 	"reportDescription": "Sätt plats, beskriv, lägg till bild, skicka in.",

@@ -102,6 +102,11 @@
 	"howDoesItWork": "How does it Work?",
 	"howItWorks": "How it works",
 
+	"deleteReport": "Delete",
+	"confirmDeleteTitle": "Are you sure?",
+	"confirmDeleteText": "Do you really want to delete this report? This cannot be undone.",
+	"cancel": "Cancel",
+
 	"identify": "Identify",
 	"identifyDescription": "Identify problems or good things in the city.",
 	"reportDescription": "Set location, describe, add photo, submit.",
