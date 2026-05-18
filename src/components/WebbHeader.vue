@@ -442,7 +442,7 @@ const currentLevel = computed(() => {
 }
 .header-hat {
     font-size: 1rem !important;
-    top: 4.5px !important; 
+    top: 11px !important; 
 }
 
 }
