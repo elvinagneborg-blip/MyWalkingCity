@@ -15,63 +15,75 @@
     <section class="form-section">
       <form @submit.prevent="handleSubmit" class="form-container">
 
-      <div class="map-container">
-        <MapComponent ref="reportMap" @location-changed="updateCoords"/>
-        <!-- Nearby reports knapp -->
-        <button 
-          v-if="!showNearbyReports"
-          class="allreports-recent-report-button"
-          @click="showNearbyReports = true">
-          Rapporter i närheten
-        </button>
-      </div>
-
-      <!--Nearby reports listan-->
-      <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
-      <div class="allreports-recent-report-header">
-        <p class="allreports-recent-report-title"> Rapporter i närheten </p>
-        <button
-          class="allreports-close-recent-report-panel"
-          @click="showNearbyReports = false"
-          aria-label="Close recent report">
-               x
-        </button>
-      </div>
-
-      <div class="report-list">
-        <!-- Visas om det är tomt i sessionStorage -->
-        <div v-if="nearbyReports.length === 0">
-            <p> {{ uiLabels.noReportsSubmitted }}</p>
+        <div class="map-container">
+          <MapComponent ref="reportMap" @location-changed="updateCoords"/>
+          <!-- Nearby reports knapp -->
+          <button 
+            v-if="!showNearbyReports"
+            class="allreports-recent-report-button"
+            @click="showNearbyReports = true">
+            Rapporter i närheten
+          </button>
         </div>
-            <!-- Loopar igenom den hämtade datan -->
-          <RecentReport 
-            v-else
-            v-for="report in nearbyReports" 
-            :key="report.id" 
-            :report="report"
-            :session="session"/>
-        </div>
-      </aside>
+
+        <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
+
+          <div class="allreports-recent-report-header">
+            <p class="allreports-recent-report-title"> Rapporter i närheten </p>
+            <button
+              class="allreports-close-recent-report-panel"
+              @click="showNearbyReports = false"
+              aria-label="Close recent report">
+                  x
+            </button>
+          </div>
+
+          <div class="report-list">
+            <div v-if="nearbyReports.length === 0">
+                <p> {{ uiLabels.noReportsSubmitted }}</p>
+            </div>
+            <RecentReport 
+              v-else
+              v-for="report in nearbyReports" 
+              :key="report.id" 
+              :report="report"
+              :session="session"
+            />
+          </div>
+        </aside>
+
 
       <!--Formuläret-->
-      <div class="form-field">
-      <label class="form-label">{{ uiLabels.locationOfProblem }}</label>
-      <div class="search-group">
-        <input 
-          type="text" 
-          v-model="addressSearch" 
-          :placeholder="uiLabels.searchForLocation"
-          class="form-control"
-          @key.enter.prevent="searchAddress" 
-        />
-        <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
-        <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
-      </div>
-      </div>
+        <div class="form-field">
+          <label class="form-label">{{ uiLabels.searchBar }}</label>
+          
+          <div class="search-group">
+            <input 
+              type="text" 
+              v-model="addressSearch"
+              :placeholder="uiLabels.searchForLocation"
+              class="form-control"
+              @keydown.enter.prevent="searchAddress" 
+            />
+            <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
+            <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
+          </div>
+
+          <div v-if="selectedAddress" class="selected-address-display" style="margin-top: 12px;">
+            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">
+              {{ uiLabels.selectedAddress || 'Vald adress' }}
+            </label>
+            <input 
+              type="text" 
+              class="form-input-locked" 
+              :value="selectedAddress" 
+              readonly 
+            />
+          </div>
+        </div>
 
         <div class="form-field">
           <label for="category" class="form-label"> {{uiLabels.category}} </label>
-          <!-- 2. Uppdatera v-model till formData.category -->
           <select id="category" class="form-control" v-model="formData.category" required>
             <option disabled value="">{{ uiLabels.chooseCategory }}</option>
             <option value="streets">{{ uiLabels.streets }}</option>
@@ -107,36 +119,36 @@
           ></textarea>
         </div>
 
-    <div class="form-field">
-      <label class="form-label">{{ uiLabels.photo }}</label>
+        <div class="form-field">
+          <label class="form-label">{{ uiLabels.photo }}</label>
 
-      <div v-if="!imagePreview">
-        <label for="photo" class="custom-file-upload-button">
-          <span>{{ uiLabels.photoPlaceholder }}</span>
-          <span class="file-control-icon">🖼️</span>
-          <input
-            id="photo"
-            type="file"
-            accept="image/*"
-            capture="environment"
-            class="hidden-file-input"
-            @change="handlePhotoUpload"
-          />
-        </label>
-      </div>
+          <div v-if="!imagePreview">
+            <label for="photo" class="custom-file-upload-button">
+              <span>{{ uiLabels.photoPlaceholder }}</span>
+              <span class="file-control-icon">🖼️</span>
+              <input
+                id="photo"
+                type="file"
+                accept="image/*"
+                capture="environment"
+                class="hidden-file-input"
+                @change="handlePhotoUpload"
+              />
+            </label>
+          </div>
 
-      <div v-else class="preview-container">
-        <div class="selected-file-info">
-          <span class="filename">📍 {{ selectedFileName }}</span>
+          <div v-else class="preview-container">
+            <div class="selected-file-info">
+              <span class="filename">📍 {{ selectedFileName }}</span>
+            </div>
+            
+            <img :src="imagePreview" class="image-preview" />
+            
+            <button type="button" @click="removeImage" class="remove-image-btn">
+              🗑️ {{ uiLabels.removeImage }}
+            </button>
+          </div>
         </div>
-        
-        <img :src="imagePreview" class="image-preview" />
-        
-        <button type="button" @click="removeImage" class="remove-image-btn">
-          🗑️ {{ uiLabels.removeImage }}
-        </button>
-      </div>
-  </div>
 
         <div class="form-field">
           <label for="email" class="form-label">{{uiLabels.email}}</label>
@@ -179,7 +191,7 @@
           {{ isSubmitting ? uiLabels.sending : uiLabels.sendInReport }}
         </button>
       </form>
-  </section>
+    </section>
     
 
   </main>
@@ -238,23 +250,22 @@
     uploadImage 
   } = useImageUpload()
 
-  //Map and adress search
-  const reportMap = ref(null)
-  const addressSearch = ref('')
+  const reportMap = ref(null);
+  const addressSearch = ref('');
   const userLocation = ref(null);
+  const selectedAddress = ref('');
 
   function getLocation(isManual = false) {
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // Här får vi koordinaterna!
           userLocation.value = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
           
-          updateCoords(userLocation.value) // Uppdatera kartan och adressen direkt när vi får platsen
+          updateCoords(userLocation.value) 
           
           console.log("Plats hittad:", userLocation.value);
 
@@ -263,7 +274,6 @@
           }
         },
         function(error) {
-      // Vi visar bara felmeddelanden om användaren aktivt tryckt på knappen
             if (isManual) {
               
               if (error.code === 1) { // 1 = PERMISSION_DENIED
@@ -272,7 +282,7 @@
                 alert(uiLabels.value.locationError || "Kunde inte hämta din plats: " + error.message);
               }
             }
-            // Om isManual är false (vid sidladdning) så händer ingenting
+            
           }
       );
     } else {
@@ -286,58 +296,54 @@
     console.log(`Uppdaterade koordinater: ${lat}, ${lng}`)
     fetchNearbyReports(lat, lng)
     const address = await getAddressFromCoords(lat, lng)
-    addressSearch.value = address
-    formData.value.address = address
+    addressSearch.value = ''
+    selectedAddress.value = address
   }
+  
 
   async function searchAddress() {
-    const query = addressSearch.value
-    if (!query) return // Sök inte om fältet är tomt
+  const query = addressSearch.value
+  if (!query) return 
 
-    try {
-      // 1. Vi skickar adressen till Nominatim. 
-      // encodeURIComponent ser till att mellanslag och ÅÄÖ fungerar i webbadressen.
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
-      )
-      const data = await response.json()
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+    )
+    const data = await response.json()
 
-      if (data.length > 0) {
-        // 2. Vi tar det första resultatet (oftast det mest relevanta)
-        const { lat, lon } = data[0]
-        const newLat = parseFloat(lat)
-        const newLon = parseFloat(lon)
+    if (data.length > 0) {
+      const { lat, lon } = data[0]
+      const newLat = parseFloat(lat)
+      const newLon = parseFloat(lon)
 
-        // 3. Flytta kartan och markören via din MapComponent
       if (reportMap.value) {
         reportMap.value.setLocation(newLat, newLon)
       }
 
-      // 4. Uppdatera din formData så att rätt koordinater skickas till databasen
       formData.value.latitude = newLat
       formData.value.longitude = newLon
-
-      formData.value.address = query
       
-      console.log("Hittade adressen:", data[0].display_name)
-      } else {
-        alert("Kunde inte hitta adressen. Prova att vara mer specifik (t.ex. lägg till 'Uppsala').")
-      }
-    } catch (error) {
-      console.error("Sökfel:", error)
-      alert("Något gick fel vid sökningen. Kontrollera din internetanslutning.")
+      const cleanAddress = await getAddressFromCoords(newLat, newLon)
+      selectedAddress.value = cleanAddress
+      
+      addressSearch.value = '' 
+      
+    } else {
+      alert("Kunde inte hitta adressen.")
     }
+  } catch (error) {
+    console.error("Sökfel:", error)
+    alert("Något gick fel vid sökningen. Kontrollera din internetanslutning.")
   }
+}
 
   async function getAddressFromCoords(lat, lng) {
     try {
-      // Vi anropar Nominatims API
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
       );
       const data = await response.json();
     
-      // Nominatim ger tillbaka mycket info, vi försöker plocka ut gata och nummer
       if (data && data.address) {
         const street = data.address.road || '';
         const number = data.address.house_number || '';
