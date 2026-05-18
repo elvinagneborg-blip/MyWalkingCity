@@ -51,6 +51,7 @@
             :report="report"
             :session="session"/>
         </div>
+      </aside>
 
         <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
 
