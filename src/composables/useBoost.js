@@ -2,77 +2,106 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase, addPoints } from '@/utils/supabase' //funktionen för att få och spara poäng
 
+const isModalOpen = ref(false);
+const targetReportId = ref(null);
+const targetReportType = ref('');
+const boostEmail = ref('');
+const isBoosting = ref(false);
+const currentSession = ref(null);
+
 export function useBoost() {
-  const isBoosting = ref(false)
-  const router = useRouter()
+  const router = useRouter() //
 
-  async function handleBoost(reportId, session) {
-    if (!reportId) return
+  // Funktion för att öppna popupen (kallas från din boost-knapp)
+  function openBoostModal(reportId, session, type) {
+    if (!reportId) return //
     
-    let userEmail = ''
+    targetReportId.value = reportId
+    targetReportType.value = type
+    currentSession.value = session
 
-    // 1. Kolla om användaren är inloggad
+    // Om användaren redan är inloggad, förifyll mejlen direkt från sessionen!
     if (session && session.user) {
-      userEmail = session.user.email
-    } else {
-      // 2. Om inte inloggad, fråga efter mejladress via en prompt
-      // (I en framtida version kan du ha en snyggare modal, men prompt funkar bra nu)
-      userEmail = window.prompt("Vänligen fyll i din e-postadress för att boosta:")
-      
-      if (!userEmail) {
-        return // Användaren klickade på avbryt
-      }
-
-      // Enkel validering av mejladress
-      if (!userEmail.includes('@', '.')) {
-        alert("Vänligen ange en giltig e-postadress.")
-        return
-      }
+      boostEmail.value = session.user.email //
     }
 
-    isBoosting.value = true
+    isModalOpen.value = true
+  }
+
+  // Stäng popupen och nollställ fälten
+  function closeBoostModal() {
+    isModalOpen.value = false
+    boostEmail.value = ''
+    targetReportId.value = null
+    currentSession.value = null
+    targetReportType.value = ''
+  }
+
+  // Körs när användaren klickar på "Bekräfta" i din nya popup
+  async function submitBoost() {
+    if (!boostEmail.value || !targetReportId.value) return
+
+    // Validering av mejladress (från din originalkod)
+    if (!boostEmail.value.includes('@') || !boostEmail.value.includes('.')) {
+      alert("Vänligen ange en giltig e-postadress.") //
+      return
+    }
+
+    isBoosting.value = true //
     
     try {
       const { error } = await supabase
         .from('boosts')
         .insert([
           { 
-            report_id: reportId, 
-            email: userEmail // Vi sparar mejladressen i 'email'-kolumnen
+            report_id: targetReportId.value, 
+            email: boostEmail.value 
           }
-        ])
+        ]) //
 
       if (error) {
-        // 3. Hantera dubbletter (om databasen säger ifrån)
+        // Hantera dubbletter (från din originalkod)
         if (error.code === '23505') {
-          alert("Du har redan boostat det här problemet!")
+          alert("Du har redan boostat det här problemet!") //
         } else {
-          throw error
+          throw error //
         }
+        closeBoostModal()
         return
       }
 
-      //ge 5 poäng för boosten om användaren är inloggad
-      if (session && session.user) {
-        await addPoints(session.user.id, 5);
+      // Ge 5 poäng för boosten om användaren är inloggad (från din originalkod!)
+      if (currentSession.value && currentSession.value.user) {
+        await addPoints(currentSession.value.user.id, 5); //
       }
 
-      // 4. Skicka till feedbacksidan vid framgång
+      // Stäng popupen innan vi skickar iväg användaren
+      closeBoostModal()
+
+      // Skicka till feedbacksidan vid framgång (från din originalkod!)
       router.push({ 
         path: '/feedback/', 
-        query: { type: 'boost' } 
-      })
+        query: { 
+            action: 'boost',
+            type: targetReportType.value
+         } 
+      }) //
       
     } catch (err) {
-      console.error("Boost misslyckades:", err.message)
-      alert("Något gick fel. Försök igen senare.")
+      console.error("Boost misslyckades:", err.message) //
+      alert("Något gick fel. Försök igen senare.") //
     } finally {
-      isBoosting.value = false
+      isBoosting.value = false //
     }
   }
 
   return {
-    handleBoost,
-    isBoosting
+    isModalOpen,
+    boostEmail,
+    isBoosting,
+    openBoostModal,
+    closeBoostModal,
+    submitBoost,
+    targetReportType
   }
 }

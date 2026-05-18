@@ -10,6 +10,8 @@
     @toggle-lang="switchLanguage"
   />
   <RouterView :backendURL="backendURL" :session="session" :currentLang="lang"/> <!--Skickar ner lang till sidan som syns just nu-->
+
+  <BoostModal :backendURL="backendURL" :session="session" :currentLang="lang"/>
  </template>
 
 
@@ -18,6 +20,7 @@
   import { RouterView } from 'vue-router'
   import WebbHeader from './components/WebbHeader.vue'
   import { supabase } from '@/utils/supabase'
+  import BoostModal from '@/components/BoostModal.vue'
 
 
   const lang = ref('sv')

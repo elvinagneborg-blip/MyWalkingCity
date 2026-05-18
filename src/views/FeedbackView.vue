@@ -9,7 +9,7 @@
     <section v-if="session" class="loggedin-feedback-container">
         <h2 class="feedback-title"> {{uiLabels.thankYouText}} </h2>
         <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
-        <p class="feedback-text"> {{ reportType === 'highlight' ? uiLabels.feedbackHighlight : uiLabels.feedbackProblem }} </p>
+        <p class="feedback-text"> {{ feedbackText }} </p>
 
         <div v-if="showProgressBar" class="points-progress-container">
           <p class="points-anim-text">+{{ animationPointsGained }} {{uiLabels.points}}!</p>
@@ -38,7 +38,7 @@
     <section v-else class="feedback-container">
         <h2 class="feedback-title"> {{uiLabels.thankYouText}} </h2>
         <h3 class="feedback-subtitle"> {{uiLabels.whatHappensNow}} </h3>
-        <p class="feedback-text"> {{ reportType === 'highlight' ? uiLabels.feedbackHighlight : uiLabels.feedbackProblem }} </p>
+        <p class="feedback-text"> {{ feedbackText }} </p>
 
         <div class="accountperks-container" >
         <h4 class="accountperks-title"> {{uiLabels.perkTitle}} </h4>
@@ -101,6 +101,7 @@
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval och session§ från app.vue
   const route = useRoute()
   const socket = io(props.backendURL)
+  
 
    //UI and language
   const uiLabels = ref({})                      //Språkknappar/uiLabels
@@ -115,6 +116,7 @@
 
   //Feedback
   const reportType = computed(() => route.query.type || 'problem')
+  const feedbackAction = computed(() => route.query.action || 'report')
 
   //popupen för level up
   const showLevelUpPopup = ref(false)
@@ -127,10 +129,13 @@
 
   //onMounted för att kolla när sidan laddas om använderen just levlat up
   onMounted(() => {
+    
+
     const leveledUp = sessionStorage.getItem('leveledUp')
     const oldPointsStr = sessionStorage.getItem('oldPoints')
     const newPointsStr = sessionStorage.getItem('newPoints')
     const pointsAddedStr = sessionStorage.getItem('pointsAdded')
+
 
     if (oldPointsStr && newPointsStr && props.session) {
       showProgressBar.value = true
@@ -171,6 +176,21 @@
       sessionStorage.removeItem('leveledUp') //tar bort så att det inte visas igen när sidan laddas om
     }
   })
+
+  //feedbacktexten 
+  const feedbackText = computed(() => {
+  if (feedbackAction.value === 'boost') {
+    // SCENARIO 1 & 2: Användaren har boostat något
+    return reportType.value === 'highlight'
+      ? (uiLabels.value.feedbackBoostHighlight || 'Tack för att du boostade denna highlight!')
+      : (uiLabels.value.feedbackBoostProblem || 'Tack för att du hjälper till att trycka på om detta problem!')
+  } else {
+    // SCENARIO 3 & 4: Användaren har skapat en ny rapport (din gamla logik)
+    return reportType.value === 'highlight'
+      ? uiLabels.value.feedbackHighlight
+      : uiLabels.value.feedbackProblem
+  }
+})
 
   //funktionen som bestämmer hur konfettit ska se ut
   function fireConfetti() {

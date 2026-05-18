@@ -26,9 +26,8 @@
                     alt="Rapportbild"
                 />
         <div class="report-footer">
-          <p class="report-location clickable-location" @click="goToMapLocation">
-            📍 {{ report.address || 'Okänd adress' }}</p>
-          <button class="boost-action-btn" @click="handleBoost(report.report_id, props.session)" :disabled="isBoosting">
+          <p class="report-location">📍 {{ report.address || 'Okänd adress' }}</p>
+          <button class="boost-action-btn" @click="openBoostModal(report.report_id, props.session, report.type)" :disabled="isBoosting">
               {{ isBoosting ? '...' : '🚀 Boosta' }}
           </button>
         </div>
@@ -41,7 +40,7 @@ import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useBoost } from '@/composables/useBoost' //för att kunna använda boost funktionen
 
-const { handleBoost, isBoosting } = useBoost()
+const { openBoostModal, isBoosting } = useBoost()
 const props = defineProps(['report', 'session'])
 const router = useRouter()
 
