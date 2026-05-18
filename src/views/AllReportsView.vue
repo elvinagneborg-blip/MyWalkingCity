@@ -11,8 +11,9 @@
 
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
-        <div class="allreports-map-container">
-            <MapComponent :allReports="allReportMarkers" :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
+        <div class="allreports-content-wrapper">
+        <div class="allreports-map-container" :class="{ 'shift-left': showRecentReports }">
+            <MapComponent ref="mapRef" :allReports="allReportMarkers" :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
 
         
             <!--Recent reports knapp -->            
@@ -51,7 +52,8 @@
             :session="session"
         />
         </div>
-            </aside>
+        </aside>
+        </div>
     </section>
     </main>
 
@@ -75,6 +77,7 @@
 
   const route = useRoute() // 2. Aktivera verktyget för att läsa av URL:en
   const selectedReportId = ref(null) // 3. Denna kommer hålla koll på rapport-ID:t vi klickade på
+  const mapRef = ref(null)
 
 
    //UI and language
@@ -130,6 +133,9 @@
             showRecentReports.value = false // Stänger panelen så kartan blir synlig!
   }
 }, { immediate: true }) // immediate: true gör att den kollar direkt när sidan laddas
+
+
+
 
 //Lifecycle hooks
   onMounted(async () => {
@@ -196,7 +202,7 @@
 .allreports-recent-report-button {
     position: absolute;
     right: 20px;
-    bottom: 20px;
+    top: 20px;
     background-color: #20c7b5;
     color: black;
     border: none;
@@ -210,15 +216,16 @@
 
 /* ===== Recent report panel =====*/
 .allreports-recent-report-panel {
-    position: relative;
-    margin-top: -570px;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    width: 400px;             /* Bestämmer hur bred din sidebar ska vara */
+    min-width: 320px;         /* Sätter en minsta bredd så den inte blir för smal */
+    height: 100%;             /* Gör att den tar upp hela höjden av kart-området */
     background-color: #eeeeee;
-    border-radius: 24px 24px 0 0;
-    padding: 20px 20px 28px;
-    z-index: 1200; /* för att den ska ligga ovanpå kartan, så länge de har största z - index värdet */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 1100;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Lägger till en subtil skugga på vänstersidan */
 }
 
 .allreports-recent-report-header {
@@ -334,4 +341,17 @@
     flex: 1; /* Gör att texten tar upp platsen till vänster om bilden */
 }
 
+.allreports-content-wrapper {
+    display: flex;
+    width: 100%;
+    height: 75vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.report-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
 </style>

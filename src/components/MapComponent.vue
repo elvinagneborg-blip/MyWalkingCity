@@ -102,7 +102,7 @@ const setLocation = (lat, lng) => {
   emit('location-changed', { lat, lng })
 }
 
-defineExpose({ setLocation })
+defineExpose({ setLocation, map, marker })
 
 //när man klickat på en location från recent reports
 watch(() => props.showReportId, (newId) => {
