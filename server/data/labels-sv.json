@@ -108,6 +108,13 @@
 	"highlights": "Höjdpunkter",
 	"howDoesItWork": "Hur fungerar det?",
 	"howItWorks": "Hur det fungerar",
+
+	"identify": "Identifiera",
+	"identifyDescription": "Identifiera problem eller bra saker i staden.",
+	"reportDescription": "Sätt plats, beskriv, lägg till bild, skicka in.",
+	"waitFeedback": "Vänta på feedback",
+	"waitFeedbackDescription": "Din rapport kommer att hanteras av beslutsfattare. Du får en notis när problemet är löst",
+	"levelUpDescription": "Samla poäng genom att skriva och boosta rapporter, levla upp och bli en hjälpsam medborgare.",
 	
 	"latestReports": "Senaste rapporter",
 	"latestReportsDescription": "Se senaste rapporter från invånvare i Uppsala, både förbättringsförslag och positiva observationer",

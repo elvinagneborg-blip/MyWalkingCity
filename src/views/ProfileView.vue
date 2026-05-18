@@ -88,11 +88,6 @@
                     <span class="stat-number">{{ userReports.filter(r => r.type === 'problem').length }}</span>
                     <span class="stat-label">{{uiLabels.reports}}</span>
                 </div>
-            
-                <div class="mini-stat">
-                    <span class="stat-number">0</span>
-                    <span class="stat-label">{{uiLabels.done}}</span>
-                </div>
 
                 <div class="mini-stat">
                     <span class="stat-number">{{ userReports.filter(r => r.type === 'highlight').length }}</span>
@@ -174,22 +169,17 @@
             <dl class="contact-list">
                 <div class="contact-row" >
                     <dt class="contact-label">{{ uiLabels.name }}</dt>
-                    <dd class="contact-value"> ?? </dd>
+                    <dd class="contact-value"> {{ profile?.username || props.session.user.email }} </dd>
                 </div>
 
                 <div class="contact-row" >
                     <dt class="contact-label">{{ uiLabels.email }}</dt>
                     <dd class="contact-value"> {{ props.session.user.email }} </dd>
-                </div>
-
-                <div class="contact-row" >
-                    <dt class="contact-label">{{ uiLabels.phone }}</dt>
-                    <dd class="contact-value"> ?? </dd>
                 </div>  
 
                 <div class="contact-row" >
                     <dt class="contact-label">{{ uiLabels.city }}</dt>
-                    <dd class="contact-value"> ?? </dd>
+                    <dd class="contact-value"> Uppsala </dd>
                 </div>
             </dl>
         </div>
