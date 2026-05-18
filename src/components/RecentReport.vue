@@ -37,16 +37,25 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { useBoost } from '@/composables/useBoost' //för att kunna använda boost funktionen
 
 const { openBoostModal, isBoosting } = useBoost()
 const props = defineProps(['report', 'session'])
+const router = useRouter()
+
+const goToMapLocation = () => {
+  router.push({
+    path: '/allreports',
+    query: { selectedReport: props.report.report_id } // Lägger till ?selectedReport=[id] i URL:en
+  })
+}
 
 const isExpanded = ref(false) //ifall beskrivningen är öppen eller ej
 const hasOverflowingText = ref(false) // NYTT: Håller koll på om texten faktiskt klipper av
 const descriptionRef = ref(null)      // NYTT: En referens till själva <p>-taggen i HTML
 
-// NYTT: Funktion som kollar om texten är längre än vad som får plats på 4 rader
+
 const checkOverflow = () => {
   if (descriptionRef.value) {
     const el = descriptionRef.value
@@ -235,5 +244,14 @@ onMounted(async () => {
   text-decoration: underline;
 }
 
+.clickable-location {
+  cursor: pointer; /* Gör att muspekaren blir till en hand vid hovring */
+  transition: color 0.2s;
+}
+
+.clickable-location:hover {
+  color: #20c7b5; /* Ändrar färg till din applikations gröna tema när man hovrar */
+  text-decoration: underline; /* Lägger till ett understreck */
+}
 
 </style>
