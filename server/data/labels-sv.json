@@ -12,8 +12,7 @@
 
 
 
-	"loadPage": "Laddar My Walking City..",
-	
+	"loadingMWC": "Laddar My Walking City...",
 	"accessibility": "Tillgänglighet",
 	"activeUsers": "Aktiva användare",	
 	"addHighlight": "Lägg till en höjdpunkt!",
@@ -23,10 +22,12 @@
 
 	"backToHome": "Gå tillbaka till startsidan",
 
+
 	"category": "Kategori",
 	"changeLanguage": "Ändra till engelska",
 	"changeInProfileHint": "Du kan ändra ditt publika användarnamn i din profil",
 	"chooseCategory": "Välj kategori",
+	"city": "Stad",
 	"closeLevelUp": "Grymt!",
 	"congrats": "Grattis!",
 	"contactInfo": "Kontaktinformation",
@@ -38,6 +39,11 @@
 	"describeYourHighlight": "Beskriv din höjdpunkt",
 	"description": "Beskrivning",
 	"done": "Klart",
+
+	"emailPlaceholder": "Din e-postadress",
+	"event": "Evenemang",
+	"email": "E-post",
+	
 
 	"levelUpMessage": "Du har precis nått Level",
 	"logInTitle": "Logga in",
@@ -62,12 +68,12 @@
 	"fillInEmail": "Fyll i din e-postadress", 
 	"fillInPassword": "Välj ett lösenord", 
 	"usernameSignUp": "Användarnamn",
-	"emailSignUp": "Din e-postadress", 
 	"passwordSignUp": "Lösenord",
 	"chooseAvatar": "Välj en avatar", 
 	"alreadyHaveAccount": "Har du redan ett konto?",
 	"usernameAlreadyExists": "Detta användarnamn existerar redan, välj ett annat",
 
+	"phone": "Telefon",
 	"points": "Poäng",
 	"popupMissingFieldsTitle": "Hoppsan!",
 	"popupMissingFieldsMessage": "Du måste fylla i användarnamn, e-post och lösenord samt välj avatar.",
@@ -88,9 +94,6 @@
 	"popupPasswordUpdated": "Lösenordet har uppdaterats",
 	"popupSuccessTitleReset": "Hurra!",
 
-
-	"event": "Evenemang",
-	"email": "E-post",
 
 	"feedbackProblem": "Din rapport skickas till Uppsala kommun som ser till att det fixas! Du kan kolla statusen på din rapport i din profil.",
 	"feedbackHighlight": "Din höjdpunkt görs synlig för andra invånare som kan njuta av den! Du kan se alla dina höjdpunkter i din profil.",
@@ -121,7 +124,9 @@
 	"myReports": "My reports",
 	"mustsee": "Sevärdhet",
 
+	"name": "Namn",
 	"nature": "Natur",
+	"nearbyReports": "Rapporter i närheten",
 	"noBackToHome": "Nej tack, tillbaka till startsidan",
 	"noReportsSubmitted": "Inga rapporter eller highlights inskickade ännu.",
 
