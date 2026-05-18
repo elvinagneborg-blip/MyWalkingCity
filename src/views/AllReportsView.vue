@@ -12,7 +12,7 @@
     <!-- Sektion för kart-området -->
     <section class="allreports-map-section">
         <div class="allreports-map-container">
-            <MapComponent :allReports="allReportMarkers"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
+            <MapComponent :allReports="allReportMarkers" :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
 
         
             <!--Recent reports knapp -->            
@@ -66,11 +66,15 @@
   import MapComponent from "@/components/MapComponent.vue"
   import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
   import RecentReport from '@/components/RecentReport.vue'
+  import { useRoute } from 'vue-router'
   
   //Setup and Props (Input)
   const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
   const { handleBoost, isBoosting } = useBoost()
   const socket = io(props.backendURL)
+
+  const route = useRoute() // 2. Aktivera verktyget för att läsa av URL:en
+  const selectedReportId = ref(null) // 3. Denna kommer hålla koll på rapport-ID:t vi klickade på
 
 
    //UI and language
@@ -118,6 +122,14 @@
       console.error("Could not fetch latest reports:", error.message) 
     }
     }
+
+    // Om man kommer från recent report
+    watch(() => route.query.selectedReport, (newId) => {
+        if (newId) {
+            selectedReportId.value = newId   // Sparar undan ID:t
+            showRecentReports.value = false // Stänger panelen så kartan blir synlig!
+  }
+}, { immediate: true }) // immediate: true gör att den kollar direkt när sidan laddas
 
 //Lifecycle hooks
   onMounted(async () => {
