@@ -1,6 +1,6 @@
 <template>
     <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar My Walking City...</p>
+    <p>{{uiLabels.loadingMWC}}</p>
   </div>
 <main v-else>
 <section class="profile-page"> 
@@ -146,7 +146,7 @@
 
         <div class="reports-list">
             <p v-if="userReports.length === 0">
-                Du har inte skickat in några rapporter än
+                {{ uiLabels.noReportsSubmitted }}
             </p>
 
             <article v-else v-for="report in filteredReports" :key="report.id" class="report-container"> <!--beroende på "filter" så loopar den igenom en specifik lista av rapporter-->
@@ -173,22 +173,22 @@
         <div class="contact-container">
             <dl class="contact-list">
                 <div class="contact-row" >
-                    <dt class="contact-label">Name</dt>
+                    <dt class="contact-label">{{ uiLabels.name }}</dt>
                     <dd class="contact-value"> ?? </dd>
                 </div>
 
                 <div class="contact-row" >
-                    <dt class="contact-label">Email</dt>
+                    <dt class="contact-label">{{ uiLabels.email }}</dt>
                     <dd class="contact-value"> {{ props.session.user.email }} </dd>
                 </div>
 
                 <div class="contact-row" >
-                    <dt class="contact-label">Phone</dt>
+                    <dt class="contact-label">{{ uiLabels.phone }}</dt>
                     <dd class="contact-value"> ?? </dd>
                 </div>  
 
                 <div class="contact-row" >
-                    <dt class="contact-label">City</dt>
+                    <dt class="contact-label">{{ uiLabels.city }}</dt>
                     <dd class="contact-value"> ?? </dd>
                 </div>
             </dl>
@@ -426,6 +426,7 @@
 .levels-section {
     display: flex;
     flex-direction: column;
+    text-align: left;
     gap: 24px;
     margin-top: 0;
     margin-bottom: 0;

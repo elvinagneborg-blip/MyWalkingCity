@@ -1,6 +1,6 @@
 <template>
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p> {{ uiLabels.loadPage }}</p>
+    <p> {{ uiLabels.loadingMWC }}</p>
   </div>
 
   <main v-else>
@@ -14,7 +14,7 @@
 
       <!-- Fill in space for email and password -->
       <label class="login-label"> {{ uiLabels.fillInEmailLogIn }} <span v-if="emailLogInError" class="error-star">*</span></label> 
-        <input type="email" v-model="email" :placeholder="uiLabels.emailSignUp" class="login-input" />
+        <input type="email" v-model="email" :placeholder="uiLabels.emailPlaceholder" class="login-input" />
       
       <label class="login-label"> {{ uiLabels.fillInPasswordLogIn }} <span v-if="passwordLogInError" class="error-star">*</span></label> 
         <input type="password" v-model="password" :placeholder="uiLabels.passwordSignUp" class="login-input" />

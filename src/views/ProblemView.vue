@@ -1,7 +1,7 @@
 <template>
   <!--Loading skärm-->
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Loading My Walking City...</p>
+    <p>{{ uiLabels.loadingMWC }}</p>
   </div>
 
   <!--Main-->
@@ -22,19 +22,19 @@
           v-if="!showNearbyReports"
           class="allreports-recent-report-button"
           @click="showNearbyReports = true">
-          Rapporter i närheten
+          {{uiLabels.nearbyReports}}
         </button>
       </div>
 
       <!--Nearby reports listan-->
       <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
       <div class="allreports-recent-report-header">
-        <p class="allreports-recent-report-title"> Rapporter i närheten </p>
+        <p class="allreports-recent-report-title"> {{ uiLabels.nearbyReports }} </p>
         <button
           class="allreports-close-recent-report-panel"
           @click="showNearbyReports = false"
           aria-label="Close recent report">
-               x
+               ✖️
         </button>
       </div>
 
@@ -154,13 +154,13 @@
             id="email"
             type="email"
             class="form-input"
-            :placeholder="uiLabels.email"
+            :placeholder="uiLabels.emailPlaceholder"
             v-model="formData.email"
           />
         </div>
 
         <div class="form-field">
-          <label class="form-label">{{ uiLabels.usernameLabel || 'Användarnamn' }}</label>
+          <label class="form-label">{{ uiLabels.usernameLabel }}</label>
           <input
             type="text"
             class="form-input"
@@ -170,7 +170,7 @@
             :readonly="!!usernameFromProfile"
           />
           <p v-if="usernameFromProfile" class="helper-text">
-            {{ uiLabels.changeInProfileHint || 'Du kan ändra ditt namn på din profilsida.' }}
+            {{ uiLabels.changeInProfileHint }}
           </p>
         </div>
 

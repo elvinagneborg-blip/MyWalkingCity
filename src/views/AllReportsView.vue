@@ -1,6 +1,6 @@
 <template>
   <div v-if="Object.keys(uiLabels).length === 0" class="loading-screen"> <!-- Väntar på att backend laddas innan sidan ritas upp-->
-    <p>Laddar My Walking City...</p>
+    <p>{{uiLabels.loadingMWC}}</p>
   </div>
 
   <main v-else class="allreports-page">
