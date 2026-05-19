@@ -16,13 +16,20 @@
           <MapComponent ref="mapRef" :allReports="filteredReports" :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
 
           <!-- Filter knapp -->
-          <details class="allreports-filter-dropdown"> <!--details: för att få en dropp down meny-->
+          <details ref="filterDropdown" class="allreports-filter-dropdown"> <!--details: för att få en dropp down meny-->
             <summary class="allreports-filter-button">
               {{uiLabels.filter}}
             </summary>
 
             <!-- Huvudfilter: alla/problem/highlights -->
             <div class="allreports-filter-menu">
+              <button
+                class="allreports-filter-close"
+                @click="closeFilterMenu"
+                type="button">
+                ×
+              </button>
+
               <button
                 class="allreports-filter-option"
                 @click="selectType('all')">
@@ -173,6 +180,13 @@ function formatCategory(category) {
   return category.replaceAll('_', ' ')
 }
 
+
+const filterDropdown = ref(null)
+
+function closeFilterMenu() {
+  filterDropdown.value.open = false
+}
+
 //Lifecycle hooks
   onMounted(async () => {
     await getReports()
@@ -272,6 +286,7 @@ function formatCategory(category) {
 
 .allreports-filter-option {
   background-color: #f5f5f5;
+  color: black;
   border: none;
   border-radius: 10px;
   padding: 9px 12px;
@@ -300,6 +315,20 @@ function formatCategory(category) {
   color: #555;
 }
 
+.allreports-filter-close {
+  position: sticky;
+  top: 0;
+  align-self: flex-end;
+  background-color: transparent;
+  color: black;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  z-index: 2;
+}
 
 /* ===== Recent report knapp =====*/
 .allreports-recent-report-button {
