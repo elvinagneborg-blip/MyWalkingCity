@@ -51,11 +51,11 @@
               @keydown.enter.prevent="searchAddress" 
             />
             <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
-            <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
+            <button type="button" @click="getLocation(true)" class="btn-secondary location-btn">{{ uiLabels.getMyLocation }}</button>
           </div>
 
-          <div v-if="selectedAddress" class="selected-address-display" style="margin-top: 12px;">
-            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">
+          <div v-if="selectedAddress" class="form-label">
+            <label class="form-label">
               {{ uiLabels.selectedAddress || 'Vald adress' }}
             </label>
             <input 
@@ -477,10 +477,9 @@ async function fetchUserProfile() {
 }
 
 
-
 /* ===== Sidhuvud - Snyggare titel ===== */
 .report-header {
-  padding: 60px 20px 40px;
+  padding: 20px 20px 40px;
   text-align: center;
 }
 
@@ -498,8 +497,6 @@ async function fetchUserProfile() {
   max-width: 600px;
   margin: 0 auto;
 }
-
-
 
 
 .map-panel-wrapper {
@@ -547,7 +544,6 @@ async function fetchUserProfile() {
   padding-bottom: 5px;
 }
 
-
 .helper-text {
   font-size: 0.8rem;
   color: #718096;
@@ -573,6 +569,7 @@ async function fetchUserProfile() {
 
 .btn-secondary:hover, .btn-location:hover {
   background: #f7fafc;
+  transform: translateY(-1px);
 }
 
 
@@ -641,26 +638,40 @@ async function fetchUserProfile() {
 
 /* ===== Mobilanpassning ===== */
 @media (max-width: 768px) {
-  .report-title {
-    font-size: 1.8rem;
-  }
+ 
   
-  .form-container {
-    padding: 20px;
-    border-radius: 0; /* Fullbredd på mobil känns ofta bättre utan hörn */
-  }
-
   .map-container {
     height: 350px;
+    padding: 0; /* Tar bort extra padding på kartan för att maximera utrymmet */
   }
+
+  .map-panel-wrapper {
+    height: auto; /* Låt höjden anpassa sig efter innehållet på mindre skärmar */
+    flex-direction: column; /* Stapla kartan och panelen vertikalt */
+  } 
 
   .recent-report {
     display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
   }
 
+  .report-header {
+    padding: 0px;
+  }
 
+  .report-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
 
+  .search-group {
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  gap: 10px;
+}
 
+  .location-btn {
+  grid-column: 1 / -1; 
+}
 
 }
 
