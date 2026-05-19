@@ -24,22 +24,21 @@ export default {
 
 /*Viss dubbelogik men fick det inte att funka*/
 
-/*Layout för menyn*/
+/*Layout för Popup-menyn*/
 nav {
     position: fixed;
     top: 95px;
     left: 50%;
     transform: translateX(-50%);
-    width: min(92vw, 980px);
-    max-width: 980px;
-    min-height: 420px;
+    width: clamp(420px, 52vw, 680px);    
+    min-height: 420px; /*boven?*/
     max-height: 78vh;
     background-color: #0c7f6d;
     z-index: 2000;
     border-radius: 16px;
-    padding: 40px 32px 78px;
+    padding: 40px 32px 40px;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     flex-direction: column;
 }
@@ -49,8 +48,8 @@ nav {
 
   /* x button*/
 .menu-popup-close {
-    position: absolute;
-    top: 10px;
+    position: fixed;
+    top: 14px;
     right: 20px;
     border: none;
     background: transparent;
@@ -65,12 +64,15 @@ nav {
     flex-direction: column;
     align-items: center;
     gap: clamp(18px, 4vh, 42px);
+    justify-content: center; /* centrera knapparna vertikalt */
+    flex: 1; /* fyll ut nav-containern */
+
 }
 .menu-popup-link {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: min(68vw, 420px);
+    width: min(82%, 420px);
     min-height: clamp(52px, 8vh, 76px);
     background-color: #1da892;
     border-radius: 12px;
@@ -84,30 +86,25 @@ nav {
     box-sizing: border-box;
 }
 
-/*Dubbellogik men datorskärm */
-@media (min-width: 601px) {
-    nav {
-        top: 90px;
-        width: min(52vw, 680px);
-        max-height: calc(100vh - 120px);
-        padding: 34px 32px 110px;
-    }
-
-    .menu-popup-nav {
-        gap: 28px;
-    }
-
-    .menu-popup-link {
-        width: min(42vw, 500px);
-        min-height: 64px;
-        font-size: 1.45rem;
-    }
-}
-
 /* Telefonskärm */
 @media (max-width: 600px) {
     nav {
         top: 100px;
+        min-height: auto;
+        width: min(92vw, 420px);
+        padding: 48px 18px 24px;
+        overflow-y: auto;
+    }
+
+    .menu-popup-nav {
+        gap: 14px;
+        justify-content: flex-start;
+    }
+
+    .menu-popup-close {
+        top: 8px;
+        right: 16px;
+        font-size: 1.8rem;
     }
 }
 </style>
