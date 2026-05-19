@@ -17,7 +17,7 @@
         <input type="email" v-model="email" :placeholder="uiLabels.emailPlaceholder" class="form-input" />
       
       <label class="form-label"> {{ uiLabels.fillInPasswordLogIn }} <span v-if="passwordLogInError" class="error-star">*</span></label> 
-        <input type="password" v-model="password" :placeholder="uiLabels.passwordSignUp" class="form-input" />
+        <input type="password" v-model="password" :placeholder="uiLabels.passwordSignUp" class="form-input" @keydown.enter.prevent="handleLogin" />
       <!-- Forgot password -->  
       <div class="forgot-password-section">
         <p class="forgot-password-text"> {{ uiLabels.forgotPassword }} </p>

@@ -178,4 +178,18 @@ transition: all 0.2s ease;
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+@media (max-width: 768px) {
+  .modal-card {
+    margin: 30px 20px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.3rem;
+  }
+
+  .modal-header p {
+    font-size: 0.9rem;
+  }
+}
 </style>
