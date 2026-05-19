@@ -52,14 +52,14 @@ const goToMapLocation = () => {
 }
 
 const isExpanded = ref(false) //ifall beskrivningen är öppen eller ej
-const hasOverflowingText = ref(false) // NYTT: Håller koll på om texten faktiskt klipper av
-const descriptionRef = ref(null)      // NYTT: En referens till själva <p>-taggen i HTML
+const hasOverflowingText = ref(false) 
+const descriptionRef = ref(null)      
 
 
 const checkOverflow = () => {
   if (descriptionRef.value) {
     const el = descriptionRef.value
-    // Om textens verkliga höjd är större än den synliga höjden klipper den av!
+    // Om textens verkliga höjd är större än den synliga höjden klipper den av
     hasOverflowingText.value = el.scrollHeight > el.clientHeight
   }
 }
@@ -82,7 +82,7 @@ onMounted(async () => {
     "info       image"
     "footer      footer";
    gap: 10px;
-  width: 100%; /* Ändrat från 20% så den syns ordentligt */
+  width: 100%; 
   height: 205px;
   max-width: 600px;
   margin-bottom: 10px;
@@ -107,15 +107,15 @@ onMounted(async () => {
 }
 
 .category-container {
-  grid-area: category;     /* Gör att hela paketet hamnar i "category"-rutan i ditt grid */
-  display: flex;           /* Lägger ikonen och textbubblan bredvid varandra */
-  align-items: center;     /* Centrerar dem perfekt i höjdled */
-  gap: 8px;                /* Ger ett litet avstånd (8 pixlar) mellan ikonen och bubblan */
-  justify-self: start;     /* Håller paketet till vänster */
+  grid-area: category;     
+  display: flex;          
+  align-items: center;     
+  gap: 8px;                
+  justify-self: start;    
 }
 
 .report-icon {
-  font-size: 1rem;       /* Gör emojin lite större och tydligare */
+  font-size: 1rem;      
   line-height: 1;
 }
 
@@ -144,15 +144,15 @@ onMounted(async () => {
 }
 
 .report-description { 
-  margin: 0; /* Ta bort margin-top för att få upp den helt */
+  margin: 0; 
   text-align: left;
-  padding-top: 5px; /* Lägg till lite padding om det blir för trångt */
-  align-self: start; /* Tvingar elementet till toppen av sin cell */
+  padding-top: 5px; 
+  align-self: start; 
   line-height: 1.4;
   font-size: 14px;
 
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Här kan du ändra till 2 eller 4 rader om du vill */
+  -webkit-line-clamp: 3; 
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -160,8 +160,8 @@ onMounted(async () => {
 
 .report-date { 
   grid-area: date; 
-  align-self: start; /* Tvingar upp datumet till toppen av kortet */
-  justify-self: end; /*trycker ut datumet till höger*/
+  align-self: start; 
+  justify-self: end; 
   margin: 0;
 }
 
@@ -177,8 +177,8 @@ onMounted(async () => {
 .report-footer {
   grid-area: footer;
   border-top: 1px dashed black;
-  display: flex; /* så de hamnar brevid varandra och inte under*/
-  justify-content: space-between; /*de hamnar på varsin sida*/
+  display: flex; 
+  justify-content: space-between; 
   margin-bottom: -10px;
 }
 
@@ -192,7 +192,7 @@ onMounted(async () => {
 .boost-action-btn {
     margin-top: 10px;
     padding: 6px 12px;
-    background-color: #ffd700; /* Guld/Gul för boost */
+    background-color: #ffd700; 
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -212,7 +212,6 @@ onMounted(async () => {
 }
 
 
-
 .red-bg {
   background-color: rgba(235, 41, 41, 0.228); 
 }
@@ -221,17 +220,15 @@ onMounted(async () => {
   background-color: rgba(15, 203, 115, 0.366); 
 }
 
-/* Ser till att texten visar alla rader och inte klipps av vid expansion */
 .report-description.expanded {
   -webkit-line-clamp: unset; 
   display: block; 
 }
 
-/* Valfritt: Styla "Visa mer/mindre"-knappen så den ser ut som en snygg länk */
 .toggle-description-btn {
   background: none;
   border: none;
-  color: #27c4b4; /* Snygg färg som passar appens tema */
+  color: #27c4b4; 
   font-size: 11px;
   font-weight: bold;
   cursor: pointer;
@@ -245,13 +242,13 @@ onMounted(async () => {
 }
 
 .clickable-location {
-  cursor: pointer; /* Gör att muspekaren blir till en hand vid hovring */
+  cursor: pointer; 
   transition: color 0.2s;
 }
 
 .clickable-location:hover {
-  color: #20c7b5; /* Ändrar färg till din applikations gröna tema när man hovrar */
-  text-decoration: underline; /* Lägger till ett understreck */
+  color: #20c7b5; 
+  text-decoration: underline; 
 }
 
 </style>

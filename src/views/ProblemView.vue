@@ -25,7 +25,7 @@
           @click="showNearbyReports = true">
           {{uiLabels.nearbyReports}}
         </button>
-      </div>
+      
 
       <ReportPanel 
         v-if="showNearbyReports"
@@ -35,6 +35,7 @@
         :emptyMessage="uiLabels.noReportsSubmitted"
         @close="showNearbyReports = false"
       />
+    </div>
     </div>
 
 
@@ -171,7 +172,7 @@
           </p>
         </div>
 
-        <!-- 4. Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
+        <!-- Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
         <button type="submit" class="submit-button" :disabled="isSubmitting">
           {{ isSubmitting ? uiLabels.sending : uiLabels.sendInReport }}
         </button>
@@ -362,7 +363,7 @@ async function fetchUserProfile() {
 
   //Submit
   async function handleSubmit() {
-  // 1. Inledande kontroller (Validering)
+  // Inledande kontroller (Validering)
   
   // Kontrollera om användaren har valt en plats (inte bara kvar på Uppsala-default)
   const defaultLat = 59.8586;
@@ -389,16 +390,16 @@ async function fetchUserProfile() {
   isSubmitting.value = true;
 
   try {
-    // 2. Förbered användardata
+    // Förbered användardata
     if (props.session) {
       formData.value.email = props.session.user.email;
     }
 
-    // 3. Bildhantering
+    // Bildhantering
     // Vi väntar på att bilden laddas upp till Storage och får tillbaka URL:en
     const imageUrl = await uploadImage();
 
-    // 4. Förbered det slutgiltiga objektet för databasen
+    // Förbered det slutgiltiga objektet för databasen
     const reportData = {
       ...formData.value,
       image_url: imageUrl, // URL från storage (eller null om ingen bild valdes)
@@ -406,7 +407,7 @@ async function fetchUserProfile() {
       created_at: new Date().toISOString() // Bra praxis att sätta tidstämpel explicit
     };
 
-    // 5. Skicka till Supabase 'reports'-tabellen
+    // Skicka till Supabase 'reports'-tabellen
     const { error } = await supabase
       .from('reports')
       .insert([reportData]);
@@ -420,7 +421,6 @@ async function fetchUserProfile() {
       await addPoints(props.session.user.id, 10);
     }
 
-    // 6. Succé! Skicka användaren vidare
     router.push('/feedback/');
 
   } catch (error) {
@@ -454,6 +454,28 @@ async function fetchUserProfile() {
     }
   }
 
+// Bevaka när panelen öppnas/stängs och knuffa kartan i pixlar på mobilen
+watch(showNearbyReports, async (isOpen) => {
+  if (formData.value.latitude && formData.value.longitude && reportMap.value) {
+    await new Promise(resolve => setTimeout(resolve, 150)); 
+    if (typeof reportMap.value.invalidateSize === 'function') {  
+      reportMap.value.invalidateSize();
+    }
+    reportMap.value.setLocation(formData.value.latitude, formData.value.longitude); 
+    const isMobile = window.innerWidth <= 768;
+
+    if (isOpen && isMobile) {
+
+      const mapWidth = document.querySelector('.map-container')?.clientWidth || 0;   
+      const pixelsToMove = mapWidth * 0.25;
+
+      if (typeof reportMap.value.panBy === 'function') {
+        reportMap.value.panBy(pixelsToMove, 0);
+      }
+    }
+  }
+});
+
   //Lifecycle hooks
   onMounted(() => { 
     setTimeout(() => {
@@ -468,11 +490,11 @@ async function fetchUserProfile() {
 *, *::before, *::after {
   box-sizing: border-box;
 }
-/* ===== Övergripande layout ===== */
+/*  Övergripande layout  */
 .report-page {
   margin: 0 auto;
   font-family: 'var(--inputFont)';
-  background-color: #f9fbfb; /* Ljus, fräsch bakgrund */
+  background-color: #f9fbfb; 
   color: #2d3748;
 }
 
@@ -484,7 +506,7 @@ label {
   font-family: var(--inputFont) !important;
 }
 
-/* ===== Sidhuvud - Snyggare titel ===== */
+/*  Sidhuvud  */
 .report-header {
   padding: 60px 20px 40px;
   text-align: center;
@@ -492,10 +514,10 @@ label {
 
 .report-title {
   font-size: 2.2rem;
-  font-weight: 800; /* Extra tjock för titeln */
+  font-weight: 800; 
   color: #1a202c;
   margin-bottom: 8px;
-  letter-spacing: -0.03em; /* Lite tightare bokstäver för modern look */
+  letter-spacing: -0.03em; 
 }
 
 .report-subtitle {
@@ -505,7 +527,7 @@ label {
   margin: 0 auto;
 }
 
-/* ===== Formulärsektion - Nu mycket bredare ===== */
+/*  Formulärsektion  */
 .form-section {
   display: flex;
   justify-content: center;
@@ -514,13 +536,12 @@ label {
 
 .form-container {
   width: 100%;
-  /* Breddad max-width för att använda mer av skärmen */
   max-width: 1100px; 
   background-color: #cbe5e1;
   border-radius: 24px;
   padding: 40px;
   box-sizing: border-box;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Mjuk skugga istället för bara färg */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
 }
 
@@ -528,11 +549,11 @@ label {
 .map-panel-wrapper {
   display: flex;
   width: 100%;
-  height: 500px; /* Samma höjd som din karta ska ha */
-  gap: 15px;     /* Ger lite luft emellan kartan och panelen */
+  height: 500px; 
+  gap: 15px;     
   margin-bottom: 30px;
 }
-/* ===== Karta - Maximerad bredd ===== */
+/*  Karta  */
 .map-container {
   position: relative;
   flex: 1;
@@ -540,18 +561,17 @@ label {
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid #cbd5e0;
-  /* Förhindrar att kartan "stjäl" fokus direkt */
   z-index: 1;
 }
 
-/* ===== Recent reports - Moderniserad "Glassmorphism" ===== */
+/*  Recent reports  */
 .recent-report {
   position: absolute;
   top: 20px;
   right: 20px;
   width: 260px;
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px); /* Snygg suddig bakgrund */
+  backdrop-filter: blur(10px); 
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   padding: 16px;
@@ -570,18 +590,18 @@ label {
   padding-bottom: 5px;
 }
 
-/* ===== Form Controls - Renare och modernare ===== */
+/*  Form ControlS  */
 .form-field {
   margin-bottom: 28px;
 }
 
 .form-label {
-  font-weight: 600; /* Halvfet för labels */
+  font-weight: 600; 
   font-size: 0.9rem;
-  text-transform: uppercase; /* Ger en ren, strukturerad känsla */
+  text-transform: uppercase; 
   letter-spacing: 0.05em;
   margin-bottom: 10px;
-  color: #718096; /* Lite mjukare färg på labels */
+  color: #718096; 
   display: block;
 }
 
@@ -645,7 +665,7 @@ label {
   padding: 18px;
   border: none;
   border-radius: 12px;
-  background-color: #1ebc9c; /* Använd er signaturfärg istället för mörkgrå */
+  background-color: #1ebc9c; 
   color: white;
   font-size: 1.1rem;
   font-weight: 700;
@@ -681,10 +701,10 @@ label {
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  width: auto; /* Gör den inte lika bred som send-knappen */
+  width: auto; 
 }
 
-/* ===== Bilder & Preview ===== */
+/*  Bilder & Preview */
 .hidden-file-input {
   display: none; 
 }
@@ -701,14 +721,14 @@ label {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  background: #f0f9f7; /* Svag grön ton för att visa att något är valt */
+  background: #f0f9f7; 
   padding: 20px;
   border-radius: 16px;
   border: 1px dashed #1ebc9c;
 }
 
 
-/* Knappen som ligger ovanpå kartan */
+
 .allreports-recent-report-button {
   position: absolute;
   top: 15px;
@@ -725,7 +745,6 @@ label {
 }
 
 
-/* ===== Mobilanpassning ===== */
 @media (max-width: 768px) {
   .report-title {
     font-size: 1.8rem;
@@ -733,7 +752,7 @@ label {
   
   .form-container {
     padding: 20px;
-    border-radius: 0; /* Fullbredd på mobil känns ofta bättre utan hörn */
+    border-radius: 0; 
   }
 
   .map-container {
@@ -741,12 +760,8 @@ label {
   }
 
   .recent-report {
-    display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
+    display: none; 
   }
-
-
-
-
 
 }
 

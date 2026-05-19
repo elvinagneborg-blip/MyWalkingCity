@@ -102,7 +102,11 @@ const setLocation = (lat, lng) => {
   emit('location-changed', { lat, lng })
 }
 
-defineExpose({ setLocation, map, marker })
+defineExpose({ setLocation, map, marker, 
+invalidateSize: () => { if (map) map.invalidateSize() },
+  //Gör att vi kan flytta kartan i pixlar utifrån
+  panBy: (x, y) => { if (map) map.panBy([x, y]) }
+})
 
 //när man klickat på en location från recent reports
 watch(() => props.showReportId, (newId) => {
