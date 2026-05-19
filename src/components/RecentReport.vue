@@ -7,6 +7,14 @@
         <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">
           {{ report.category }}
         </p>
+        <button 
+        v-if="props.showDelete" 
+        type="button"
+        class="mini-delete-btn" 
+        @click.stop="emit('delete-click', report.report_id)"
+    >
+        ✖️
+    </button>
       </div>
 
         <div class="report-info">
@@ -41,7 +49,7 @@ import { useRouter } from 'vue-router'
 import { useBoost } from '@/composables/useBoost' //för att kunna använda boost funktionen
 
 const { openBoostModal, isBoosting } = useBoost()
-const props = defineProps(['report', 'session'])
+const props = defineProps(['report', 'session', 'showDelete'])
 const router = useRouter()
 
 const handleLocationClick = () => {
@@ -59,7 +67,7 @@ const handleLocationClick = () => {
 const isExpanded = ref(false) //ifall beskrivningen är öppen eller ej
 const hasOverflowingText = ref(false) 
 const descriptionRef = ref(null)      
-const emit = defineEmits(['click-location'])
+const emit = defineEmits(['click-location', 'delete-click'])
 
 
 const checkOverflow = () => {
@@ -89,7 +97,8 @@ onMounted(async () => {
     "footer      footer";
    gap: 10px;
   width: 100%; 
-  height: 205px;
+  height: auto;
+  min-height: 205px;
   max-width: 600px;
   margin-bottom: 10px;
   padding: 20px;
@@ -257,6 +266,25 @@ onMounted(async () => {
 .clickable-location:hover {
   color: #20c7b5; 
   text-decoration: underline; 
+}
+
+.mini-delete-btn {
+    color: white;
+    border: solid 1px grey;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 8px;
+    transition: transform 0.1s;
+}
+
+.mini-delete-btn:hover {
+    transform: scale(1.15);
 }
 
 </style>
