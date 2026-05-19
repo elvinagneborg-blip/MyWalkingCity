@@ -114,10 +114,6 @@
                     <RouterLink :to="{ name: 'AllReportsView' }" class="menu-popup-link" @click="closeMenu">{{uiLabels.routeAllReport}}</RouterLink>
                 
                 <!--Övriga länkar/ knappar -->    
-                <RouterLink :to="{ name: 'StartMWC', hash: '#latestReports-section' }" class="menu-popup-link" @click="closeMenu">
-                    {{uiLabels.routeRecentReport}}
-                </RouterLink>
-
                 <RouterLink :to="{ name: 'StartMWC', hash: '#howItWorks-section' }" class="menu-popup-link" @click="closeMenu">
                     {{uiLabels.routeHowTo}}
                 </RouterLink>
@@ -339,6 +335,7 @@ const currentLevel = computed(() => {
 .web-header-menu-button {
     font-size: 2rem;
     background: none;
+    color: #0b3733;
     border: none;
     cursor: pointer;
     line-height: 1;
