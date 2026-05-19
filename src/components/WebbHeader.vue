@@ -91,7 +91,7 @@
 
         <!--Pop up menyn-->
         <ResponsiveNav :hideNav="!menuOpen"> <!-- Ifall menyn ska va gömd eller ej-->
-            <button class="menu-popup-close" @click="closeMenu"> x </button> <!-- kryss för att stänga menyn-->
+            <button class="menu-popup-close" @click="closeMenu"> ✖️ </button> <!-- kryss för att stänga menyn-->
             
             <!--Länkarna inne i popup menyn-->
             <div class="menu-popup-nav">
@@ -418,6 +418,13 @@ body {
 .header-auth-buttons {
     gap: 5px;
     transform: translateY(22px);
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    transform: translateY(10px);
+    font-size: 0.3rem;
+    margin-right: -40px;
+    margin-top: 20px;
 }
 
 .header-button {
@@ -434,6 +441,9 @@ body {
 .web-header-menu-button {
     font-size:2rem;
     right: auto;
+    font-size: 1.8rem;
+    right: 25px;
+    left: 25px;
 }
 
 .web-header-avatar {
