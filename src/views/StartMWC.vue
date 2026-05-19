@@ -70,6 +70,7 @@
           :key="report.id" 
           :report="report"
           :session="session"
+          @click-location="handleReportClick"
          />
       </div>
 
@@ -83,6 +84,7 @@
   import io from 'socket.io-client'
   import { supabase } from '@/utils/supabase'
   import RecentReport from '../components/RecentReport.vue'
+  import { useRouter } from 'vue-router'
 
   const props = defineProps(['backendURL', 'currentLang', 'session'])
   const socket = io(props.backendURL)
@@ -111,6 +113,16 @@
       console.error("Could not fetch latest reports:", error.message) 
     }
   }
+
+//när man klickar på en rapports location
+  const router = useRouter()
+
+  function handleReportClick(reportId) {
+  router.push({
+    path: '/allreports',
+    query: { selectedReport: reportId } // Skickar med parametern till AllReportsView
+  })
+}
 
   const steps = computed(() => [
     { id: 1, title: uiLabels.value.identify, description: uiLabels.value.identifyDescription },

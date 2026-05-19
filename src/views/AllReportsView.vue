@@ -13,7 +13,10 @@
     <section class="allreports-map-section">
         <div class="allreports-content-wrapper">
         <div class="allreports-map-container" :class="{ 'shift-left': showRecentReports }">
-          <MapComponent ref="mapRef" :allReports="filteredReports" :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
+          <MapComponent 
+          ref="mapRef" 
+          :allReports="filteredReports" 
+          :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
 
           <!-- Filter knapp -->
           <details ref="filterDropdown" class="allreports-filter-dropdown"> <!--details: för att få en dropp down meny-->
@@ -84,6 +87,7 @@
             :session="session"
             :emptyMessage="uiLabels.noReportsSubmitted"
             @close="showRecentReports = false"
+            @click-location="handleLocalReportClick"
             />
         </div>
     </section>
@@ -165,6 +169,15 @@
   }
 }, { immediate: true }) // immediate: true gör att den kollar direkt när sidan laddas
 
+//visa rapport på kartan
+function handleLocalReportClick(reportId) {
+  selectedReportId.value = reportId
+  const isMobile = window.innerWidth <= 768
+  if (isMobile) {
+    showRecentReports.value = false
+  }
+}
+
 //Filtrering
 const {
   selectedType,
@@ -191,6 +204,7 @@ function closeFilterMenu() {
   onMounted(async () => {
     await getReports()
     await getAllReportMarkers() 
+
 })
 </script>
 

@@ -111,7 +111,7 @@ invalidateSize: () => { if (map) map.invalidateSize() },
   panBy: (x, y) => { if (map) map.panBy([x, y]) }
 })
 
-//när man klickat på en location från recent reports
+//när man klickat på en location 
 watch(() => props.showReportId, (newId) => {
   if (newId && markersMap[newId]) {
     const markerToFocus = markersMap[newId]
@@ -126,6 +126,21 @@ watch(() => props.showReportId, (newId) => {
     markerToFocus.openPopup()
   }
 })
+
+//när man kommer från startsidan
+watch(() => props.allReports, (newReports) => {
+  if (newReports && newReports.length > 0 && props.showReportId) {
+    setTimeout(() => {
+      const markerToFocus = markersMap[props.showReportId];
+      
+      if (markerToFocus && map) {
+        const latLng = markerToFocus.getLatLng();
+        map.setView(latLng, 16);
+        markerToFocus.openPopup();
+      }
+    }, 200);
+  }
+}, { immediate: true });
 
 
 

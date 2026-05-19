@@ -23,6 +23,7 @@
         :key="report.id" 
         :report="report"
         :session="session"
+        @click-location="$emit('click-location', $event)"
       />
       </div>
   </aside>
@@ -33,7 +34,7 @@ import RecentReport from './RecentReport.vue'
 
 const props = defineProps(['title', 'reports', 'session', 'emptyMessage'])
 
-defineEmits(['close'])
+defineEmits(['close', 'click-location'])
 
 </script>
 

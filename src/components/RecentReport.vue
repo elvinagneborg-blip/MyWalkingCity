@@ -26,7 +26,7 @@
                     alt="Rapportbild"
                 />
         <div class="report-footer">
-          <p class="report-location">📍 {{ report.address || 'Okänd adress' }}</p>
+          <p class="report-location clickable-location" @click="handleLocationClick">📍 {{ report.address || 'Okänd adress' }}</p>
           <button class="boost-action-btn" @click="openBoostModal(report.report_id, props.session, report.type)" :disabled="isBoosting">
               {{ isBoosting ? '...' : '🚀 Boosta' }}
           </button>
@@ -44,16 +44,22 @@ const { openBoostModal, isBoosting } = useBoost()
 const props = defineProps(['report', 'session'])
 const router = useRouter()
 
-const goToMapLocation = () => {
-  router.push({
-    path: '/allreports',
-    query: { selectedReport: props.report.report_id } // Lägger till ?selectedReport=[id] i URL:en
-  })
+const handleLocationClick = () => {
+  if (router.currentRoute.value.path === '/' || router.currentRoute.value.name === 'StartMWC') {
+    router.push({
+      path: '/allreports',
+      query: { selectedReport: props.report.report_id } 
+    })
+  } else {
+   
+    emit('click-location', props.report.report_id) 
+  }
 }
 
 const isExpanded = ref(false) //ifall beskrivningen är öppen eller ej
 const hasOverflowingText = ref(false) 
 const descriptionRef = ref(null)      
+const emit = defineEmits(['click-location'])
 
 
 const checkOverflow = () => {
