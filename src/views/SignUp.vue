@@ -4,26 +4,27 @@
   </div>
 
   <main v-else>
-  <section class="login-container">
-    <div class="login-form">
+  <section class="form-section">
+    <form class="form-container" @submit.prevent="handleSignUp"> 
 
       <div class="signUpText">
         <h1 class="signUpTitle"> {{ uiLabels.signUpTitle }} </h1>
         <p class="signUpDescription"> {{ uiLabels.signUpDescription }}</p>
       </div>
 
-      <!-- Fill in space for username, email, password -->
-      <label class="signup-label"> {{ uiLabels.fillInUsername }} <span v-if="usernameError" class="error-star">*</span></label> 
-        <input type="text" v-model="username" :placeholder="uiLabels.usernameSignUp" class="login-input" /> 
       
-      <label class="signup-label"> {{ uiLabels.fillInEmail }} <span v-if="emailError" class="error-star">*</span> </label> 
-        <input type="email" v-model="email" :placeholder="uiLabels.emailPlaceholder" class="login-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
+      <label class="form-label"> {{ uiLabels.fillInEmail }} <span v-if="emailError" class="error-star">*</span> </label> 
+        <input type="email" v-model="email" :placeholder="uiLabels.emailPlaceholder" class="form-input" /> <!--Vmodel för att html och script ska kunna snacka med varann-->
       
-      <label class="signup-label"> {{ uiLabels.fillInPassword }} <span v-if="passwordError" class="error-star">*</span> </label> 
-        <input type="password" v-model="password" :placeholder= "uiLabels.passwordSignUp" class="login-input" />
+      <label class="form-label"> {{ uiLabels.fillInPassword }} <span v-if="passwordError" class="error-star">*</span> </label> 
+        <input type="password" v-model="password" :placeholder= "uiLabels.passwordSignUp" class="form-input" />
+      
+      <label class="form-label"> {{ uiLabels.fillInUsername }} <span v-if="usernameError" class="error-star">*</span></label> 
+        <input type="text" v-model="username" :placeholder="uiLabels.usernameSignUp" class="form-input" /> 
+      
       
       <!-- Choice of avatar -->
-      <label class="signup-label"> {{ uiLabels.chooseAvatar }} <span v-if="avatarError" class="error-star">*</span> </label> 
+      <label class="form-label"> {{ uiLabels.chooseAvatar }} <span v-if="avatarError" class="error-star">*</span> </label> 
         <div class="avatar-options">
           <button
             v-for="avatar in avatars"
@@ -41,14 +42,14 @@
         </div>
 
       <!-- Create an account button-->
-      <button class="button-report" @click="handleSignUp"> {{ uiLabels.signUp }} </button>
+      <button type="submit" class="submit-button"> {{ uiLabels.signUp }} </button>
 
       <!-- Link to log in-->
       <div class="login-switch-container">
         <p class="switch-login-text"> {{ uiLabels.alreadyHaveAccount }} </p>
         <button class="login-button" @click="goToLogin"> {{ uiLabels.logIn }} </button>
       </div>
-    </div>
+    </form>
   </section>
 
   <!--Popup for error messages / success messages -->
@@ -252,24 +253,16 @@ return
 
 
 <style scoped>
-
-/* == Page layout == */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  min-height: 80vh; 
-  padding: 30px;
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-.login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
+.form-container {
+  max-width: 550px;
+  margin: 0 auto;
   width: 100%;
-  max-width: 520px;
+  margin-top: 40px;
+
 }
 
 /* == Sign up - Intro text*/
@@ -301,15 +294,8 @@ return
   margin: 0;
 }
 
-/* == Form field == */
-.login-input {
-  width: 85%;
-  padding: 15px;
+.form-input {
   margin-bottom: 20px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #eef4f4; 
-  box-sizing: border-box; 
 }
 
 .error-star {
@@ -349,15 +335,7 @@ return
 }  
 
 /* == Primary buttons == */
-.button-report {
-  background-color: #1EBC9C;
-  color: white;
-  border: none;
-  padding: 17px 80px; 
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1rem;
-}
+
 
 /* == Switch to login section ==*/
 .login-switch-container {
@@ -385,6 +363,11 @@ return
   min-width: 180px;
 }
 
+.login-button:hover {
+  background-color: #17a88b;
+  transform: translateY(-1px);
+
+}
 /* == Popup == */
 
 .popup-overlay { /*mörka lagret som täcker hela sidan */
@@ -455,9 +438,6 @@ return
 
   }
 
-  .button-report {
-    width: 100%;
-  }
 }
 
 /* Mobilskärm*/
@@ -473,11 +453,6 @@ return
 
   .login-input {
     padding: 15px;
-  }
-
-  .button-report {
-    width: 100%;
-    padding: 15px 0;
   }
 
   .login-button {

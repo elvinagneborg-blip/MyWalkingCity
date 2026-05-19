@@ -52,11 +52,11 @@
               @keydown.enter.prevent="searchAddress" 
             />
             <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
-            <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
+            <button type="button" @click="getLocation(true)" class="btn-secondary location-btn">{{ uiLabels.getMyLocation }}</button>
           </div>
 
-          <div v-if="selectedAddress" class="selected-address-display" style="margin-top: 12px;">
-            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">
+          <div v-if="selectedAddress" class="form-label">
+            <label class="form-label">
               {{ uiLabels.selectedAddress || 'Vald adress' }}
             </label>
             <input 
@@ -498,17 +498,10 @@ watch(showNearbyReports, async (isOpen) => {
   color: #2d3748;
 }
 
-input, 
-textarea, 
-select, 
-button, 
-label {
-  font-family: var(--inputFont) !important;
-}
 
 /*  Sidhuvud  */
 .report-header {
-  padding: 60px 20px 40px;
+  padding: 20px 20px 40px;
   text-align: center;
 }
 
@@ -678,9 +671,6 @@ label {
   transform: translateY(-1px);
 }
 
-.submit-button:active {
-  transform: translateY(0);
-}
 
 .custom-file-upload-button {
   display: flex;
@@ -746,9 +736,7 @@ label {
 
 
 @media (max-width: 768px) {
-  .report-title {
-    font-size: 1.8rem;
-  }
+ 
   
   .form-container {
     padding: 20px;
@@ -757,11 +745,36 @@ label {
 
   .map-container {
     height: 350px;
+    padding: 0; /* Tar bort extra padding på kartan för att maximera utrymmet */
   }
+
+  .map-panel-wrapper {
+    height: auto; /* Låt höjden anpassa sig efter innehållet på mindre skärmar */
+    flex-direction: column; /* Stapla kartan och panelen vertikalt */
+  } 
 
   .recent-report {
     display: none; 
   }
+
+  .report-header {
+    padding: 0px;
+  }
+
+  .report-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+
+  .search-group {
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  gap: 10px;
+}
+
+  .location-btn {
+  grid-column: 1 / -1; 
+}
 
 }
 

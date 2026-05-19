@@ -59,7 +59,7 @@
               @keydown.enter.prevent="searchAddress" 
             />
             <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
-            <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
+            <button type="button" @click="getLocation(true)" class="btn-secondary location-btn">{{ uiLabels.getMyLocation }}</button>
           </div>
 
           <div v-if="selectedAddress" class="selected-address-display" style="margin-top: 12px;">
@@ -500,6 +500,7 @@ onMounted(() => {
 </script>
 
 
+
 <style scoped>
 *, *::before, *::after {
   box-sizing: border-box;
@@ -512,17 +513,10 @@ onMounted(() => {
   color: #2d3748;
 }
 
-input, 
-textarea, 
-select, 
-button, 
-label {
-  font-family: var(--inputFont) !important;
-}
 
 /* Sidhuvud */
 .report-header {
-  padding: 60px 20px 40px;
+  padding: 20px 20px 40px;
   text-align: center;
 }
 
@@ -710,9 +704,6 @@ label {
   transform: translateY(-1px);
 }
 
-.submit-button:active {
-  transform: translateY(0);
-}
 
 .custom-file-upload-button {
   display: flex;
@@ -759,23 +750,65 @@ label {
   border: 1px dashed #1ebc9c;
 }
 
+
+
+
+/* ===== Mobilanpassning ===== */
 @media (max-width: 768px) {
-  .report-title {
-    font-size: 1.8rem;
-  }
-  
-  .form-container {
+ 
+    .form-container {
     padding: 20px;
     border-radius: 0; 
   }
-
+  
   .map-container {
     height: 350px;
+    padding: 0; /* Tar bort extra padding på kartan för att maximera utrymmet */
   }
 
+  .map-panel-wrapper {
+    height: auto; /* Låt höjden anpassa sig efter innehållet på mindre skärmar */
+    flex-direction: column; /* Stapla kartan och panelen vertikalt */
+  } 
+
   .recent-report {
-    display: none; 
+    display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
   }
+
+  .report-header {
+    padding: 0px;
+  }
+
+  .report-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+
+  .search-group {
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  gap: 10px;
+}
+
+  .location-btn {
+  grid-column: 1 / -1; 
+}
+
+  }
+  /* Knappen som ligger ovanpå kartan */
+.allreports-recent-report-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  padding: 10px 16px;
+  background-color: #1ebc9c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 </style>
