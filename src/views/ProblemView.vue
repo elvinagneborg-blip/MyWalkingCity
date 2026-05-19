@@ -25,6 +25,7 @@
           @click="showNearbyReports = true">
           {{uiLabels.nearbyReports}}
         </button>
+        </div>
       
 
       <ReportPanel 
@@ -35,7 +36,7 @@
         :emptyMessage="uiLabels.noReportsSubmitted"
         @close="showNearbyReports = false"
       />
-    </div>
+
     </div>
 
 
@@ -545,16 +546,17 @@ watch(showNearbyReports, async (isOpen) => {
   height: 500px; 
   gap: 15px;     
   margin-bottom: 30px;
+  position: relative;
 }
 /*  Karta  */
 .map-container {
-  position: relative;
-  flex: 1;
-  height: 100%;
+  flex: 1;             
+  height: 100%; 
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid #cbd5e0;
   z-index: 1;
+  position: relative;
 }
 
 /*  Recent reports  */
@@ -734,6 +736,12 @@ watch(showNearbyReports, async (isOpen) => {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+.map-panel-wrapper :deep(.allreports-recent-report-panel) {
+  width: 340px;
+  height: 100%;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 
 @media (max-width: 768px) {
  
@@ -745,13 +753,26 @@ watch(showNearbyReports, async (isOpen) => {
 
   .map-container {
     height: 350px;
-    padding: 0; /* Tar bort extra padding på kartan för att maximera utrymmet */
+    padding: 0; 
   }
 
   .map-panel-wrapper {
-    height: auto; /* Låt höjden anpassa sig efter innehållet på mindre skärmar */
-    flex-direction: column; /* Stapla kartan och panelen vertikalt */
+    height: auto; 
+    flex-direction: column; 
+    position: relative;
   } 
+
+  .map-panel-wrapper :deep(.allreports-recent-report-panel) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 70%;              
+    height: 100%;           
+    z-index: 1000;
+    background-color: rgba(238, 238, 238, 0.95);
+    border-radius: 10px;     
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
+  }
 
   .recent-report {
     display: none; 

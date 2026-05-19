@@ -92,9 +92,42 @@ defineEmits(['close'])
   flex: 1; 
   overflow-y: auto; 
   overflow-x: hidden;
-  padding-right: 50px;
+  padding-right: 35px;
 }
 
+.report-list :deep(.report-card) {
+  height: 160px;      
+  padding: 12px 15px;  
+}
+
+.report-list :deep(.report-card.card-expanded) {
+  height: auto;
+  min-height: 160px;  
+}
+
+  .report-list :deep(.report-title) {
+  font-size: 15px;
+}
+
+.report-list :deep(.report-description) {
+  font-size: 11px;
+  line-height: 1.2;
+  padding-top: 2px;
+  -webkit-line-clamp: 3 
+}
+
+.report-list :deep(.report-info) {
+  padding: 5px 10px 5px 0px;
+}
+
+.report-list :deep(.report-category) {
+  font-size: 0.7rem;
+  padding: 3px 6px;
+}
+
+.report-list :deep(.report-image) {
+  max-height: 65px;    
+}
 
 @media (max-width: 768px) {
   .allreports-recent-report-panel { 
@@ -104,7 +137,6 @@ defineEmits(['close'])
     width: 70%;              
     min-width: 0;
     height: 100%;       
-    z-index: 2000;
     
     background-color: rgba(238, 238, 238, 0.95);              
     box-shadow: -4px 0 15px rgba(0, 0, 0, 0.25);
@@ -123,5 +155,14 @@ defineEmits(['close'])
     height: 28px;
     font-size: 12px;
   }
+
+.report-list :deep(.report-info) {
+  padding: 20px 10px 5px 5px;
+}
+
+.report-list :deep(.report-category) {
+  font-size: 0.5rem;
+}
+
 }
 </style>
