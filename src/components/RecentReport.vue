@@ -14,7 +14,7 @@
           <p ref="descriptionRef" :class="['report-description', isExpanded ? 'expanded' : '']">
             {{ report.description }}</p>
 
-          <button v-if="hasOverflowingText" class="toggle-description-btn" @click="isExpanded = !isExpanded">
+          <button v-if="hasOverflowingText" type="button" class="toggle-description-btn" @click="isExpanded = !isExpanded">
             {{ isExpanded ? 'Visa mindre ▲' : 'Visa mer ▼' }}
           </button>
         </div>
@@ -59,7 +59,7 @@ const descriptionRef = ref(null)
 const checkOverflow = () => {
   if (descriptionRef.value) {
     const el = descriptionRef.value
-    // Om textens verkliga höjd är större än den synliga höjden klipper den av
+    // Om textens verkliga höjd är större än den synliga höjden klipper den av!
     hasOverflowingText.value = el.scrollHeight > el.clientHeight
   }
 }
@@ -167,9 +167,11 @@ onMounted(async () => {
 
 .report-image {
  grid-area: image;
+ width: 100%;
  max-width: 150px; 
+ height: auto;
  max-height: 110px;
- object-fit: contain;
+ object-fit: cover;
  align-self: center;
  justify-self: end;
 }
