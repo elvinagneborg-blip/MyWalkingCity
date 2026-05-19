@@ -43,7 +43,7 @@ export function useBoost() {
 
     // Validering av mejladress (från din originalkod)
     if (!boostEmail.value.includes('@') || !boostEmail.value.includes('.')) {
-      alert("Vänligen ange en giltig e-postadress.") //
+      alert("Please enter a valid email address.") //
       return
     }
 
@@ -62,7 +62,7 @@ export function useBoost() {
       if (error) {
         // Hantera dubbletter (från din originalkod)
         if (error.code === '23505') {
-          alert("Du har redan boostat det här problemet!") //
+          alert("You have already boosted this report!") //
         } else {
           throw error //
         }
@@ -89,7 +89,7 @@ export function useBoost() {
       
     } catch (err) {
       console.error("Boost misslyckades:", err.message) //
-      alert("Något gick fel. Försök igen senare.") //
+      alert("Something went wrong. Please try again later.") //
     } finally {
       isBoosting.value = false //
     }
