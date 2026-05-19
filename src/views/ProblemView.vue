@@ -476,13 +476,7 @@ async function fetchUserProfile() {
   color: #2d3748;
 }
 
-input, 
-textarea, 
-select, 
-button, 
-label {
-  font-family: var(--inputFont) !important;
-}
+
 
 /* ===== Sidhuvud - Snyggare titel ===== */
 .report-header {
@@ -505,24 +499,7 @@ label {
   margin: 0 auto;
 }
 
-/* ===== Formulärsektion - Nu mycket bredare ===== */
-.form-section {
-  display: flex;
-  justify-content: center;
-  padding: 0 20px 60px;
-}
 
-.form-container {
-  width: 100%;
-  /* Breddad max-width för att använda mer av skärmen */
-  max-width: 1100px; 
-  background-color: #cbe5e1;
-  border-radius: 24px;
-  padding: 40px;
-  box-sizing: border-box;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Mjuk skugga istället för bara färg */
-  border: 1px solid #e2e8f0;
-}
 
 
 .map-panel-wrapper {
@@ -570,48 +547,6 @@ label {
   padding-bottom: 5px;
 }
 
-/* ===== Form Controls - Renare och modernare ===== */
-.form-field {
-  margin-bottom: 28px;
-}
-
-.form-label {
-  font-weight: 600; /* Halvfet för labels */
-  font-size: 0.9rem;
-  text-transform: uppercase; /* Ger en ren, strukturerad känsla */
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
-  color: #718096; /* Lite mjukare färg på labels */
-  display: block;
-}
-
-.form-control,
-.form-input,
-.form-input-locked {
-  width: 100%;
-  padding: 14px 18px;
-  border: 2px solid #edf2f7;
-  border-radius: 12px;
-  background-color: #f8fafc;
-  font-size: 1rem;
-  color: #2d3748;
-  transition: all 0.2s ease;
-}
-
-.form-input-locked {
-  background-color: #e1e6ec;
-  color: #718096;
-  cursor: not-allowed;
-  border-color: #cbd5e0;
-}
-
-.form-control:focus,
-.form-input:focus {
-  outline: none;
-  border-color: #1ebc9c;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(30, 188, 156, 0.1);
-}
 
 .helper-text {
   font-size: 0.8rem;
@@ -640,27 +575,6 @@ label {
   background: #f7fafc;
 }
 
-.submit-button {
-  width: 100%;
-  padding: 18px;
-  border: none;
-  border-radius: 12px;
-  background-color: #1ebc9c; /* Använd er signaturfärg istället för mörkgrå */
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.1s, background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #17a68a;
-  transform: translateY(-1px);
-}
-
-.submit-button:active {
-  transform: translateY(0);
-}
 
 .custom-file-upload-button {
   display: flex;
