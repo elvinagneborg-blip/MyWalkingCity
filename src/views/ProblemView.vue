@@ -20,7 +20,9 @@
         <MapComponent 
         ref="reportMap" 
         :allReports="problemMarkers"
+        :showReportId="activeReportId"
         @location-changed="updateCoords"/>
+
         <!-- Nearby reports knapp -->
         <button 
           v-if="!showNearbyReports"
@@ -38,6 +40,7 @@
         :session="session"
         :emptyMessage="uiLabels.noReportsSubmitted"
         @close="showNearbyReports = false"
+        @click-location="handleLocalReportClick"
       />
 
     </div>
@@ -474,6 +477,12 @@ async function fetchUserProfile() {
   }
 }
 
+//rapporten visas på kartan om man klickar på location
+const activeReportId = ref(null)
+
+function handleLocalReportClick(reportId) {
+  activeReportId.value = reportId
+}
 
 // Bevaka när panelen öppnas/stängs och knuffa kartan i pixlar på mobilen
 watch(showNearbyReports, async (isOpen) => {

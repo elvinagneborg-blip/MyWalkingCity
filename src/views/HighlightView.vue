@@ -24,6 +24,7 @@
           <MapComponent 
           ref="reportMap" 
           :allReports="highlightMarkers"
+          :showReportId="activeReportId"
           @location-changed="updateCoords"
     />
 
@@ -44,6 +45,7 @@
         :session="session"
         :emptyMessage="uiLabels.noReportsSubmitted"
         @close="showNearbyReports = false"
+        @click-location="handleLocalReportClick"
     />
  
   </div>
@@ -485,6 +487,13 @@ async function fetchNearbyReports(lat, lng) {
   } else {
     console.error("Kunde inte hämta kartmarkörer:", error?.message)
   }
+}
+
+//rapporten visas på kartan om man klickar på location
+const activeReportId = ref(null)
+
+function handleLocalReportClick(reportId) {
+  activeReportId.value = reportId 
 }
 
 // Bevaka när panelen öppnas/stängs och knuffa kartan i pixlar på mobilen
