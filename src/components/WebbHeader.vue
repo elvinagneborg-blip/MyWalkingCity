@@ -239,6 +239,7 @@ const currentLevel = computed(() => {
     background-color: #27c4b5;
     border-bottom: 2px #0a8276;
     position: relative;
+    min-width: 0; /* viktigt */
 }
 
 .web-header-layout {
@@ -280,6 +281,7 @@ const currentLevel = computed(() => {
 /* === Right side === */
 .web-header-right {
     margin-left: auto;
+    min-width: 0;
 }
 
 /* == Utloggad layout == */
@@ -371,6 +373,10 @@ const currentLevel = computed(() => {
     z-index: 1500;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 /* == Telefonskärm ==*/
 @media (max-width: 768px) {
 
@@ -383,8 +389,9 @@ const currentLevel = computed(() => {
 /* Vänster sida får större plats */
 .web-header-left {
     flex: 1;
-    min-width: 170px;
+    min-width: 0px;
     gap: 2px;
+    
 }
 
 .web-header-title {
@@ -409,7 +416,7 @@ const currentLevel = computed(() => {
     display: flex;
     flex-direction: row;
     gap: 8px;
-    transform: translateY(22px);
+    transform: translateY(10px);
     font-size: 0.3rem;
 }
 

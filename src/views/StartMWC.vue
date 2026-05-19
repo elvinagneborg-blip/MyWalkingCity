@@ -241,7 +241,6 @@ html {
 
 .section-title {
   color: white;
-  width: 100%;
   text-align: left;
   margin-left: 50px;
 
@@ -249,7 +248,6 @@ html {
 
 .body-top h6 {
   color: white;
-  width: 100%;
   text-align: left;
   margin-left: 50px;
   margin-top: 10px;
