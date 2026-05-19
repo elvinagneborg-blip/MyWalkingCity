@@ -53,7 +53,7 @@
                   :key="category"
                   class="allreports-filter-option"
                   @click="selectCategory(category)">
-                  {{ category }}
+                  {{ formatCategory(category) }}
                 </button>
               </div>
             </div>
@@ -169,7 +169,9 @@ const {
   availableCategories
 } = useReportFilters(allReportMarkers, allUserReports)
 
-
+function formatCategory(category) {
+  return category.replaceAll('_', ' ')
+}
 
 //Lifecycle hooks
   onMounted(async () => {
@@ -323,5 +325,50 @@ const {
     position: relative;
 }
 
+@media (max-width: 600px) {
+
+/* Flyttar ner filterknappen under zoomknapparna */
+.allreports-filter-dropdown {
+  left: 16px;
+  top: 105px;
+  z-index: 1000;
+  width: 100px;          /* styr hela filterområdet */
+  max-width: 60vw;       /* gör att den inte tar över mobilen */
+  
+}
+
+/* Gör filterknappen mindre */
+.allreports-filter-button {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Gör filtermenyn mindre och scroll-bar */
+.allreports-filter-menu {
+  min-width: 140px;
+  max-width: calc(100vw - 32px);
+  max-height: 45vh;
+  overflow-y: auto;
+  padding: 8px;
+  gap: 6px;
+}
+
+/* Gör alternativen i menyn lite mindre */
+.allreports-filter-option {
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+/* Gör senaste rapporter-knappen mindre */
+.allreports-recent-report-button {
+  right: 16px;
+  top: 20px;
+  padding: 10px 18px;
+  font-size: 14px;
+  max-width: 190px;
+  white-space: nowrap;
+}
+}
 
 </style>
