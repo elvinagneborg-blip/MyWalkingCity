@@ -216,7 +216,7 @@
 
 /* ===== Recent report panel =====*/
 .allreports-recent-report-panel {
-    width: 400px;             /* Bestämmer hur bred din sidebar ska vara */
+    width: 400px;             /* Bestämmer hur bred sidebaren ska vara */
     min-width: 320px;         /* Sätter en minsta bredd så den inte blir för smal */
     height: 100%;             /* Gör att den tar upp hela höjden av kart-området */
     background-color: #eeeeee;
@@ -225,7 +225,7 @@
     flex-direction: column;
     gap: 20px;
     z-index: 1100;
-    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Lägger till en subtil skugga på vänstersidan */
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Lägger till en liten skugga på vänstersidan */
 }
 
 .allreports-recent-report-header {
@@ -249,7 +249,7 @@
     right: 0;           /* Lägg den längst till höger i headern */
 
     
-    background: #20c7b5; /* Din gröna färg som bakgrund gör den lättare att se */
+    background: #20c7b5; 
     color: white;
     border: none;
     border-radius: 50%;  /* Gör den rund */
@@ -319,7 +319,7 @@
 .boost-action-btn {
     margin-top: 10px;
     padding: 6px 12px;
-    background-color: #ffd700; /* Guld/Gul för boost */
+    background-color: #ffd700; 
     border: none;
     border-radius: 8px;
     font-weight: bold;
