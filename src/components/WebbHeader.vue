@@ -31,7 +31,7 @@
                     <!--Språkknapp-->
                     <div class="header-tools">
                         <button class="header-button" @click="$emit('toggle-lang')">
-                            {{ currentLang === 'sv' ? 'English' : 'Svenska' }}
+                            {{ currentLang === 'sv' ? '🇸🇪 SVE' : '🇬🇧 EN' }}
                         </button>
 
                     <!-- Meny knapp -->
@@ -68,7 +68,7 @@
                 <!-- Meny knapp och språkknapp-->
                 <div class="header-tools">
                     <button class="header-button" @click="$emit('toggle-lang')">
-                        {{ currentLang === 'sv' ? 'English' : 'Svenska' }}
+                        {{ currentLang === 'sv' ? '🇸🇪 SVE' : '🇬🇧 EN' }}
                     </button>
 
                     <button
@@ -76,8 +76,7 @@
                     :class="{ 'menu-button-active': menuOpen }"
                     @click="toggleMenu"
                     aria-label="Open menu"
-                    >
-                        ☰
+                    > ☰
                     </button>
                 </div>
             </div>
@@ -233,7 +232,7 @@ const currentLevel = computed(() => {
 .web-header {
     width: 100%;
     background-color: #27c4b5;
-    border-bottom: 2px #0a8276;
+    border-bottom: 2px solid #0a8276;
     position: relative;
     min-width: 0; /* viktigt */
 }
@@ -253,24 +252,20 @@ const currentLevel = computed(() => {
     align-items: flex-start;
     gap: 2px;
     text-decoration: none;
+    min-width: 0;
 }
 .web-header-title {
     margin: 0;
-    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
     font-weight: 700;
     line-height: 1;
     font-family: 'Poppins', sans-serif;
     color: #0b3733;
 }
 
-.web-header-logo-link {
-    display: inline-block;
-    width: fit-content;
-}
-
 .web-header-logo {
     display: block;
-    width: clamp(100px, 12vw, 140px);
+    width: clamp(100px, 12vw, 120px);
     height: auto;
 }
 
@@ -278,13 +273,14 @@ const currentLevel = computed(() => {
 .web-header-right {
     margin-left: auto;
     min-width: 0;
+    flex-shrink:0;
 }
 
 /* == Utloggad layout == */
 .header-logged-out {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 25 px;
 }
 
 .header-auth-buttons {
@@ -301,6 +297,11 @@ const currentLevel = computed(() => {
     gap: 22px;
 }
 
+.header-logged-in > 
+.header-button {
+    transform: translateY(22px);
+  }
+
 /* == Header tools: spårk / meny knapp == */
 .header-tools {
   display: flex;
@@ -310,21 +311,17 @@ const currentLevel = computed(() => {
   min-width: 90px;
 }
 
-.header-logged-in > 
-.header-button {
-    transform: translateY(22px);
-  }
-
 /* == Header buttons == */
 .header-button {
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(4, 203, 183, 0.75);
     border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(127, 253, 241, 0.75);
     color: #111;
     padding: 6px 14px;
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .header-button:hover {
@@ -345,9 +342,9 @@ const currentLevel = computed(() => {
 }
 
 .menu-button-active {
-  background-color: rgba(255, 255, 255, 0.55);
+  background-color: rgb(179, 229, 235);
   border-radius: 10px;
-  padding: 4px 8px;
+  padding: 4px 6px 6px;
 }
 
 /* == Avatar == */
@@ -360,6 +357,21 @@ const currentLevel = computed(() => {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(15px);
 }
+.header-avatar-container {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.header-hat {
+  position: absolute;
+  font-size: 1.3rem;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+}
 
 /* ==  Menu backdrop == */
 .menu-backdrop {
@@ -370,7 +382,8 @@ const currentLevel = computed(() => {
     z-index: 1500;
 }
 
-html, body {
+html, 
+body {
   overflow-x: hidden;
 }
 
@@ -378,38 +391,33 @@ html, body {
 @media (max-width: 768px) {
 
 .web-header-layout {
-    min-height: 88px;
-    padding: 6px 10px;
-    align-items: center;
-}
+    min-height: 96px;
+    padding: 8px 8px;
+} 
 
-/* Vänster sida får större plats */
 .web-header-left {
     flex: 1;
-    min-width: 0px;
-    gap: 2px;
-    
+    gap: 2px;    
 }
 
 .web-header-title {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     line-height: 1;
     white-space: nowrap;
 }
 
 .web-header-logo {
-    width: 80px;
+    width: 88px;
 }
 
-/* Högerdel */
 .header-logged-out,
 .header-logged-in {
-    gap: 10px;
-    align-items: center;
+    gap: 8px;
 }
 
-/* Knappar */
 .header-auth-buttons {
+    gap: 5px;
+    transform: translateY(22px);
     display: flex;
     flex-direction: row;
     gap: 8px;
@@ -420,55 +428,34 @@ html, body {
 }
 
 .header-button {
-    padding: 6px 14px;
-    min-width: 92px;
-    font-size: 0.5rem;
+    padding: 5px 10px;
+    min-width: auto;
+    font-size: 0.80rem;
 }
 
-.header-logged-in > 
-.header-button {
-    transform: translateY(22px);
-    font-size: 0.5rem;
-  }
-
-/* Språk + meny */
 .header-tools {
-    gap: 8px;
+    min-width: auto;
+    gap: 13px;
 }
 
 .web-header-menu-button {
+    font-size:2rem;
+    right: auto;
     font-size: 1.8rem;
     right: 25px;
     left: 25px;
 }
 
 .web-header-avatar {
-    width: 54px;
-    height: 54px;
-    transform: translateY(15px);
+    width: 52px;
+    height: 52px;
+    transform: translateY(18px);
 }
 .header-hat {
     font-size: 1rem !important;
     top: 11px !important; 
 }
 
-}
-
-/* ===== Profilhatt i Headern ===== */
-.header-avatar-container {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.header-hat {
-  position: absolute;
-  font-size: 1.3rem; 
-  left: 50%;
-  transform: translateX(-50%);
-  top: 10px; 
-  z-index: 10;
-  pointer-events: none; 
 }
 
 </style>
