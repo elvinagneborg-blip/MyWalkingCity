@@ -423,8 +423,6 @@ body {
     gap: 8px;
     transform: translateY(10px);
     font-size: 0.3rem;
-    margin-right: -40px;
-    margin-top: 20px;
 }
 
 .header-button {
@@ -442,8 +440,8 @@ body {
     font-size:2rem;
     right: auto;
     font-size: 1.8rem;
-    right: 25px;
-    left: 25px;
+    right: auto;
+    left: auto;
 }
 
 .web-header-avatar {
