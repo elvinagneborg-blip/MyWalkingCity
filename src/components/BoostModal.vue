@@ -17,6 +17,7 @@
             :placeholder="uiLabels.emailPlaceholder"
             class="modal-input"
             required
+            :disabled="!!session"
           />
         </div>
 
@@ -33,7 +34,7 @@ import { ref, watch } from 'vue'
 import io from 'socket.io-client' 
 import { useBoost } from '@/composables/useBoost'
 
-const props = defineProps(['backendURL', 'currentLang'])
+const props = defineProps(['backendURL', 'currentLang', 'session'])
 const socket = io(props.backendURL)
 const uiLabels = ref({}) 
 
@@ -122,6 +123,8 @@ const {
 
 .form-field {
   margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .modal-input {
@@ -131,12 +134,21 @@ const {
   border-radius: 12px;
   background-color: #f8fafc;
   font-size: 1rem;
+  box-sizing: border-box;
+transition: all 0.2s ease;
 }
 
 .modal-input:focus {
   outline: none;
   border-color: #1ebc9c;
   background-color: white;
+}
+
+.modal-input:disabled {
+  background-color: #f5f5f5;
+  color: #777;
+  cursor: not-allowed;
+  border-color: #ddd;
 }
 
 .modal-submit-btn {
