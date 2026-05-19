@@ -453,23 +453,23 @@ async function fetchUserProfile() {
   const showNearbyReports = ref(false)
 
 
-  async function fetchNearbyReports(lat, lng) {
-    if (!lat || !lng) return   
-    const { data, error } = await supabase
-      .from('reports')
-      .select('*')
-      .limit(50) //hämtar 50 stycken rapporter
-    if (!error && data) {
-      const sortedByDistance = data.sort((a, b) => {
-        const distA = Math.pow(a.latitude - lat, 2) + Math.pow(a.longitude - lng, 2);
-        const distB = Math.pow(b.latitude - lat, 2) + Math.pow(b.longitude - lng, 2);
-        return distA - distB
+async function fetchNearbyReports(lat, lng) {
+  if (!lat || !lng) return   
+  
+  // anropar vår SQL-funktion skickar med parametrarna
+  const { data, error } = await supabase
+    .rpc('get_nearby_reports', {
+      in_lat: lat,
+      in_lng: lng,
+      in_type: 'highlight' //BARA hämta highlights
     })
-    nearbyReports.value = sortedByDistance.slice(0, 5);
-    }else {
-      console.error("Kunde inte hämta live-feed:", error.message)
-    }
+
+  if (!error && data) {
+    nearbyReports.value = data
+  } else {
+    console.error("Kunde inte hämta nära highlights från RPC:", error?.message)
   }
+}
 
   //ta alla highligts och lägga ut markörer på kartan
   const highlightMarkers = ref([])

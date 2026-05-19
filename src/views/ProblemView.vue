@@ -442,19 +442,19 @@ async function fetchUserProfile() {
 
   async function fetchNearbyReports(lat, lng) {
     if (!lat || !lng) return   
+  
+  // Vi anropar samma SQL-funktion men skickar med 'problem' som typ
     const { data, error } = await supabase
-      .from('reports')
-      .select('*')
-      .limit(50) //hämtar 50 stycken rapporter
+      .rpc('get_nearby_reports', {
+        in_lat: lat,
+        in_lng: lng,
+        in_type: 'problem' // BARA hämta problem
+      })
+
     if (!error && data) {
-      const sortedByDistance = data.sort((a, b) => {
-        const distA = Math.pow(a.latitude - lat, 2) + Math.pow(a.longitude - lng, 2);
-        const distB = Math.pow(b.latitude - lat, 2) + Math.pow(b.longitude - lng, 2);
-        return distA - distB
-    })
-    nearbyReports.value = sortedByDistance.slice(0, 5);
-    }else {
-      console.error("Kunde inte hämta live-feed:", error.message)
+      nearbyReports.value = data
+    } else {
+     console.error("Kunde inte hämta nära problem från RPC:", error?.message)
     }
   }
 
