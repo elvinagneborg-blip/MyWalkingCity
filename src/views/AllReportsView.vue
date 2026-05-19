@@ -13,7 +13,51 @@
     <section class="allreports-map-section">
         <div class="allreports-content-wrapper">
         <div class="allreports-map-container" :class="{ 'shift-left': showRecentReports }">
-            <MapComponent ref="mapRef" :allReports="allReportMarkers" :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
+          <MapComponent ref="mapRef" :allReports="filteredReports" :showReportId="selectedReportId"/> <!--Skickar alla reapporter till kartan som ritar upp pluppar-->
+
+          <!-- Filter knapp -->
+          <details class="allreports-filter-dropdown"> <!--details: för att få en dropp down meny-->
+            <summary class="allreports-filter-button">
+              {{uiLabels.filter}}
+            </summary>
+
+            <!-- Huvudfilter: alla/problem/highlights -->
+            <div class="allreports-filter-menu">
+              <button
+                class="allreports-filter-option"
+                @click="selectType('all')">
+                {{ uiLabels.showAll }}
+              </button>
+
+              <button
+                class="allreports-filter-option"
+                @click="selectType('problem')">
+                {{uiLabels.problems}}
+              </button>
+
+              <button
+                class="allreports-filter-option"
+                @click="selectType('highlight')">
+                {{uiLabels.highlights}}
+              </button>
+
+              <!-- Underkategorier visas bara när problem eller highlight är valt -->
+              <div v-if="selectedType !== 'all'" class="allreports-category-options">
+
+                <p class="allreports-filter-subtitle">
+                  {{uiLabels.category}}
+                </p>
+
+                <button
+                  v-for="category in availableCategories"
+                  :key="category"
+                  class="allreports-filter-option"
+                  @click="selectCategory(category)">
+                  {{ category }}
+                </button>
+              </div>
+            </div>
+          </details>
 
         
             <!--Recent reports knapp -->            
@@ -29,7 +73,7 @@
         <ReportPanel
             v-if="showRecentReports"
             :title="uiLabels.recentReports"
-            :reports="allUserReports"
+            :reports="filteredRecentReports"
             :session="session"
             :emptyMessage="uiLabels.noReportsSubmitted"
             @close="showRecentReports = false"
@@ -37,7 +81,6 @@
         </div>
     </section>
     </main>
-
 </template>
 
 
@@ -45,6 +88,7 @@
 //Imports
   import { ref, onMounted, watch } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
   import { useBoost } from '@/composables/useBoost' //för att kunna använda boost funktionen
+  import { useReportFilters } from '@/composables/useReportFilter'
   import io from 'socket.io-client' //kontakt med server
   import MapComponent from "@/components/MapComponent.vue"
   import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
@@ -59,7 +103,6 @@
   const route = useRoute() // 2. Aktivera verktyget för att läsa av URL:en
   const selectedReportId = ref(null) // 3. Denna kommer hålla koll på rapport-ID:t vi klickade på
   const mapRef = ref(null)
-
 
    //UI and language
   const uiLabels = ref({})                      //Språkknappar/uiLabels
@@ -76,6 +119,7 @@
   //All reports
   const allReportMarkers = ref([])
 
+
   async function getAllReportMarkers() {
     const { data, error } = await supabase
         .from('reports')
@@ -87,7 +131,6 @@
       console.error("Kunde inte hämta alla rapporter till kartan:", error.message)
     }
   }
-
 
   //Recent reports
   const showRecentReports = ref(false)
@@ -115,6 +158,16 @@
   }
 }, { immediate: true }) // immediate: true gör att den kollar direkt när sidan laddas
 
+//Filtrering
+const {
+  selectedType,
+  selectedCategory,
+  selectType,
+  selectCategory,
+  filteredReports,
+  filteredRecentReports,
+  availableCategories
+} = useReportFilters(allReportMarkers, allUserReports)
 
 
 
@@ -179,6 +232,73 @@
     border-radius: 12px;
 }
 
+/* ===== Filter ===== */
+.allreports-filter-dropdown {
+  position: absolute;
+  left: 50px;
+  top: 20px;
+  z-index: 1000;
+}
+
+.allreports-filter-button {
+  list-style: none;
+  background-color: #20c7b5;
+  color: black;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.allreports-filter-button::-webkit-details-marker {
+  display: none;
+}
+
+.allreports-filter-menu {
+  margin-top: 8px;
+  background-color: white;
+  border-radius: 14px;
+  padding: 10px;
+  min-width: 190px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.allreports-filter-option {
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.allreports-filter-option:hover {
+  background-color: #dff5f2;
+}
+
+.allreports-category-options {
+  border-top: 1px solid #ddd;
+  margin-top: 6px;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.allreports-filter-subtitle {
+  margin: 0 0 4px 0;
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
+}
+
+
 /* ===== Recent report knapp =====*/
 .allreports-recent-report-button {
     position: absolute;
@@ -202,5 +322,6 @@
     overflow: hidden;
     position: relative;
 }
+
 
 </style>
