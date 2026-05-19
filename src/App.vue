@@ -9,8 +9,15 @@
     :backendURL="backendURL"
     @toggle-lang="switchLanguage"
   />
+
+
   <RouterView :backendURL="backendURL" :session="session" :currentLang="lang"/> <!--Skickar ner lang till sidan som syns just nu-->
 
+  <WebbFooter
+    :currentLang="lang"
+    :backendURL="backendURL"
+  />
+  
   <BoostModal :backendURL="backendURL" :session="session" :currentLang="lang"/>
  </template>
 
@@ -18,7 +25,10 @@
 <script setup>
   import { ref, onMounted } from 'vue'
   import { RouterView } from 'vue-router'
+
   import WebbHeader from './components/WebbHeader.vue'
+  import WebbFooter from './components/WebbFooter.vue'
+  
   import { supabase } from '@/utils/supabase'
   import BoostModal from '@/components/BoostModal.vue'
 

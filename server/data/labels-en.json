@@ -25,6 +25,7 @@
     "confirmDeleteTitle": "Are you sure?",
     "congrats": "Congratulations!",
     "contactInfo": "Contact information",
+    "copywrite":"© 2026 My Walking City. Developed as part of a bachelor thesis at Uppsala University.",
     "createAccount": "Create account",
     "culture": "Culture",
     "currentLocation": "Current Location",
@@ -52,6 +53,7 @@
     "foodanddrink": "Food and drinks",
     "forgotPassword": "Forgot password?",
     "fourSteps": "4 steps",
+    "footerCollaboration": "In collaboration with",
 
     "getMyLocation": "Get my location",
     "giveHighlightTitle": "Give your highlight a title",
@@ -87,6 +89,7 @@
     "memberSince": "Member since:",
     "mustsee": "Must see",
     "myReports": "My reports",
+    "myWalkinCityAbout": "My Walking City was created by four students from the Master of Science in Engineering programme in Sociotechnical Systems Engineering at Uppsala University, as part of our bachelor’s thesis.",
 
     "name": "Name",
     "nature": "Nature",

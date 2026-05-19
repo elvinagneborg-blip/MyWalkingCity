@@ -21,10 +21,12 @@
     "chooseCategory": "Välj kategori",
     "city": "Stad",
     "closeLevelUp": "Grymt!",
+    
     "confirmDeleteText": "Vill du verkligen ta bort den här rapporten? Detta går inte att ångra.",
     "confirmDeleteTitle": "Är du säker?",
     "congrats": "Grattis!",
     "contactInfo": "Kontaktinformation",
+    "copywrite":"© 2026 My Walking City. Framtagen som en del av ett kandidatarbete vid Uppsala universitet.",
     "createAccount": "Skapa konto",
     "culture": "Kultur",
     "currentLocation": "Nuvarande plats",
@@ -52,6 +54,8 @@
     "foodanddrink": "Mat och dryck",
     "forgotPassword": "Glömt lösenord?",
     "fourSteps": "4 steg",
+    "footerCollaboration": "I samarbete med",
+
 
     "getMyLocation": "Hämta min plats",
     "giveHighlightTitle": "Ge din höjdpunkt en rubrik",
@@ -87,6 +91,8 @@
     "memberSince": "Medlem sedan:",
     "mustsee": "Sevärdhet",
     "myReports": "My reports",
+    "myWalkinCityAbout": "My Walking City är framtagen av fyra studenter på civilingenjörsprogrammet i system i teknik och samhälle vid Uppsala universitet, som en del av vårt kandidatarbete.",
+
 
     "name": "Namn",
     "nature": "Natur",
