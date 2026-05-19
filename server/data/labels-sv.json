@@ -31,6 +31,9 @@
 	"boostDescriptionProblem": "Boosta denna rapport så att beslutsfattare ser det snabbare!",
 	"boostDescriptionHighlight": "Boosta denna höjdpunkt så att andra invånare ser den snabbare!",
 
+	"problemInfo": "'Hål i vägen', 'trasig lyktstolpe', 'Nedklottrad vägg', etc ",
+	"highlightInfo": "'Fin park', 'Kul event', 'otrolig foodtruck', etc ",
+
 	"category": "Kategori",
 	"changeLanguage": "Ändra till engelska",
 	"changeInProfileHint": "Du kan ändra ditt publika användarnamn i din profil",
