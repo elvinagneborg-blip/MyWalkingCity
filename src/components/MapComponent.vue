@@ -6,6 +6,9 @@
 import { onMounted, ref, watch } from "vue" /* onMounted kör kod när komponenten har laddats, ref används för referens */
 import L from "leaflet" /* importerar leaflet - biblioteket */
 import "leaflet/dist/leaflet.css"
+import "leaflet.markercluster"
+import "leaflet.markercluster/dist/MarkerCluster.css"
+import "leaflet.markercluster/dist/MarkerCluster.Default.css"
 
 const props = defineProps(['allReports', 'showReportId'])
 
@@ -127,7 +130,12 @@ onMounted(() => {
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
-  allReportsLayer = L.layerGroup().addTo(map) //Aktiverar lagret på kartan
+  allReportsLayer = L.markerClusterGroup({ //kluster
+    disableClusteringAtZoom: 14,
+    maxClusterRadius: 15,
+    spiderfyOnMaxZoom: false,
+    showCoverageOnHover: false
+  }). addTo(map)//Aktiverar lagret på kartan
 
   marker = L.marker([59.8586, 17.6389], { draggable: true }).addTo(map)
 

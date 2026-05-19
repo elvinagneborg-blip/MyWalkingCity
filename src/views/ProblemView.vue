@@ -15,6 +15,7 @@
     <section class="form-section">
       <form @submit.prevent="handleSubmit" class="form-container">
 
+    <div class="map-panel-wrapper">
       <div class="map-container">
         <MapComponent ref="reportMap" @location-changed="updateCoords"/>
         <!-- Nearby reports knapp -->
@@ -26,58 +27,15 @@
         </button>
       </div>
 
-      <!--Nearby reports listan-->
-      <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
-      <div class="allreports-recent-report-header">
-        <p class="allreports-recent-report-title"> {{ uiLabels.nearbyReports }} </p>
-        <button
-          class="allreports-close-recent-report-panel"
-          @click="showNearbyReports = false"
-          aria-label="Close recent report">
-               ✖️
-        </button>
-      </div>
-
-      <div class="report-list">
-        <!-- Visas om det är tomt i sessionStorage -->
-        <div v-if="nearbyReports.length === 0">
-            <p> {{ uiLabels.noReportsSubmitted }}</p>
-        </div>
-            <!-- Loopar igenom den hämtade datan -->
-          <RecentReport 
-            v-else
-            v-for="report in nearbyReports" 
-            :key="report.id" 
-            :report="report"
-            :session="session"/>
-        </div>
-      </aside>
-
-        <aside v-if="showNearbyReports" class="allreports-recent-report-panel">
-
-          <div class="allreports-recent-report-header">
-            <p class="allreports-recent-report-title"> Rapporter i närheten </p>
-            <button
-              class="allreports-close-recent-report-panel"
-              @click="showNearbyReports = false"
-              aria-label="Close recent report">
-                  x
-            </button>
-          </div>
-
-          <div class="report-list">
-            <div v-if="nearbyReports.length === 0">
-                <p> {{ uiLabels.noReportsSubmitted }}</p>
-            </div>
-            <RecentReport 
-              v-else
-              v-for="report in nearbyReports" 
-              :key="report.id" 
-              :report="report"
-              :session="session"
-            />
-          </div>
-        </aside>
+      <ReportPanel 
+        v-if="showNearbyReports"
+        :title="uiLabels.nearbyReports"
+        :reports="nearbyReports"
+        :session="session"
+        :emptyMessage="uiLabels.noReportsSubmitted"
+        @close="showNearbyReports = false"
+      />
+    </div>
 
 
       <!--Formuläret-->
@@ -93,11 +51,11 @@
               @keydown.enter.prevent="searchAddress" 
             />
             <button type="button" @click="searchAddress" class="btn-secondary">{{ uiLabels.search }}</button>
-            <button type="button" @click="getLocation(true)" class="btn-secondary">{{ uiLabels.getMyLocation }}</button>
+            <button type="button" @click="getLocation(true)" class="btn-secondary location-btn">{{ uiLabels.getMyLocation }}</button>
           </div>
 
-          <div v-if="selectedAddress" class="selected-address-display" style="margin-top: 12px;">
-            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">
+          <div v-if="selectedAddress" class="form-label">
+            <label class="form-label">
               {{ uiLabels.selectedAddress || 'Vald adress' }}
             </label>
             <input 
@@ -231,7 +189,7 @@
   import io from 'socket.io-client' //kontakt med server
   import { useRouter } from 'vue-router'
   import MapComponent from "@/components/MapComponent.vue";
-  import RecentReport from '../components/RecentReport.vue' //RecentReportkomponent
+  import ReportPanel from '@/components/ReportPanel.vue'
   import {supabase, addPoints } from '@/utils/supabase' //funktionen för att få och spara poäng
   import { useImageUpload } from '@/composables/useImageUpload'
 
@@ -518,17 +476,10 @@ async function fetchUserProfile() {
   color: #2d3748;
 }
 
-input, 
-textarea, 
-select, 
-button, 
-label {
-  font-family: var(--inputFont) !important;
-}
 
 /* ===== Sidhuvud - Snyggare titel ===== */
 .report-header {
-  padding: 60px 20px 40px;
+  padding: 20px 20px 40px;
   text-align: center;
 }
 
@@ -547,32 +498,20 @@ label {
   margin: 0 auto;
 }
 
-/* ===== Formulärsektion - Nu mycket bredare ===== */
-.form-section {
+
+.map-panel-wrapper {
   display: flex;
-  justify-content: center;
-  padding: 0 20px 60px;
-}
-
-.form-container {
   width: 100%;
-  /* Breddad max-width för att använda mer av skärmen */
-  max-width: 1100px; 
-  background-color: #cbe5e1;
-  border-radius: 24px;
-  padding: 40px;
-  box-sizing: border-box;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Mjuk skugga istället för bara färg */
-  border: 1px solid #e2e8f0;
+  height: 500px; /* Samma höjd som din karta ska ha */
+  gap: 15px;     /* Ger lite luft emellan kartan och panelen */
+  margin-bottom: 30px;
 }
-
 /* ===== Karta - Maximerad bredd ===== */
 .map-container {
   position: relative;
-  width: 100%;
-  height: 500px; /* Rejäl höjd för kartan */
+  flex: 1;
+  height: 100%;
   border-radius: 16px;
-  margin-bottom: 30px;
   overflow: hidden;
   border: 1px solid #cbd5e0;
   /* Förhindrar att kartan "stjäl" fokus direkt */
@@ -605,49 +544,6 @@ label {
   padding-bottom: 5px;
 }
 
-/* ===== Form Controls - Renare och modernare ===== */
-.form-field {
-  margin-bottom: 28px;
-}
-
-.form-label {
-  font-weight: 600; /* Halvfet för labels */
-  font-size: 0.9rem;
-  text-transform: uppercase; /* Ger en ren, strukturerad känsla */
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
-  color: #718096; /* Lite mjukare färg på labels */
-  display: block;
-}
-
-.form-control,
-.form-input,
-.form-input-locked {
-  width: 100%;
-  padding: 14px 18px;
-  border: 2px solid #edf2f7;
-  border-radius: 12px;
-  background-color: #f8fafc;
-  font-size: 1rem;
-  color: #2d3748;
-  transition: all 0.2s ease;
-}
-
-.form-input-locked {
-  background-color: #e1e6ec;
-  color: #718096;
-  cursor: not-allowed;
-  border-color: #cbd5e0;
-}
-
-.form-control:focus,
-.form-input:focus {
-  outline: none;
-  border-color: #1ebc9c;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(30, 188, 156, 0.1);
-}
-
 .helper-text {
   font-size: 0.8rem;
   color: #718096;
@@ -673,29 +569,9 @@ label {
 
 .btn-secondary:hover, .btn-location:hover {
   background: #f7fafc;
-}
-
-.submit-button {
-  width: 100%;
-  padding: 18px;
-  border: none;
-  border-radius: 12px;
-  background-color: #1ebc9c; /* Använd er signaturfärg istället för mörkgrå */
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.1s, background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #17a68a;
   transform: translateY(-1px);
 }
 
-.submit-button:active {
-  transform: translateY(0);
-}
 
 .custom-file-upload-button {
   display: flex;
@@ -759,93 +635,44 @@ label {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* Panelen som dyker upp */
-.allreports-recent-report-panel {
-  position: fixed; /* Gör att den lägger sig ovanpå allt */
-  top: 0;
-  right: 0;
-  width: 350px;
-  height: 100%;
-  background: white;
-  z-index: 2000; /* Mycket högt så den täcker kartan */
-  box-shadow: -4px 0 15px rgba(0,0,0,0.1);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.allreports-recent-report-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
-  margin-bottom: 15px;
-}
-
-.allreports-recent-report-title {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.allreports-close-recent-report-panel {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #718096;
-}
-
-/* Scrollbar lista inuti panelen */
-.report-list {
-  overflow-y: auto;
-  flex-grow: 1;
-}
 
 /* ===== Mobilanpassning ===== */
 @media (max-width: 768px) {
-  .report-title {
-    font-size: 1.8rem;
-  }
+ 
   
-  .form-container {
-    padding: 20px;
-    border-radius: 0; /* Fullbredd på mobil känns ofta bättre utan hörn */
-  }
-
   .map-container {
     height: 350px;
+    padding: 0; /* Tar bort extra padding på kartan för att maximera utrymmet */
   }
+
+  .map-panel-wrapper {
+    height: auto; /* Låt höjden anpassa sig efter innehållet på mindre skärmar */
+    flex-direction: column; /* Stapla kartan och panelen vertikalt */
+  } 
 
   .recent-report {
     display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
   }
 
-  /* Nu visar vi knappen! */
-  .allreports-recent-report-button {
-    display: block;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10;
-    /* ... din befintliga knapp-styling ... */
+  .report-header {
+    padding: 0px;
   }
 
-  /* Panelen görs om till en "slide-out" meny som täcker allt */
-  .allreports-recent-report-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%; /* Eller t.ex. 300px */
-    height: 100%;
-    border-radius: 0;
-    z-index: 2000;
+  .report-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
   }
 
-  /* Visa krysset så man kan stänga på mobilen */
-  .allreports-close-recent-report-panel {
-    display: block;
-  }
+  .search-group {
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  gap: 10px;
+}
+
+  .location-btn {
+  grid-column: 1 / -1; 
+}
+
 }
 
 </style>

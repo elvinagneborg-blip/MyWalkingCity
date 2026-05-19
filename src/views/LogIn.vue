@@ -4,8 +4,8 @@
   </div>
 
   <main v-else>
-  <section class="login-container">
-    <div class="login-form">
+  <section class="form-section">
+    <form class="form-container" @submit.prevent="handleLogin"> 
 
       <div class="logInText">
         <h1 class="logInTitle"> {{ uiLabels.logInTitle }} </h1>
@@ -13,12 +13,11 @@
       </div>
 
       <!-- Fill in space for email and password -->
-      <label class="login-label"> {{ uiLabels.fillInEmailLogIn }} <span v-if="emailLogInError" class="error-star">*</span></label> 
-        <input type="email" v-model="email" :placeholder="uiLabels.emailPlaceholder" class="login-input" />
+      <label class="form-label"> {{ uiLabels.fillInEmailLogIn }} <span v-if="emailLogInError" class="error-star">*</span></label> 
+        <input type="email" v-model="email" :placeholder="uiLabels.emailPlaceholder" class="form-input" />
       
-      <label class="login-label"> {{ uiLabels.fillInPasswordLogIn }} <span v-if="passwordLogInError" class="error-star">*</span></label> 
-        <input type="password" v-model="password" :placeholder="uiLabels.passwordSignUp" class="login-input" />
-
+      <label class="form-label"> {{ uiLabels.fillInPasswordLogIn }} <span v-if="passwordLogInError" class="error-star">*</span></label> 
+        <input type="password" v-model="password" :placeholder="uiLabels.passwordSignUp" class="form-input" @keydown.enter.prevent="handleLogin" />
       <!-- Forgot password -->  
       <div class="forgot-password-section">
         <p class="forgot-password-text"> {{ uiLabels.forgotPassword }} </p>
@@ -26,14 +25,14 @@
       </div>
 
       <!--Log in button -->
-      <button class="button-report" @click="handleLogin"> {{ uiLabels.logIn }} </button>
+      <button type="submit" class="submit-button"> {{ uiLabels.logIn }} </button>
 
       <!-- Link to log in-->
     <div class="login-switch-container">
         <p class="switch-signup-text"> {{ uiLabels.dontHaveAnAccount }} </p>
         <button class="login-button" @click="goToSignUp"> {{ uiLabels.signUp }} </button>
     </div>
-  </div>
+  </form>
 
 
   </section>
@@ -207,22 +206,15 @@
 </script>
 
 <style scoped>
-
-/*== Page - layout == */
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  min-height: 80vh; 
+*, *::before, *::after {
+  box-sizing: border-box;
 }
-.login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+.form-container {
+  max-width: 550px;
+  margin: 0 auto;
   width: 100%;
-  max-width: 520px;
+  margin-top: 40px;
 }
 
 /* == Log in intro text =*/
@@ -254,20 +246,8 @@
   margin: 0;
 }
 
-.login-label {
-  width: 85%;
-  text-align: center;
-}
-
-/* == Form field =*/
-.login-input {
-  width: 85%;
-  padding: 15px;
+.form-input {
   margin-bottom: 20px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #eef4f4; 
-  box-sizing: border-box; 
 }
 
 .error-star {
@@ -344,6 +324,12 @@
   font-size: 1rem;
   width: auto;
   min-width: 180px;
+}
+
+.login-button:hover {
+  background-color: #17a88b;
+  transform: translateY(-1px);
+
 }
 
 /* == Popup ==*/
