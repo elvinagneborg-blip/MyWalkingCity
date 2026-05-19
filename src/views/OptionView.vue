@@ -18,10 +18,10 @@
         <div class="option-row">
             <button class="info-button" @click.stop="toggleInfo('problem')">i</button>
 
-            <button class="main-option" @click="goToProblem">
+            <RouterLink :to="{ name: 'ProblemView' }" class="main-option">
                 <span class="icon">⚠</span>
                     <span> {{ uiLabels.problem }} </span>
-            </button>
+            </RouterLink>
 
         <div v-if="activeInfo === 'problem'" class="info-box">
             {{uiLabels.problemInfo}}
@@ -31,10 +31,10 @@
         <div class="option-row">
             <button class="info-button" @click.stop="toggleInfo('highlight')">i</button>
          
-            <button class="main-option" @click="goToHighlight">
+            <RouterLink :to="{ name: 'HighlightView' }" class="main-option">
                 <span class="icon">👍</span>
                     <span> {{ uiLabels.highlight }} </span>
-            </button>
+            </RouterLink>
 
             <div v-if="activeInfo === 'highlight'" class="info-box">
             {{uiLabels.highlightInfo}}
@@ -44,8 +44,8 @@
 
     <!-- All reports / Back to home knappar -->
     <div class="secondary-buttons">
-        <button class="secondary-option" @click="goAllReports"> {{ uiLabels.allReports }} </button>
-        <button class="secondary-option" @click="goHome"> {{ uiLabels.backToHome }} </button>
+        <RouterLink :to="{ name: 'AllReportsView' }" class="btn secondary-option"> {{ uiLabels.allReports }} </RouterLink>
+        <RouterLink :to="{ name: 'StartMWC' }" class="btn secondary-option"> {{ uiLabels.backToHome }} </RouterLink>
       </div>
     </div>
 
@@ -57,13 +57,11 @@
 <script setup>
     //Imports
     import { ref, watch } from 'vue'
-    import { useRouter } from 'vue-router'
     import io from 'socket.io-client' //kontakt med server
 
     //Setup and Props (Input)
-    const router = useRouter()
     const props = defineProps(['backendURL', 'currentLang']) //ta emot språkval från app.vue    
-  const socket = io(props.backendURL)
+    const socket = io(props.backendURL)
 
      //UI and language
     const uiLabels = ref({})                      //Språkknappar/uiLabels
@@ -75,20 +73,6 @@
     watch(() => props.currentLang, (newLang) => {       //vakta språkvalet, ligger alltid och lyssnar
         socket.emit("getUILabels", newLang || "en");    //Hämtar uiLabels enl. valt språk
     }, { immediate: true })                             //Språket laddas direkt när sidan laddas, istället för att vänta på att språket ska ändras 1a gngen
-
-    //Navigation
-    const goToProblem = () => {
-        router.push({ name: 'ProblemView' })
-    }
-    const goToHighlight = () => {
-        router.push({ name: 'HighlightView' })
-    }
-    const goHome = () => {
-        router.push({ name: 'StartMWC' })
-    }
-    const goAllReports = () => {
-        router.push({name: 'AllReportsView' })
-    }
 
     //info ruta
     const activeInfo = ref(null)
@@ -150,6 +134,9 @@
     gap: 1rem;
     cursor: pointer;
     transition: transform 0.15s ease, opacity 0.15s ease;
+    text-decoration: none;
+    box-sizing: border-box;
+
 }
 
 .main-option:hover, .secondary-option:hover {
@@ -176,6 +163,8 @@
     font-size: 1.4rem;
     font-weight: 600;
     cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 .option-row {
     position: relative;
