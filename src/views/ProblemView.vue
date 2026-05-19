@@ -17,7 +17,10 @@
 
     <div class="map-panel-wrapper">
       <div class="map-container">
-        <MapComponent ref="reportMap" @location-changed="updateCoords"/>
+        <MapComponent 
+        ref="reportMap" 
+        :allReports="problemMarkers"
+        @location-changed="updateCoords"/>
         <!-- Nearby reports knapp -->
         <button 
           v-if="!showNearbyReports"
@@ -455,6 +458,23 @@ async function fetchUserProfile() {
     }
   }
 
+    //ta alla problems och lägga ut markörer på kartan
+  const problemMarkers = ref([])
+
+  async function fetchProblemMarkers() {
+  const { data, error } = await supabase
+    .from('reports')
+    .select('*')
+    .eq('type', 'problem') // Hämtar BARA problem/felrapporter
+    
+  if (!error && data) {
+    problemMarkers.value = data
+  } else {
+    console.error("Kunde inte hämta kartmarkörer:", error?.message)
+  }
+}
+
+
 // Bevaka när panelen öppnas/stängs och knuffa kartan i pixlar på mobilen
 watch(showNearbyReports, async (isOpen) => {
   if (formData.value.latitude && formData.value.longitude && reportMap.value) {
@@ -483,6 +503,7 @@ watch(showNearbyReports, async (isOpen) => {
     getLocation();
   }, 500);
   fetchUserProfile() // Hämta användarens profilinfo när komponenten laddas
+  fetchProblemMarkers()
   })
 </script>
 

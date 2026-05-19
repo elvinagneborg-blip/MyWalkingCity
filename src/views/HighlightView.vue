@@ -23,7 +23,8 @@
         <div class="map-container">
           <MapComponent 
           ref="reportMap" 
-    @location-changed="updateCoords"
+          :allReports="highlightMarkers"
+          @location-changed="updateCoords"
     />
 
        <!-- Nearby reports knapp -->
@@ -451,6 +452,7 @@ async function fetchUserProfile() {
   const nearbyReports = ref([])
   const showNearbyReports = ref(false)
 
+
   async function fetchNearbyReports(lat, lng) {
     if (!lat || !lng) return   
     const { data, error } = await supabase
@@ -468,6 +470,22 @@ async function fetchUserProfile() {
       console.error("Kunde inte hämta live-feed:", error.message)
     }
   }
+
+  //ta alla highligts och lägga ut markörer på kartan
+  const highlightMarkers = ref([])
+
+  async function fetchHighlightMarkers() {
+  const { data, error } = await supabase
+    .from('reports')
+    .select('*')
+    .eq('type', 'highlight') // Hämtar BARA highlights
+    
+  if (!error && data) {
+    highlightMarkers.value = data
+  } else {
+    console.error("Kunde inte hämta kartmarkörer:", error?.message)
+  }
+}
 
 // Bevaka när panelen öppnas/stängs och knuffa kartan i pixlar på mobilen
 watch(showNearbyReports, async (isOpen) => {
@@ -497,6 +515,7 @@ onMounted(() => {
       getLocation() // Hämta användarens plats vid sidladdning
     }, 500)
     fetchUserProfile()
+    fetchHighlightMarkers()
   })
 </script>
 
