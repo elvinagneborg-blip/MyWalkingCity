@@ -97,13 +97,14 @@ defineEmits(['close', 'click-location'])
 }
 
 .report-list :deep(.report-card) {
-  height: 160px;      
+  height: 160px;
+  min-height: 0;      
   padding: 12px 15px;  
 }
 
 .report-list :deep(.report-card.card-expanded) {
   height: auto;
-  min-height: 160px;  
+  min-height: 0px;  
 }
 
   .report-list :deep(.report-title) {

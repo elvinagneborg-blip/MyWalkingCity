@@ -144,26 +144,15 @@
                 {{ uiLabels.noReportsSubmitted }}
             </p>
 
-            <article v-else v-for="report in filteredReports" :key="report.id" class="report-container"> <!--beroende på "filter" så loopar den igenom en specifik lista av rapporter-->
-                <div class="report-header">
-                    <div class="report-header-info">
-                        <span class="report-tag"> {{ report.category }} </span>
-                        <small>{{ new Date(report.created_at).toLocaleDateString() }}</small>
-                    </div>
-
-                    <button class="delete-report-btn" @click="confirmDelete(report.report_id)">
-                        {{ uiLabels.deleteReport }}
-                    </button>
-                </div>
-
-                <h3 class="report-text"> {{ report.description }} </h3>
-               
-                <img class="reports-image" 
-                    v-if="report.image_url" 
-                    :src="report.image_url" 
-                    alt="Rapportbild"
-                />
-            </article>
+        <RecentReport 
+            v-else
+            v-for="report in filteredReports" 
+            :key="report.report_id" 
+            :report="report"
+            :session="session"
+            :showDelete="true"
+            @delete-click="confirmDelete"
+            />
         </div>
     </section>
 
@@ -216,6 +205,7 @@
     import { ref, onMounted, watch, computed } from 'vue' //för att kunna ha reaktiva variabler och övervaka dem
     import io from 'socket.io-client'                     //kontakt med server
     import { supabase } from '@/utils/supabase' 
+    import RecentReport from '@/components/RecentReport.vue' // LÄGG TILL DENNA RAD
 
   //Setup and Props (Input)
     const props = defineProps(['backendURL', 'currentLang', 'session']) //ta emot språkval från app.vue
@@ -680,42 +670,7 @@
     gap: 22px;
 }
 
-.report-container {
-    background-color: #cfe3de;
-    border-radius: 24px;
-    padding: clamp(18px, 4vw, 28px);
-}
 
-.report-tag {
-    display: inline-block;
-    background-color: #58a89b;
-    color: white;
-    font-size: clamp(0.9rem, 2vw, 1rem);
-    padding: 8px 24px;
-    border-radius: 999px;
-    margin-bottom: 24px;
-    min-width: 110px;
-    text-align: center;
-}
-
-.report-text {
-    margin: 0;
-    font-size: clamp(1.4rem, 4vw, 2.1rem);
-    line-height: 1.1;
-    font-weight: 500;
-    color: #0d7868;
-}
-
-.report-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-}
-
-.reports-image {
-    max-width: 200px;
-}
 
 /* ===== Contact information ===== */
 .contact-section {
