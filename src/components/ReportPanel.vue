@@ -39,26 +39,25 @@ defineEmits(['close'])
 
 <style scoped>
 
-/* 1. Huvudcontainern för panelen */
 .allreports-recent-report-panel {
   min-width: 320px;
   height: 100%;
   background-color: #eeeeee;
   padding: 20px;
   display: flex;
-  flex-direction: column; /* Lägger headern och listan under varandra */
+  flex-direction: column; 
   gap: 20px;
   z-index: 1100;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Ger en mjuk skugga på vänsterkanten */
-  box-sizing: border-box; /* Ser till att padding inte gör panelen bredare än 400px */
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); 
+  box-sizing: border-box; 
 }
 
-/* 2. Panelens header-rad */
+
 .allreports-recent-report-header {
   position: relative;
   width: 100%;
   display: flex;
-  justify-content: space-between; /* Trycker ut rubriken till vänster och krysset till höger */
+  justify-content: space-between; 
   align-items: center;
 }
 
@@ -68,12 +67,12 @@ defineEmits(['close'])
   font-weight: 700;
 }
 
-/* 3. Stängknappen (Krysset) */
+
 .allreports-close-recent-report-panel {
-  background: #20c7b5; /* Din applikations gröna tema-färg */
+  background: #20c7b5; 
   color: white;
   border: none;
-  border-radius: 50%; /* Gör knappen helt rund */
+  border-radius: 50%; 
   width: 36px;
   height: 36px;
   font-size: 16px;
@@ -86,23 +85,43 @@ defineEmits(['close'])
 }
 
 .allreports-close-recent-report-panel:hover {
-  background: #17a68a; /* Blir lite mörkare när man hovrar muspekaren över */
+  background: #17a68a; 
 }
 
-/* 4. Själva list-containern */
 .report-list {
-  flex: 1; /* Tvingar listan att ta upp resten av höjden i panelen */
-  overflow-y: auto; /* Aktiverar en vertikal scrollbar OM det blir för fullt */
-  padding-right: 5px;
+  flex: 1; 
+  overflow-y: auto; 
+  overflow-x: hidden;
+  padding-right: 50px;
 }
 
-/* 5. Mobilanpassning (Media Query) */
+
 @media (max-width: 768px) {
   .allreports-recent-report-panel { 
+    position: absolute;      
     top: 0;
     right: 0;
-    width: 100%;
+    width: 70%;              
+    min-width: 0;
+    height: 100%;       
+    z-index: 2000;
+    
+    background-color: rgba(238, 238, 238, 0.95);              
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.25);
+    padding-top: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 0px;         
+  }
+
+  .allreports-recent-report-title {
+    font-size: 16px;
+  }
+
+  .allreports-close-recent-report-panel {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
   }
 }
-
 </style>

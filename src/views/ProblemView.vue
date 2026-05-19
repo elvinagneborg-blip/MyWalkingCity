@@ -25,7 +25,7 @@
           @click="showNearbyReports = true">
           {{uiLabels.nearbyReports}}
         </button>
-      </div>
+      
 
       <ReportPanel 
         v-if="showNearbyReports"
@@ -35,6 +35,7 @@
         :emptyMessage="uiLabels.noReportsSubmitted"
         @close="showNearbyReports = false"
       />
+    </div>
     </div>
 
 
@@ -171,7 +172,7 @@
           </p>
         </div>
 
-        <!-- 4. Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
+        <!-- Ändra till type="submit" och ta bort @click (formuläret sköter det nu) -->
         <button type="submit" class="submit-button" :disabled="isSubmitting">
           {{ isSubmitting ? uiLabels.sending : uiLabels.sendInReport }}
         </button>
@@ -362,7 +363,7 @@ async function fetchUserProfile() {
 
   //Submit
   async function handleSubmit() {
-  // 1. Inledande kontroller (Validering)
+  // Inledande kontroller (Validering)
   
   // Kontrollera om användaren har valt en plats (inte bara kvar på Uppsala-default)
   const defaultLat = 59.8586;
@@ -389,16 +390,16 @@ async function fetchUserProfile() {
   isSubmitting.value = true;
 
   try {
-    // 2. Förbered användardata
+    // Förbered användardata
     if (props.session) {
       formData.value.email = props.session.user.email;
     }
 
-    // 3. Bildhantering
+    // Bildhantering
     // Vi väntar på att bilden laddas upp till Storage och får tillbaka URL:en
     const imageUrl = await uploadImage();
 
-    // 4. Förbered det slutgiltiga objektet för databasen
+    // Förbered det slutgiltiga objektet för databasen
     const reportData = {
       ...formData.value,
       image_url: imageUrl, // URL från storage (eller null om ingen bild valdes)
@@ -406,7 +407,7 @@ async function fetchUserProfile() {
       created_at: new Date().toISOString() // Bra praxis att sätta tidstämpel explicit
     };
 
-    // 5. Skicka till Supabase 'reports'-tabellen
+    // Skicka till Supabase 'reports'-tabellen
     const { error } = await supabase
       .from('reports')
       .insert([reportData]);
@@ -420,7 +421,6 @@ async function fetchUserProfile() {
       await addPoints(props.session.user.id, 10);
     }
 
-    // 6. Succé! Skicka användaren vidare
     router.push('/feedback/');
 
   } catch (error) {
@@ -454,6 +454,28 @@ async function fetchUserProfile() {
     }
   }
 
+// Bevaka när panelen öppnas/stängs och knuffa kartan i pixlar på mobilen
+watch(showNearbyReports, async (isOpen) => {
+  if (formData.value.latitude && formData.value.longitude && reportMap.value) {
+    await new Promise(resolve => setTimeout(resolve, 150)); 
+    if (typeof reportMap.value.invalidateSize === 'function') {  
+      reportMap.value.invalidateSize();
+    }
+    reportMap.value.setLocation(formData.value.latitude, formData.value.longitude); 
+    const isMobile = window.innerWidth <= 768;
+
+    if (isOpen && isMobile) {
+
+      const mapWidth = document.querySelector('.map-container')?.clientWidth || 0;   
+      const pixelsToMove = mapWidth * 0.25;
+
+      if (typeof reportMap.value.panBy === 'function') {
+        reportMap.value.panBy(pixelsToMove, 0);
+      }
+    }
+  }
+});
+
   //Lifecycle hooks
   onMounted(() => { 
     setTimeout(() => {
@@ -468,16 +490,16 @@ async function fetchUserProfile() {
 *, *::before, *::after {
   box-sizing: border-box;
 }
-/* ===== Övergripande layout ===== */
+/*  Övergripande layout  */
 .report-page {
   margin: 0 auto;
   font-family: 'var(--inputFont)';
-  background-color: #f9fbfb; /* Ljus, fräsch bakgrund */
+  background-color: #f9fbfb; 
   color: #2d3748;
 }
 
 
-/* ===== Sidhuvud - Snyggare titel ===== */
+/*  Sidhuvud  */
 .report-header {
   padding: 20px 20px 40px;
   text-align: center;
@@ -485,10 +507,10 @@ async function fetchUserProfile() {
 
 .report-title {
   font-size: 2.2rem;
-  font-weight: 800; /* Extra tjock för titeln */
+  font-weight: 800; 
   color: #1a202c;
   margin-bottom: 8px;
-  letter-spacing: -0.03em; /* Lite tightare bokstäver för modern look */
+  letter-spacing: -0.03em; 
 }
 
 .report-subtitle {
@@ -498,15 +520,33 @@ async function fetchUserProfile() {
   margin: 0 auto;
 }
 
+/*  Formulärsektion  */
+.form-section {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px 60px;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 1100px; 
+  background-color: #cbe5e1;
+  border-radius: 24px;
+  padding: 40px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
 
 .map-panel-wrapper {
   display: flex;
   width: 100%;
-  height: 500px; /* Samma höjd som din karta ska ha */
-  gap: 15px;     /* Ger lite luft emellan kartan och panelen */
+  height: 500px; 
+  gap: 15px;     
   margin-bottom: 30px;
 }
-/* ===== Karta - Maximerad bredd ===== */
+/*  Karta  */
 .map-container {
   position: relative;
   flex: 1;
@@ -514,18 +554,17 @@ async function fetchUserProfile() {
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid #cbd5e0;
-  /* Förhindrar att kartan "stjäl" fokus direkt */
   z-index: 1;
 }
 
-/* ===== Recent reports - Moderniserad "Glassmorphism" ===== */
+/*  Recent reports  */
 .recent-report {
   position: absolute;
   top: 20px;
   right: 20px;
   width: 260px;
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px); /* Snygg suddig bakgrund */
+  backdrop-filter: blur(10px); 
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   padding: 16px;
@@ -542,6 +581,49 @@ async function fetchUserProfile() {
   color: #2d3748;
   border-bottom: 1px solid #e2e8f0;
   padding-bottom: 5px;
+}
+
+/*  Form ControlS  */
+.form-field {
+  margin-bottom: 28px;
+}
+
+.form-label {
+  font-weight: 600; 
+  font-size: 0.9rem;
+  text-transform: uppercase; 
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  color: #718096; 
+  display: block;
+}
+
+.form-control,
+.form-input,
+.form-input-locked {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #edf2f7;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  font-size: 1rem;
+  color: #2d3748;
+  transition: all 0.2s ease;
+}
+
+.form-input-locked {
+  background-color: #e1e6ec;
+  color: #718096;
+  cursor: not-allowed;
+  border-color: #cbd5e0;
+}
+
+.form-control:focus,
+.form-input:focus {
+  outline: none;
+  border-color: #1ebc9c;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(30, 188, 156, 0.1);
 }
 
 .helper-text {
@@ -569,6 +651,23 @@ async function fetchUserProfile() {
 
 .btn-secondary:hover, .btn-location:hover {
   background: #f7fafc;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 18px;
+  border: none;
+  border-radius: 12px;
+  background-color: #1ebc9c; 
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #17a68a;
   transform: translateY(-1px);
 }
 
@@ -592,10 +691,10 @@ async function fetchUserProfile() {
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  width: auto; /* Gör den inte lika bred som send-knappen */
+  width: auto; 
 }
 
-/* ===== Bilder & Preview ===== */
+/*  Bilder & Preview */
 .hidden-file-input {
   display: none; 
 }
@@ -612,14 +711,14 @@ async function fetchUserProfile() {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  background: #f0f9f7; /* Svag grön ton för att visa att något är valt */
+  background: #f0f9f7; 
   padding: 20px;
   border-radius: 16px;
   border: 1px dashed #1ebc9c;
 }
 
 
-/* Knappen som ligger ovanpå kartan */
+
 .allreports-recent-report-button {
   position: absolute;
   top: 15px;
@@ -636,10 +735,14 @@ async function fetchUserProfile() {
 }
 
 
-/* ===== Mobilanpassning ===== */
 @media (max-width: 768px) {
  
   
+  .form-container {
+    padding: 20px;
+    border-radius: 0; 
+  }
+
   .map-container {
     height: 350px;
     padding: 0; /* Tar bort extra padding på kartan för att maximera utrymmet */
@@ -651,7 +754,7 @@ async function fetchUserProfile() {
   } 
 
   .recent-report {
-    display: none; /* Dölj "senaste rapporter" på små skärmar för att frigöra plats på kartan */
+    display: none; 
   }
 
   .report-header {
