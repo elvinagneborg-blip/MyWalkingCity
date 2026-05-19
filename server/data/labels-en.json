@@ -53,6 +53,9 @@
 	"boostDescriptionProblem": "Boost this report so that policy makers see it faster!",
 	"boostDescriptionHighlight": "Boost this highlight so that other residents see it faster!",
 
+	"problemInfo": "'Pothole in the road', 'broken streetlight', 'graffiti-covered wall', etc ",
+	"highlightInfo": "'Nice park', 'Fun event', 'amazing food truck', etc ",
+
 	"category": "Category",
 	"changeLanguage": "Byt till svenska",
 	"changeInProfileHint": "You can change your public username in your profile",

@@ -5,7 +5,7 @@
     </div>
 
     <main v-else>
-    <section class="option-page">
+    <section class="option-page" @click="activeInfo = null" >
       <!--Header specifik för sidan -->
     <section class="option-header">
         <h2 class="option-title"> {{ uiLabels.whatYouWantReport }} </h2>
@@ -13,16 +13,33 @@
 
     <!-- Report / highligt knappar -->
     <div class="content">
-    <div class="option-buttons">
-        <button class="main-option" @click="goToProblem">
-            <span class="icon">⚠</span>
-            <span> {{ uiLabels.problem }} </span>
-        </button>
+        <div class="option-buttons">
 
-        <button class="main-option" @click="goToHighlight">
-            <span class="icon">👍</span>
-            <span> {{ uiLabels.highlight }} </span>
-        </button>
+        <div class="option-row">
+            <button class="info-button" @click.stop="toggleInfo('problem')">i</button>
+
+            <button class="main-option" @click="goToProblem">
+                <span class="icon">⚠</span>
+                    <span> {{ uiLabels.problem }} </span>
+            </button>
+
+        <div v-if="activeInfo === 'problem'" class="info-box">
+            {{uiLabels.problemInfo}}
+        </div>
+        </div>
+
+        <div class="option-row">
+            <button class="info-button" @click.stop="toggleInfo('highlight')">i</button>
+         
+            <button class="main-option" @click="goToHighlight">
+                <span class="icon">👍</span>
+                    <span> {{ uiLabels.highlight }} </span>
+            </button>
+
+            <div v-if="activeInfo === 'highlight'" class="info-box">
+            {{uiLabels.highlightInfo}}
+            </div>
+        </div>
     </div>
 
     <!-- All reports / Back to home knappar -->
@@ -31,6 +48,7 @@
         <button class="secondary-option" @click="goHome"> {{ uiLabels.backToHome }} </button>
       </div>
     </div>
+
 </section>
     </main>
 </template>
@@ -71,6 +89,13 @@
     const goAllReports = () => {
         router.push({name: 'AllReportsView' })
     }
+
+    //info ruta
+    const activeInfo = ref(null)
+
+    const toggleInfo = (type) => {
+        activeInfo.value = activeInfo.value === type ? null : type
+}
 </script>
 
 
@@ -152,6 +177,97 @@
     font-weight: 600;
     cursor: pointer;
 }
+.option-row {
+    position: relative;
+    width: 100%;
+}
+
+.main-option {
+    width: 100%;
+}
+
+.info-button {
+    position: absolute;
+    left: calc(100% + 1rem);
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: none;
+
+    background-color: #9be0d7;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.info-box {
+    position: absolute;
+    left: calc(100% + 3rem);
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 11rem;
+    background-color: white;
+    color: black;
+    padding: 0.8rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    text-align: left;
+}
+
+@media (max-width: 600px) {
+    .content {
+        padding: 2rem 1rem;
+    }
+
+    .option-title {
+        font-size: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .option-buttons {
+        max-width: 260px;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .main-option {
+        padding: 1rem;
+        font-size: 1.4rem;
+        border-radius: 12px;
+    }
+
+    .icon {
+        font-size: 1.4rem;
+    }
+
+    .secondary-option {
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+    }
+
+    .info-button {
+        left: calc(100% + 0.5rem);
+    }
+
+
+    .info-box {
+        left: 0;
+        top: calc(100% + 0.5rem);
+        transform: none;
+
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 0.8rem;
+        text-align: center;
+        z-index: 10;
+    }
+}
+
 
 
 </style>
