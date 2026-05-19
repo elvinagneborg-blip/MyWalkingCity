@@ -25,34 +25,15 @@
             </button>
           
         </div>
-          <!-- Panel med recent reports -->
-            <aside v-if="showRecentReports" class="allreports-recent-report-panel">
-                <div class="allreports-recent-report-header">
-                    <h3 class="allreports-recent-report-title"> {{uiLabels.recentReports}} </h3>
-                    <button
-                        class="allreports-close-recent-report-panel"
-                        @click="showRecentReports = false"
-                        aria-label="Close recent report">
-                        x
-                    </button>
-                </div>
-
-         <div class="report-list">
-            <!-- Visas om det är tomt i sessionStorage -->
-        <div v-if="allUserReports.length === 0">
-            <p> {{ uiLabels.noReportsSubmitted }}</p>
-        </div>
-
-            <!-- Loopar igenom den hämtade datan -->
-        <RecentReport 
-            v-else
-            v-for="report in allUserReports" 
-            :key="report.id" 
-            :report="report"
+          <!-- List med recent reports -->
+        <ReportPanel
+            v-if="showRecentReports"
+            :title="uiLabels.recentReports"
+            :reports="allUserReports"
             :session="session"
-        />
-        </div>
-        </aside>
+            :emptyMessage="uiLabels.noReportsSubmitted"
+            @close="showRecentReports = false"
+            />
         </div>
     </section>
     </main>
@@ -67,7 +48,7 @@
   import io from 'socket.io-client' //kontakt med server
   import MapComponent from "@/components/MapComponent.vue"
   import { supabase } from '@/utils/supabase' // @ pekar oftast på src-mappen
-  import RecentReport from '@/components/RecentReport.vue'
+  import ReportPanel from '@/components/ReportPanel.vue'
   import { useRoute } from 'vue-router'
   
   //Setup and Props (Input)
@@ -214,133 +195,6 @@
     z-index: 1000;
 }
 
-/* ===== Recent report panel =====*/
-.allreports-recent-report-panel {
-    width: 400px;             /* Bestämmer hur bred din sidebar ska vara */
-    min-width: 320px;         /* Sätter en minsta bredd så den inte blir för smal */
-    height: 100%;             /* Gör att den tar upp hela höjden av kart-området */
-    background-color: #eeeeee;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    z-index: 1100;
-    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* Lägger till en subtil skugga på vänstersidan */
-}
-
-.allreports-recent-report-header {
-    position: relative; /* Detta gör att knappen utgår från denna box */
-    width: 100%;        /* Sträck ut över hela panelens bredd */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 20px;    /* Ger lite luft på sidorna */
-}
-
-.allreports-recent-report-title {
-    margin: 0;
-    font-size: 32px;
-    font-weight: 700;
-    text-align: center;
-}
-
-.allreports-close-recent-report-panel {
-    position: absolute;
-    right: 0;           /* Lägg den längst till höger i headern */
-
-    
-    background: #20c7b5; /* Din gröna färg som bakgrund gör den lättare att se */
-    color: white;
-    border: none;
-    border-radius: 50%;  /* Gör den rund */
-    width: 36px;
-    height: 36px;
-    
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;         /* Se till att den ligger överst */
-}
-
-
-/* ===== Recent report listan  =====*/
-
-.allreports-recent-report-list {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-}
-
-.allreports-recent-report-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 24px;
-    padding-bottom: 24px;
-    border-bottom: 2px solid #d9d9d9;
-}
-
-.allreports-recent-report-item:last-child { /*space för nästa report*/
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-/* ===== Recent report texten i listan =====*/
-
-.allreports-recent-report-text {
-    margin: 0;
-}
-
-.allreports-recent-report-text dt {
-    font-weight: 700;
-    display: inline;
-}
-
-.allreports-recent-report-text dd {
-    display: inline;
-    margin: 0 0 10px 6px;
-}
-
-.allreports-recent-report-text dd::after { /*för att lägga in en osynlig radbrytning efter varje dd*/
-    content: "";
-    display: block; /*tvingar på en ny rad*/
-}
-
-.report-thumb {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-left: 15px;
-}
-
-.boost-action-btn {
-    margin-top: 10px;
-    padding: 6px 12px;
-    background-color: #ffd700; /* Guld/Gul för boost */
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 14px;
-    transition: transform 0.2s;
-}
-
-.boost-action-btn:hover {
-    transform: scale(1.05);
-}
-
-.boost-action-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-.report-content {
-    flex: 1; /* Gör att texten tar upp platsen till vänster om bilden */
-}
-
 .allreports-content-wrapper {
     display: flex;
     width: 100%;
@@ -349,9 +203,4 @@
     position: relative;
 }
 
-.report-list {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 5px;
-}
 </style>
