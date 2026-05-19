@@ -257,6 +257,13 @@ return
   box-sizing: border-box;
 }
 
+.form-container {
+  max-width: 550px;
+  margin: 0 auto;
+  width: 100%;
+  margin-top: 40px;
+
+}
 
 /* == Sign up - Intro text*/
 .signUpText {
@@ -289,10 +296,6 @@ return
 
 .form-input {
   margin-bottom: 20px;
-}
-
-.form-container {
-  margin-top: 40px;
 }
 
 .error-star {
@@ -360,6 +363,11 @@ return
   min-width: 180px;
 }
 
+.login-button:hover {
+  background-color: #17a88b;
+  transform: translateY(-1px);
+
+}
 /* == Popup == */
 
 .popup-overlay { /*mörka lagret som täcker hela sidan */
