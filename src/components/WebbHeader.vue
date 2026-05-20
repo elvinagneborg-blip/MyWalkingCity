@@ -68,7 +68,7 @@
                 <!-- Meny knapp och språkknapp-->
                 <div class="header-tools">
                     <button class="header-button" @click="$emit('toggle-lang')">
-                        {{ currentLang === 'sv' ? '🇸🇪 SVE' : '🇬🇧 EN' }}
+                        {{ currentLang === 'sv' ? '🇬🇧 EN' : '🇸🇪 SVE' }}
                     </button>
 
                     <button
