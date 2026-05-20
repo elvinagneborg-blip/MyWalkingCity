@@ -291,6 +291,7 @@
     const address = await getAddressFromCoords(lat, lng)
     addressSearch.value = ''
     selectedAddress.value = address
+    formData.value.address = address
   }
   
 
@@ -318,6 +319,7 @@
       
       const cleanAddress = await getAddressFromCoords(newLat, newLon)
       selectedAddress.value = cleanAddress
+      formData.value.address = cleanAddress
       
       addressSearch.value = '' 
       
