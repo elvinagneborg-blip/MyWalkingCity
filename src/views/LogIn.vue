@@ -18,14 +18,13 @@
       
       <label class="form-label"> {{ uiLabels.fillInPasswordLogIn }} <span v-if="passwordLogInError" class="error-star">*</span></label> 
         <input type="password" v-model="password" :placeholder="uiLabels.passwordSignUp" class="form-input" @keydown.enter.prevent="handleLogin" />
-      <!-- Forgot password -->  
-      <div class="forgot-password-section">
+     
+      <button type="submit" class="submit-button"> {{ uiLabels.logIn }} </button>
+
+       <div class="forgot-password-section">
         <p class="forgot-password-text"> {{ uiLabels.forgotPassword }} </p>
         <button class="forgot-password-button" @click="handleForgotPassword"> {{ uiLabels.sendVerification }} </button>
       </div>
-
-      <!--Log in button -->
-      <button type="submit" class="submit-button"> {{ uiLabels.logIn }} </button>
 
       <!-- Link to log in-->
     <div class="login-switch-container">
@@ -258,13 +257,13 @@
 
 /* == Forgot password section == */
 .forgot-password-section {
-  width: 85%;
-  margin-top: -8px;
-  margin-bottom: 20px;
+  width: 100%;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
+  text-align: center;
 }
 
 .forgot-password-text {
