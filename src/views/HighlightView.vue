@@ -297,6 +297,7 @@
     const address = await getAddressFromCoords(lat, lng)
     addressSearch.value = ''
     selectedAddress.value = address
+    formData.value.address = address
   }
 
     async function searchAddress() {
@@ -326,6 +327,7 @@
       // Hämta en ren och snygg gatuadress och sätt den i det låsta fältet
       const cleanAddress = await getAddressFromCoords(newLat, newLon)
       selectedAddress.value = cleanAddress
+      formData.value.address = cleanAddress
       
       //  HÄR TÖMMER VI SÖKFÄLTET 
       addressSearch.value = '' 
