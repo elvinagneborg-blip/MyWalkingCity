@@ -214,8 +214,8 @@ html {
   align-items: center;
   gap: 50px;
   margin-top: 40px;
+  margin-left: 60px;
   color: white;
-  margin-left: 90px;
 }
 
 /* Styling för rutan inuti bakgrundsbilden på desktop */
