@@ -89,6 +89,8 @@ watch(
 
 <style scoped>
 
+
+
 /* == Footer base ==*/
 .web-footer {
     width: 100%;

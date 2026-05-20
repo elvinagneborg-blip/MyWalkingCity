@@ -220,7 +220,7 @@ function closeFilterMenu() {
     min-height: 100vh;
     font-family: Arial, sans-serif;
     color: #111;
-    padding-bottom: 32px;
+    padding-bottom: 0px;
 }
 
 /* ===== Sidans enga rubrik ===== */
@@ -243,7 +243,7 @@ function closeFilterMenu() {
 .allreports-map-container {
     position: relative;
     width: 100%;
-    height: 75vh;  /* Ge boxen höjd här! */
+    height: 100%;  
     overflow: hidden;
     z-index: 1;
 }
@@ -363,9 +363,15 @@ function closeFilterMenu() {
 .allreports-content-wrapper {
     display: flex;
     width: 100%;
-    height: 75vh;
+    height: calc(100vh - 80px);
     overflow: hidden;
     position: relative;
+}
+
+
+.allreports-content-wrapper :deep(.allreports-recent-report-panel) {
+  border-radius: 20px;
+  margin-left: 10px;
 }
 
 @media (max-width: 768px) {
@@ -411,6 +417,11 @@ function closeFilterMenu() {
   font-size: 14px;
   max-width: 190px;
   white-space: nowrap;
+}
+
+.allreports-content-wrapper :deep(.allreports-recent-report-panel) {
+  border-radius: 0px;
+  margin-left: 0px;
 }
 
 }
