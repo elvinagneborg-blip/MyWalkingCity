@@ -235,6 +235,7 @@ const currentLevel = computed(() => {
     border-bottom: 2px solid #0a8276;
     position: relative;
     min-width: 0; /* viktigt */
+  
 }
 
 .web-header-layout {
@@ -390,6 +391,7 @@ body {
 /* == Telefonskärm ==*/
 @media (max-width: 768px) {
 
+
 .web-header-layout {
     min-height: 96px;
     padding: 8px 8px;
@@ -421,7 +423,6 @@ body {
     display: flex;
     flex-direction: row;
     gap: 8px;
-    transform: translateY(10px);
     font-size: 0.3rem;
 }
 
