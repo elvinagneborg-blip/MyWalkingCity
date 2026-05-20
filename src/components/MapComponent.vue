@@ -128,7 +128,6 @@ watch(() => props.showReportId, (newId) => {
 })
 
 
-
 onMounted(() => {
   map = L.map(mapContainer.value).setView([59.8586, 17.6389], 13) /* skapar kartan och sätter startpositionen till centrala Uppsala, tar bort zoomkontrollerna */
   
