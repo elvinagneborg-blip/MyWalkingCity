@@ -159,7 +159,7 @@ defineEmits(['close', 'click-location'])
   }
 
 .report-list :deep(.report-info) {
-  padding: 20px 10px 5px 5px;
+  padding: 10px 10px 5px 5px;
 }
 
 .report-list :deep(.report-category) {
