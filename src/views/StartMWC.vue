@@ -300,6 +300,7 @@ html {
   color: #1EBC9C;
   text-align: center;
   margin-top: 40px;
+  font-size: 1rem;
 }
 
 .report-list {
@@ -331,6 +332,8 @@ html {
     margin-left: 0 !important;
     text-align: center;
     font-size: 36px;
+    margin-top: 100px;
+    margin-bottom: 10px;
   }
 
   .body-top h6 {
@@ -339,6 +342,7 @@ html {
     text-align: center;
     font-size: 13px;
     max-width: 400px;
+    margin-bottom: 10px;
   }
 
   .top-buttons {
@@ -354,6 +358,7 @@ html {
     width: 280px !important;
     text-align: center;
     display: inline-block;
+    margin-bottom: -15px;
   }
 
   /* Sätt tillbaka originalknappen på mobilen */
@@ -368,12 +373,13 @@ html {
     width: 280px;
     padding: 15px 0;
     text-align: center;
+    margin-top: -15px;
   }
 
   .stats-container {
     gap: 15px; 
     font-size: 0.9rem; 
-    margin-top: 40px;
+    margin-top: 90px;
     margin-bottom: 60px;
     margin-left: 0px;
   }
@@ -393,6 +399,7 @@ html {
   .body-how-it-works.mobile-only h6 {
     color: #1EBC9C;
     text-align: center;
+    font-size: 1em;
   }
 
   .body-how-it-works.mobile-only h2 {
@@ -406,9 +413,13 @@ html {
     flex-direction: column;
     align-items: flex-start; 
     gap: 20px;
-    margin: 40px auto;
+    margin: 60px auto;
     max-width: 500px;
     padding: 0 15px; 
+  }
+
+  .step-item {
+    margin-top: 10px;
   }
 }
 </style>

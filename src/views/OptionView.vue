@@ -215,13 +215,14 @@
 
     .option-title {
         font-size: 2rem;
-        margin-bottom: 3rem;
+        margin-top: 4rem;
+        margin-bottom: 5rem;
     }
 
     .option-buttons {
         max-width: 260px;
         gap: 1rem;
-        margin-bottom: 3rem;
+        margin-bottom: 5rem;
     }
 
     .main-option {
@@ -236,7 +237,7 @@
 
     .secondary-option {
         padding: 0.8rem 1rem;
-        font-size: 1rem;
+        font-size: 0.8rem;
     }
 
     .info-button {
@@ -255,6 +256,8 @@
         text-align: center;
         z-index: 10;
     }
+
+
 }
 
 
