@@ -484,6 +484,7 @@ const activeReportId = ref(null)
 
 function handleLocalReportClick(reportId) {
   activeReportId.value = reportId
+  showNearbyReports.value = false
 }
 
 // Bevaka när panelen öppnas/stängs och knuffa kartan i pixlar på mobilen

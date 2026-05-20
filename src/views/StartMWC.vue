@@ -293,7 +293,7 @@ html {
 
 /* ===== Sektion för Senaste Rapporter ===== */
 .body-latest-reports {
-  padding: 40px 20px;
+  padding: 40px 40px;
 }
 
 .body-latest-reports h6 {

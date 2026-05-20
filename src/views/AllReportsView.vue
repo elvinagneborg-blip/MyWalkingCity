@@ -368,7 +368,7 @@ function closeFilterMenu() {
     position: relative;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
 
 /* Flyttar ner filterknappen under zoomknapparna */
 .allreports-filter-dropdown {
@@ -412,6 +412,7 @@ function closeFilterMenu() {
   max-width: 190px;
   white-space: nowrap;
 }
+
 }
 
 </style>
