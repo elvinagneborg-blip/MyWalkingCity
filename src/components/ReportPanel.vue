@@ -162,8 +162,16 @@ defineEmits(['close', 'click-location'])
   padding: 10px 10px 5px 5px;
 }
 
+.report-list :deep(.report-title) {
+  font-size: 0.8rem;
+}
+
 .report-list :deep(.report-category) {
   font-size: 0.5rem;
+}
+
+.report-list :deep(.report-description) {
+  -webkit-line-clamp: 1
 }
 
 }
