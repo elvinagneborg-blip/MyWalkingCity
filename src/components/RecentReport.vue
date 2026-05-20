@@ -1,5 +1,6 @@
 <template>
     <div :class="['report-card', !report.image_url ? 'no-image' : '', isExpanded ? 'card-expanded' : '']">
+      
       <div class="category-container">
         <span v-if="report.type === 'problem'" class="report-icon problem-icon">⚠️</span>
         <span v-else class="report-icon highlight-icon">👍</span>
@@ -7,38 +8,43 @@
         <p :class="['report-category', report.type === 'problem' ? 'red-bg' : 'green-bg']">
           {{ report.category }}
         </p>
-        <button 
-        v-if="props.showDelete" 
-        type="button"
-        class="mini-delete-btn" 
-        @click.stop="emit('delete-click', report.report_id)"
-    >
-        ✖️
-    </button>
       </div>
 
-        <div class="report-info">
-          <p class="report-title"> {{ report.title }} </p>
-          <p ref="descriptionRef" :class="['report-description', isExpanded ? 'expanded' : '']">
-            {{ report.description }}</p>
+      <div class="delete-and-date">
+          <button 
+            v-if="props.showDelete" 
+            type="button"
+            class="mini-delete-btn" 
+            @click.stop="emit('delete-click', report.report_id)">
+            ✖️
+          </button>
+          <small class="report-date">{{ new Date(report.created_at).toLocaleDateString() }}</small>
+      </div>
 
-          <button v-if="hasOverflowingText" type="button" class="toggle-description-btn" @click="isExpanded = !isExpanded">
-            {{ isExpanded ? 'Visa mindre ▲' : 'Visa mer ▼' }}
-          </button>
-        </div>
-        <small class="report-date">{{ new Date(report.created_at).toLocaleDateString() }}</small>
-        <img 
-                    v-if="report.image_url" 
-                    :src="report.image_url" 
-                    class="report-image"
-                    alt="Rapportbild"
-                />
-        <div class="report-footer">
-          <p class="report-location clickable-location" @click="handleLocationClick">📍 {{ report.address || 'Okänd adress' }}</p>
-          <button class="boost-action-btn" @click="openBoostModal(report.report_id, props.session, report.type)" :disabled="isBoosting">
-              {{ isBoosting ? '...' : '🚀 Boosta' }}
-          </button>
-        </div>
+      <div class="report-info">
+        <p class="report-title"> {{ report.title }} </p>
+        <p ref="descriptionRef" :class="['report-description', isExpanded ? 'expanded' : '']">
+          {{ report.description }}
+        </p>
+
+        <button v-if="hasOverflowingText" type="button" class="toggle-description-btn" @click="isExpanded = !isExpanded">
+          {{ isExpanded ? 'Visa mindre ▲' : 'Visa mer ▼' }}
+        </button>
+      </div>
+        
+      <img 
+          v-if="report.image_url" 
+          :src="report.image_url" 
+          class="report-image"
+          alt="Rapportbild"
+      />
+
+      <div class="report-footer">
+        <p class="report-location clickable-location" @click="handleLocationClick">📍 {{ report.address || 'Okänd adress' }}</p>
+        <button class="boost-action-btn" @click="openBoostModal(report.report_id, props.session, report.type)" :disabled="isBoosting">
+            {{ isBoosting ? '...' : '🚀 Boost' }}
+        </button>
+      </div>
     </div>
 </template>
 
@@ -92,7 +98,7 @@ onMounted(async () => {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 
-    "category    date"
+    "category    deleteAndDate"
     "info       image"
     "footer      footer";
    gap: 10px;
@@ -116,7 +122,7 @@ onMounted(async () => {
 .no-image {
   grid-template-columns: 2fr 1fr;
   grid-template-areas: 
-    "category    date"
+    "category    deleteAndDate"
     "info       info"
     "footer      footer";
 }
@@ -141,7 +147,7 @@ onMounted(async () => {
   text-align: left;
   background-color: #27c4b4b4;
   border-radius: 50px;
-  padding: 5px;  /**/
+  padding: 5px;  
 }
 
 .report-info{
@@ -170,14 +176,6 @@ onMounted(async () => {
   -webkit-line-clamp: 3; 
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-
-.report-date { 
-  grid-area: date; 
-  align-self: start; 
-  justify-self: end; 
-  margin: 0;
 }
 
 .report-image {
@@ -268,23 +266,37 @@ onMounted(async () => {
   text-decoration: underline; 
 }
 
-.mini-delete-btn {
-    color: white;
-    border: solid 1px grey;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-    cursor: pointer;
+.mini-delete-btn:hover {
+    transform: scale(1.15);
+}
+
+/* Container för både kryss och datum */
+.delete-and-date {
+    grid-area: deleteAndDate;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 8px;
-    transition: transform 0.1s;
+    flex-direction: column;
+    align-items: flex-end; /* Trycker innehållet till höger i containern */
+    justify-content: flex-start;
+    gap: 2px;
+    justify-self: end;
+}
+
+/* Själva datum-texten */
+.report-date { 
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: #666; 
+}
+
+.mini-delete-btn {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 .mini-delete-btn:hover {
-    transform: scale(1.15);
+    transform: scale(1.15); 
 }
 
 </style>
